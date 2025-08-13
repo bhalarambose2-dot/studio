@@ -29,7 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { SheetTitle } from './ui/sheet';
+import { SheetHeader, SheetTitle } from './ui/sheet';
 
 const navItems = [
   { href: '/', label: 'Search & Book', icon: Plane },
