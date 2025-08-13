@@ -13,7 +13,7 @@ const guides = [
   { name: 'Bora Bora', description: 'Ultimate tropical paradise with overwater bungalows.', image: 'https://placehold.co/600x400.png', hint: 'bora bora' },
 ];
 
-export default function DestinationGuidesPage() {
+export default function DestinationGuidesPage({params, searchParams}: {params: {}, searchParams: {}}) {
   return (
     <div className="container mx-auto">
       <div className="text-center mb-12">

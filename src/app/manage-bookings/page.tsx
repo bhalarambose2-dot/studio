@@ -44,7 +44,7 @@ const bookings = [
 ];
 
 
-export default function ManageBookingsPage() {
+export default function ManageBookingsPage({params, searchParams}: {params: {}, searchParams: {}}) {
   return (
     <div className="container mx-auto">
       <div className="text-center mb-12">
