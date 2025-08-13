@@ -24,6 +24,7 @@ import {
   Globe,
   CircleUserRound,
   Briefcase,
+  PanelLeft,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -93,9 +94,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         variant={isMobile ? 'sidebar' : 'inset'}
         className="bg-card/80 backdrop-blur-sm"
       >
-        <SheetHeader>
-          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-        </SheetHeader>
         {sidebarContent}
       </Sidebar>
       <SidebarInset>
@@ -108,8 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 BR TRIP
              </h2>
            </div>
-          <SidebarTrigger>
-          </SidebarTrigger>
+          <SidebarTrigger />
         </header>
         <main className="p-4 md:p-6">{children}</main>
       </SidebarInset>
