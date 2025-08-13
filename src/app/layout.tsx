@@ -4,8 +4,8 @@ import { AppShell } from '@/components/app-shell';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'BR TRIP',
-  description: 'Your next adventure starts here.',
+  title: 'All India Trip',
+  description: 'Your next adventure across India starts here.',
 };
 
 export default function RootLayout({
