@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, IndianRupee, CreditCard } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import { BookingForm } from "@/components/booking-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const guides = [
   { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1673807095861-04b24a39b0db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqYWlwdXIlMjBwYWxhY2V8ZW58MHx8fHwxNzU1MDU4Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
@@ -13,6 +16,14 @@ const guides = [
 ];
 
 export default function DestinationGuidesPage({params, searchParams}: {params: {}, searchParams: {}}) {
+  const [selectedGuide, setSelectedGuide] = useState<typeof guides[0] | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleBookNow = (guide: typeof guides[0]) => {
+    setSelectedGuide(guide);
+    setIsDialogOpen(true);
+  }
+
   return (
     <div className="container mx-auto">
       <div className="text-center mb-12">
@@ -22,7 +33,7 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {guides.map((guide) => (
           <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="p-0">
@@ -52,7 +63,7 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
             </CardContent>
             {guide.price && (
               <div className="p-4 pt-0">
-                <Button className="w-full">
+                 <Button className="w-full" onClick={() => handleBookNow(guide)}>
                   <CreditCard className="mr-2 h-4 w-4" />
                   Book Now
                 </Button>
@@ -61,6 +72,16 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
           </Card>
         ))}
       </div>
+       {selectedGuide && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Book Your Trip to {selectedGuide.name}</DialogTitle>
+            </DialogHeader>
+            <BookingForm tripName={selectedGuide.name} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
