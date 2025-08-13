@@ -28,8 +28,7 @@ const popularDestinations = [
 ];
 
 export default function Home() {
-  const [flightDate, setFlightDate] = useState<Date>();
-  const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+  const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -57,76 +56,37 @@ export default function Home() {
           </div>
           <Card className="mt-8 w-full max-w-4xl shadow-2xl">
             <CardContent className="p-4 md:p-6">
-              <Tabs defaultValue="flights" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="flights"><Plane className="mr-2" /> Flights</TabsTrigger>
-                  <TabsTrigger value="hotels"><Hotel className="mr-2" /> Hotels</TabsTrigger>
+              <Tabs defaultValue="trip" className="w-full">
+                <TabsList className="grid w-full grid-cols-1">
+                  <TabsTrigger value="trip"><Search className="mr-2" /> Trip Search</TabsTrigger>
                 </TabsList>
-                <TabsContent value="flights" className="pt-4">
-                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <div className="space-y-2">
-                      <Label htmlFor="from">From</Label>
-                      <Input id="from" placeholder="New York (JFK)" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="to">To</Label>
-                      <Input id="to" placeholder="Paris (CDG)" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="flight-date">Date</Label>
-                       <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !flightDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {flightDate ? format(flightDate, "PPP") : <span>Pick a date</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={flightDate}
-                            onSelect={setFlightDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <Button type="submit" className="w-full h-10 lg:h-10 "><Search className="mr-2" /> Search</Button>
-                  </form>
-                </TabsContent>
-                <TabsContent value="hotels" className="pt-4">
-                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                <TabsContent value="trip" className="pt-4">
+                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                     <div className="space-y-2">
                       <Label htmlFor="destination">Destination</Label>
-                      <Input id="destination" placeholder="Paris, France" />
+                      <Input id="destination" placeholder="e.g., Paris, France" />
                     </div>
                      <div className="space-y-2">
-                      <Label htmlFor="hotel-dates">Check-in / Check-out</Label>
+                      <Label htmlFor="trip-dates">Dates</Label>
                        <Popover>
                         <PopoverTrigger asChild>
                           <Button
-                            id="hotel-dates"
+                            id="trip-dates"
                             variant={"outline"}
                             className={cn(
                               "w-full justify-start text-left font-normal",
-                              !hotelDates.from && "text-muted-foreground"
+                              !tripDates.from && "text-muted-foreground"
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {hotelDates.from ? (
-                              hotelDates.to ? (
+                            {tripDates.from ? (
+                              tripDates.to ? (
                                 <>
-                                  {format(hotelDates.from, "LLL dd, y")} -{" "}
-                                  {format(hotelDates.to, "LLL dd, y")}
+                                  {format(tripDates.from, "LLL dd, y")} -{" "}
+                                  {format(tripDates.to, "LLL dd, y")}
                                 </>
                               ) : (
-                                format(hotelDates.from, "LLL dd, y")
+                                format(tripDates.from, "LLL dd, y")
                               )
                             ) : (
                               <span>Pick dates</span>
@@ -137,29 +97,19 @@ export default function Home() {
                           <Calendar
                             initialFocus
                             mode="range"
-                            defaultMonth={hotelDates.from}
-                            selected={hotelDates}
-                            onSelect={(range) => setHotelDates({from: range?.from, to: range?.to})}
+                            defaultMonth={tripDates.from}
+                            selected={tripDates}
+                            onSelect={(range) => setTripDates({from: range?.from, to: range?.to})}
                             numberOfMonths={2}
                           />
                         </PopoverContent>
                       </Popover>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="guests">Guests</Label>
-                       <Select>
-                        <SelectTrigger id="guests">
-                          <SelectValue placeholder="Select guests" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 Guest</SelectItem>
-                          <SelectItem value="2">2 Guests</SelectItem>
-                          <SelectItem value="3">3 Guests</SelectItem>
-                          <SelectItem value="4">4 Guests</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="interests">Activities / Interests</Label>
+                      <Input id="interests" placeholder="e.g., Museums, Hiking" />
                     </div>
-                    <Button type="submit" className="w-full h-10"><Search className="mr-2" /> Search</Button>
+                    <Button type="submit" className="w-full h-10 lg:col-span-3"><Search className="mr-2" /> Search</Button>
                   </form>
                 </TabsContent>
               </Tabs>
