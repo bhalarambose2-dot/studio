@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Briefcase className="text-primary-foreground" />
             </div>
           <h2 className="text-xl font-semibold font-headline text-foreground group-data-[collapsible=icon]:hidden">
-            All India Trip
+            BR trip
           </h2>
         </div>
       </SidebarHeader>
@@ -103,7 +103,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Briefcase className="text-primary-foreground" />
             </div>
              <h2 className="text-lg font-semibold font-headline text-foreground">
-                All India Trip
+                BR trip
              </h2>
            </div>
           <SidebarTrigger>

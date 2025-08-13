@@ -4,7 +4,7 @@ import { AppShell } from '@/components/app-shell';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'All India Trip',
+  title: 'BR trip',
   description: 'Your next adventure across India starts here.',
 };
 
