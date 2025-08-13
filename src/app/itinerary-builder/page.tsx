@@ -24,7 +24,7 @@ const itinerarySchema = z.object({
 
 type ItineraryFormValues = z.infer<typeof itinerarySchema>;
 
-export default function ItineraryBuilderPage() {
+export default function ItineraryBuilderPage({params, searchParams}: {params: {}, searchParams: {}}) {
   const [itinerary, setItinerary] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState('');
@@ -197,10 +197,10 @@ export default function ItineraryBuilderPage() {
           {itinerary && (
             <CardFooter className="flex flex-col items-stretch gap-4">
                 <div className="space-y-2">
-                    <Label htmlFor="feedback" className="flex items-center gap-2 font-semibold">
+                    <FormLabel htmlFor="feedback" className="flex items-center gap-2 font-semibold">
                         <Lightbulb className="text-primary"/>
                         Refine Your Itinerary
-                    </Label>
+                    </FormLabel>
                     <Textarea 
                         id="feedback"
                         placeholder="e.g., 'More outdoor activities please', 'Can we add some museums?', 'I prefer Italian food.'"
