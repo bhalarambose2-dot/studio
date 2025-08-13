@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Users, Hotel, Plane, Search, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Users, Hotel, Plane, Search, MapPin, Car, Utensils, User } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -52,8 +52,12 @@ export default function SearchPage() {
           <Card className="mt-8 w-full max-w-4xl shadow-2xl">
             <CardContent className="p-4 md:p-6">
               <Tabs defaultValue="trip" className="w-full">
-                <TabsList className="grid w-full grid-cols-1">
-                  <TabsTrigger value="trip"><Search className="mr-2" /> Trip Search</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+                  <TabsTrigger value="trip"><Search className="mr-2" /> Trip</TabsTrigger>
+                  <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
+                  <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
+                  <TabsTrigger value="menu"><Utensils className="mr-2" /> Menu</TabsTrigger>
+                  <TabsTrigger value="profile"><User className="mr-2" /> Profile</TabsTrigger>
                 </TabsList>
                 <TabsContent value="trip" className="pt-4">
                   <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
@@ -106,6 +110,30 @@ export default function SearchPage() {
                     </div>
                     <Button type="submit" className="w-full h-10 lg:col-span-3"><Search className="mr-2" /> Search</Button>
                   </form>
+                </TabsContent>
+                 <TabsContent value="hotel" className="pt-4">
+                  <div className="text-center text-muted-foreground p-8">
+                    <Hotel className="mx-auto h-12 w-12" />
+                    <p className="mt-4">Hotel booking form coming soon!</p>
+                  </div>
+                </TabsContent>
+                <TabsContent value="car" className="pt-4">
+                   <div className="text-center text-muted-foreground p-8">
+                    <Car className="mx-auto h-12 w-12" />
+                    <p className="mt-4">Car rental form coming soon!</p>
+                  </div>
+                </TabsContent>
+                <TabsContent value="menu" className="pt-4">
+                   <div className="text-center text-muted-foreground p-8">
+                    <Utensils className="mx-auto h-12 w-12" />
+                    <p className="mt-4">Menu options coming soon!</p>
+                  </div>
+                </TabsContent>
+                <TabsContent value="profile" className="pt-4">
+                   <div className="text-center text-muted-foreground p-8">
+                    <User className="mx-auto h-12 w-12" />
+                    <p className="mt-4">User profile section coming soon!</p>
+                  </div>
                 </TabsContent>
               </Tabs>
             </CardContent>
