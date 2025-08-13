@@ -6,7 +6,7 @@ import { MapPin } from "lucide-react";
 import Image from "next/image";
 
 const guides = [
-  { name: 'Kyoto, Japan', description: 'Ancient temples, sublime gardens, and traditional geishas.', image: 'https://placehold.co/600x400.png', hint: 'kyoto temple' },
+  { name: 'Kyoto, Japan', description: 'Ancient temples, sublime gardens, and traditional geishas.', image: 'https://images.unsplash.com/photo-1602643163983-ed0babc39797?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxKYWlwdXIlMjB8ZW58MHx8fHwxNzU1MDU2MTg4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'kyoto temple' },
   { name: 'Paris, France', description: 'The city of light, love, and the Eiffel Tower.', image: 'https://placehold.co/600x400.png', hint: 'paris street' },
   { name: 'Santorini, Greece', description: 'Iconic blue-domed churches and stunning sunsets.', image: 'https://placehold.co/600x400.png', hint: 'santorini buildings' },
   { name: 'Rome, Italy', description: 'A journey through history with the Colosseum and Roman Forum.', image: 'https://placehold.co/600x400.png', hint: 'rome colosseum' },

@@ -19,13 +19,7 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-
-const popularDestinations = [
-  { name: 'Kyoto, Japan', image: 'https://placehold.co/400x300.png', hint: 'temple pagoda' },
-  { name: 'Santorini, Greece', image: 'https://placehold.co/400x300.png', hint: 'white buildings coast' },
-  { name: 'Paris, France', image: 'https://placehold.co/400x300.png', hint: 'eiffel tower' },
-  { name: 'Bora Bora, French Polynesia', image: 'https://placehold.co/400x300.png', hint: 'overwater bungalow' },
-];
+import { popularDestinations } from './popularDestinations';
 
 export default function Home() {
   const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
