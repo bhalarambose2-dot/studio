@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -24,7 +25,7 @@ const itinerarySchema = z.object({
 
 type ItineraryFormValues = z.infer<typeof itinerarySchema>;
 
-export default function ItineraryBuilderPage({params, searchParams}: {params: {}, searchParams: {}}) {
+export default function ItineraryBuilderPage() {
   const [itinerary, setItinerary] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState('');

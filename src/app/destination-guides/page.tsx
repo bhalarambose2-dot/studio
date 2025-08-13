@@ -27,7 +27,7 @@ const guides = [
   { name: 'Ujjain, Madhya Pradesh', description: 'An ancient and sacred city on the Kshipra River, home to the Mahakaleshwar Jyotirlinga.', image: 'https://images.unsplash.com/photo-1658730487395-dcc99f5d997c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVamphaW4lMjB8ZW58MHx8fHwxNzU1MDYyNjM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'ujjain temple', price: '23,000' },
 ];
 
-export default function DestinationGuidesPage({params, searchParams}: {params: {}, searchParams: {}}) {
+export default function DestinationGuidesPage() {
   const [selectedGuide, setSelectedGuide] = useState<typeof guides[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
