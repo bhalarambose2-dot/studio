@@ -6,3 +6,4 @@ export const newSeasonDestinations = [
   { name: 'Auli, Uttarakhand', image: 'https://images.unsplash.com/photo-1706773246562-e60295a060a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxBdWxpfGVufDB8fHx8MTc1NTA2ODM2OHww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'auli skiing' },
   { name: 'Gulmarg, Jammu & Kashmir', image: 'https://images.unsplash.com/photo-1618485246430-6a9a3b63a0d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxndWxtYXJnfGVufDB8fHx8MTc1NTA2MDQ5NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'gulmarg gondola' },
 ];
+
