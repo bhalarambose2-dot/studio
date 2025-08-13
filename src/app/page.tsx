@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogIn, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -35,6 +36,7 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -56,6 +58,7 @@ export default function AuthPage() {
       description: `Welcome back, ${values.email}!`,
     });
     setIsLoading(false);
+    router.push('/search');
   };
 
   const handleSignUp = async (values: SignUpFormValues) => {
@@ -68,6 +71,7 @@ export default function AuthPage() {
       description: 'Your account has been created successfully.',
     });
     setIsLoading(false);
+    router.push('/search');
   };
 
   return (
