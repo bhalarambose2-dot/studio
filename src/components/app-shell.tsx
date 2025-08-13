@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from 'react';
@@ -61,8 +62,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >
-                    <item.icon />
-                    <span>{item.label}</span>
+                  <item.icon />
+                  <span>{item.label}</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -103,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 BR TRIP
              </h2>
            </div>
-          <SidebarTrigger asChild>
+          <SidebarTrigger>
             <Button variant="ghost" size="icon" />
           </SidebarTrigger>
         </header>
