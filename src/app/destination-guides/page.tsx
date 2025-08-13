@@ -7,6 +7,7 @@ import Image from "next/image";
 
 const guides = [
   { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://placehold.co/600x400.png', hint: 'jaipur palace' },
+  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://placehold.co/600x400.png', hint: 'himalayan temple' },
 ];
 
 export default function DestinationGuidesPage({params, searchParams}: {params: {}, searchParams: {}}) {
