@@ -26,6 +26,8 @@ import { newSeasonDestinations } from '../newSeasonDestinations';
 export default function SearchPage() {
   const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+  const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
+  const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
 
 
   return (
@@ -181,10 +183,83 @@ export default function SearchPage() {
                   </form>
                 </TabsContent>
                 <TabsContent value="car" className="pt-4">
-                   <div className="text-center text-muted-foreground p-8">
-                    <Car className="mx-auto h-12 w-12" />
-                    <p className="mt-4">Car rental form coming soon!</p>
-                  </div>
+                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div className="space-y-2">
+                      <Label htmlFor="pickup-location">Pick-up Location</Label>
+                      <Input id="pickup-location" placeholder="e.g., Delhi Airport" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="dropoff-location">Drop-off Location</Label>
+                      <Input id="dropoff-location" placeholder="e.g., Jaipur City" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pickup-date">Pick-up Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            id="pickup-date"
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !carPickUpDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {carPickUpDate ? format(carPickUpDate, "LLL dd, y") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={carPickUpDate}
+                            onSelect={setCarPickUpDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                     <div className="space-y-2">
+                      <Label htmlFor="dropoff-date">Drop-off Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            id="dropoff-date"
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !carDropOffDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {carDropOffDate ? format(carDropOffDate, "LLL dd, y") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={carDropOffDate}
+                            onSelect={setCarDropOffDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                     <div className="space-y-2 lg:col-span-2">
+                      <Label htmlFor="car-type">Car Type</Label>
+                      <Select defaultValue="sedan">
+                        <SelectTrigger id="car-type">
+                          <SelectValue placeholder="Select car type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sedan">Sedan</SelectItem>
+                          <SelectItem value="suv">SUV</SelectItem>
+                          <SelectItem value="hatchback">Hatchback</SelectItem>
+                          <SelectItem value="luxury">Luxury</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search Cars</Button>
+                  </form>
                 </TabsContent>
                 <TabsContent value="menu" className="pt-4">
                    <div className="text-center text-muted-foreground p-8">
