@@ -37,10 +37,10 @@ const guides = [
   { name: 'Nainital, Uttarakhand', description: 'A charming Himalayan lake town with a bustling market and scenic views.', image: 'https://images.unsplash.com/photo-1601622256416-d7f757f99eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxOYWluaXRhbCUyMHxlbnwwfHx8fDE3NTUwNjE0ODF8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'nainital lake', price: '22,000' },
   { name: 'Mumbai, Maharashtra', description: 'The bustling financial capital, famous for Bollywood, street food, and colonial architecture.', image: 'https://images.unsplash.com/photo-1660145416818-b9a2b1a1f193?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxNdW1iYWklMjB8ZW58MHx8fHwxNzU1MDYxNzUzfDA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'mumbai skyline', price: '32,000' },
   { name: 'Varanasi, Uttar Pradesh', description: 'The spiritual capital of India, known for its sacred ghats and Ganga Aarti.', image: 'https://images.unsplash.com/photo-1561359313-0639aad49ca6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxWYXJhbmFzaSUyMHxlbnwwfHx8fDE3NTUwNTk5ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'varanasi ghats', price: '25,000' },
-  { name: 'Agra, Uttar Pradesh', description: 'Home to the iconic Taj Mahal, a symbol of eternal love.', image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWolMjBtYWhhbHxlbnwwfHx8fDE3NTUwNjE4MjB8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'taj mahal', price: '24,000' },
-  { name: 'Vrindavan, Uttar Pradesh', description: 'A holy town famous for its temples, including the stunning Prem Mandir.', image: 'https://images.unsplash.com/photo-1707938233687-47e61e5ad7c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxQcmVtJTIwbWFuZGlyJTIwfGVufDB8fHx8MTc1NTA2MjI3NXww&ixlib-rb-4.1.0&q=80&w=1080', hint: 'vrindavan temple', price: '20,000' },
-  { name: 'Khajuraho, Madhya Pradesh', description: 'A UNESCO World Heritage site, famous for its stunning temples adorned with intricate and erotic sculptures.', image: 'https://images.unsplash.com/photo-1606298855672-3efb63017be8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxLaGFqdXJhaG8lMjB8ZW58MHx8fHwxNzU1MDYyNzIyfDA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'khajuraho temple', price: '27,000' },
-  { name: 'Ujjain, Madhya Pradesh', description: 'An ancient and sacred city on the Kshipra River, home to the Mahakaleshwar Jyotirlinga.', image: 'https://images.unsplash.com/photo-1658730487395-dcc99f5d997c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVamphaW4lMjB8ZW58MHx8fHwxNzU1MDYyNjM4fDA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'ujjain temple', price: '23,000' },
+  { name: 'Agra, Uttar Pradesh', description: 'Home to the iconic Taj Mahal, a symbol of eternal love.', image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWolMjBtYWhhbHxlbnwwfHx8fDE3NTUwNjE4MjB8MA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'taj mahal', price: '24,000' },
+  { name: 'Vrindavan, Uttar Pradesh', description: 'A holy town famous for its temples, including the stunning Prem Mandir.', image: 'https://images.unsplash.com/photo-1707938233687-47e61e5ad7c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxQcmVtJTIwbWFuZGlyJTIwfGVufDB8fHx8MTc1NTA2MjI3NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'vrindavan temple', price: '20,000' },
+  { name: 'Khajuraho, Madhya Pradesh', description: 'A UNESCO World Heritage site, famous for its stunning temples adorned with intricate and erotic sculptures.', image: 'https://images.unsplash.com/photo-1606298855672-3efb63017be8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxLaGFqdXJhaG8lMjB8ZW58MHx8fHwxNzU1MDYyNzIyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'khajuraho temple', price: '27,000' },
+  { name: 'Ujjain, Madhya Pradesh', description: 'An ancient and sacred city on the Kshipra River, home to the Mahakaleshwar Jyotirlinga.', image: 'https://images.unsplash.com/photo-1658730487395-dcc99f5d997c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVamphaW4lMjB8ZW58MHx8fHwxNzU1MDYyNjM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'ujjain temple', price: '23,000' },
 ];
 
 
@@ -85,10 +85,11 @@ export default function SearchPage() {
           <Card className="mt-8 w-full max-w-4xl shadow-2xl">
             <CardContent className="p-4 md:p-6">
               <Tabs defaultValue="trip" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-6">
                   <TabsTrigger value="trip"><Search className="mr-2" /> Trip</TabsTrigger>
                   <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
                   <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
+                  <TabsTrigger value="guides"><Globe className="mr-2" /> Guides</TabsTrigger>
                   <TabsTrigger value="menu"><Utensils className="mr-2" /> Menu</TabsTrigger>
                   <TabsTrigger value="profile"><User className="mr-2" /> Profile</TabsTrigger>
                 </TabsList>
@@ -141,10 +142,7 @@ export default function SearchPage() {
                       <Label htmlFor="interests">Activities / Interests</Label>
                       <Input id="interests" placeholder="e.g., Museums, Hiking" />
                     </div>
-                    <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search</Button>
-                    <Link href="/destination-guides" className="w-full h-10 lg:col-span-2">
-                      <Button variant="outline" className="w-full h-10"><Globe className="mr-2" /> Destination Guides</Button>
-                    </Link>
+                    <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search</Button>
                   </form>
                 </TabsContent>
                  <TabsContent value="hotel" className="pt-4">
@@ -289,6 +287,45 @@ export default function SearchPage() {
                     <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search Cars</Button>
                   </form>
                 </TabsContent>
+                <TabsContent value="guides" className="pt-4">
+                    <div className="text-center">
+                        <h3 className="text-2xl font-bold tracking-tight">Destination Guides</h3>
+                        <p className="mt-1 text-muted-foreground">
+                            Discover your next adventure with our expert travel guides.
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 max-h-[400px] overflow-y-auto p-1">
+                        {guides.map((guide) => (
+                        <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                            <CardHeader className="p-0">
+                            <div className="relative h-40 w-full">
+                                <Image
+                                src={guide.image}
+                                alt={`Image of ${guide.name}`}
+                                data-ai-hint={guide.hint}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                            </div>
+                            </CardHeader>
+                            <CardContent className="p-4 flex-grow flex flex-col">
+                            <h2 className="text-lg font-semibold mb-1">{guide.name}</h2>
+                            <p className="text-muted-foreground text-sm flex-grow">{guide.description}</p>
+                            {guide.price && (
+                                <div className="flex items-center text-md font-bold text-accent mt-2">
+                                <IndianRupee className="w-4 h-4 mr-1" />
+                                <span>{guide.price}</span>
+                                </div>
+                            )}
+                             <Button className="w-full mt-3 h-9" onClick={() => handleBookNow(guide)}>
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                Book Now
+                            </Button>
+                            </CardContent>
+                        </Card>
+                        ))}
+                    </div>
+                </TabsContent>
                 <TabsContent value="menu" className="pt-4">
                   <div className="text-center text-muted-foreground p-8">
                     <Utensils className="mx-auto h-12 w-12" />
@@ -306,6 +343,16 @@ export default function SearchPage() {
           </Card>
         </div>
       </section>
+      {selectedGuide && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Book Your Trip to {selectedGuide.name}</DialogTitle>
+            </DialogHeader>
+            <BookingForm tripName={selectedGuide.name} />
+          </DialogContent>
+        </Dialog>
+      )}
 
       <section className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center">Popular Destinations</h2>
