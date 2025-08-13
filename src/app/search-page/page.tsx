@@ -15,18 +15,19 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, User, Globe, IndianRupee, CreditCard } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, User, Globe, IndianRupee, CreditCard, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const guides = [
   { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1673807095861-04b24a39b0db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqYWlwdXIlMjBwYWxhY2V8ZW58MHx8fHwxNzU1MDU4Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
-  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1698574996391-73f103113f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVdHJha2hhbmQlMjB8ZW58MHx8fHwxNzU1MDU4NDM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
+  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1698574996391-73f103113f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxVdHJha2hhbmQlMjB8ZW58MHx8fHwxNzU1MDU4NDM4fDA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
   { name: 'Goa, India', description: 'Famous for its beaches, nightlife, and Portuguese-influenced architecture.', image: 'https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxHb2F8ZW58MHx8fHwxNzU1MDU2MzAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'goa beach', price: '30,000' },
   { name: 'Kerala, India', description: "Known as 'God's Own Country', famous for its backwaters, lush greenery, and serene beaches.", image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZXJhbGElMjBiYWNrd2F0ZXJzfGVufDB8fHx8MTc1NTExODc0MXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'kerala backwaters', price: '35,000' },
   { name: 'Jaisalmer, Rajasthan', description: 'The Golden City, known for its massive fort and camel safaris in the Thar Desert.', image: 'https://images.unsplash.com/photo-1713349881676-594b95a5742b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8SmFpc2FsbWVyJTIwfGVufDB8fHx8MTc1NTA2MDQ5NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaisalmer fort', price: '28,000' },
@@ -39,6 +40,15 @@ const guides = [
   { name: 'Vrindavan, Uttar Pradesh', description: 'A holy town famous for its temples, including the stunning Prem Mandir.', image: 'https://images.unsplash.com/photo-1707938233687-47e61e5ad7c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxQcmVtJTIwbWFuZGlyJTIwfGVufDB8fHx8MTc1NTA2MjI3NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'vrindavan temple', price: '20,000' },
   { name: 'Khajuraho, Madhya Pradesh', description: 'A UNESCO World Heritage site, famous for its stunning temples adorned with intricate and erotic sculptures.', image: 'https://images.unsplash.com/photo-1606298855672-3efb63017be8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxLaGFqdXJhaG8lMjB8ZW58MHx8fHwxNzU1MDYyNzIyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'khajuraho temple', price: '27,000' },
   { name: 'Ujjain, Madhya Pradesh', description: 'An ancient and sacred city on the Kshipra River, home to the Mahakaleshwar Jyotirlinga.', image: 'https://images.unsplash.com/photo-1658730487395-dcc99f5d997c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVamphaW4lMjB8ZW58MHx8fHwxNzU1MDYyNjM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'ujjain temple', price: '23,000' },
+];
+
+const rajasthanStays = [
+    { name: 'Rambagh Palace', location: 'Jaipur', type: 'Hotel', description: 'A former royal palace with ornate rooms, sprawling gardens, and a luxe spa.', image: 'https://images.unsplash.com/photo-1596386461350-326ccb383e9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxSYW1iYWdoJTIwUGFsYWNlfGVufDB8fHx8MTc1NjA5NzE5OXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'Rambagh Palace Jaipur' },
+    { name: 'Umaid Bhawan Palace', location: 'Jodhpur', type: 'Hotel', description: 'A grand, art deco palace offering opulent suites, a spa, and pools.', image: 'https://images.unsplash.com/photo-1618821434313-937a4a25de8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVbWFpZCUyMEJoYXdhbiUyMFBhbGFjZXxlbnwwfHx8fDE3NTYwOTcyODV8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'Umaid Bhawan Palace Jodhpur' },
+    { name: 'The Oberoi Udaivilas', location: 'Udaipur', type: 'Hotel', description: 'A luxurious hotel with grand architecture, intricate domes, and serene pools.', image: 'https://images.unsplash.com/photo-1620177391308-4182dc7a77b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxUaGUlMjBPYmVyb2klMjBVZGFpdmlsYXN8ZW58MHx8fHwxNzU2MDk3MzM5fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'The Oberoi Udaivilas' },
+    { name: 'Suvarna Mahal', location: 'Jaipur', type: 'Restaurant', description: 'Located in Rambagh Palace, this restaurant offers authentic Indian cuisine.', image: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'restaurant interior' },
+    { name: '1135 AD', location: 'Amer, Jaipur', type: 'Restaurant', description: 'A fine-dining restaurant with regal, candlelit interiors and live music.', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'luxury restaurant' },
+    { name: 'Cinnamon', location: 'Jaipur', type: 'Restaurant', description: 'An elegant restaurant in a historic mansion, serving creative Indian cuisine.', image: 'https://images.unsplash.com/photo-1578422473879-05244197793d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'elegant dining' },
 ];
 
 
@@ -61,11 +71,10 @@ export default function SearchCardPage() {
       <Card className="w-full max-w-4xl shadow-2xl">
         <CardContent className="p-4 md:p-6">
           <Tabs defaultValue="trip" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3">
               <TabsTrigger value="trip"><Plane className="mr-2" /> Trip</TabsTrigger>
               <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
               <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
-              <TabsTrigger value="menu"><Utensils className="mr-2" /> Menu</TabsTrigger>
             </TabsList>
             <TabsContent value="trip" className="pt-4">
               <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -120,7 +129,7 @@ export default function SearchCardPage() {
               </form>
             </TabsContent>
              <TabsContent value="hotel" className="pt-4">
-              <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+              <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-6">
                 <div className="space-y-2 lg:col-span-2">
                   <Label htmlFor="hotel-location">Location</Label>
                   <Input id="hotel-location" placeholder="e.g., Jaipur, India" />
@@ -181,6 +190,32 @@ export default function SearchCardPage() {
                 </div>
                 <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search Hotels</Button>
               </form>
+               <h3 className="text-xl font-semibold text-center mb-4">Major Hotels & Restaurants in Rajasthan</h3>
+                <ScrollArea className="h-[400px] w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
+                        {rajasthanStays.map((stay) => (
+                        <Card key={stay.name} className="overflow-hidden group">
+                            <div className="relative h-40 w-full">
+                            <Image
+                                src={stay.image}
+                                alt={`Image of ${stay.name}`}
+                                data-ai-hint={stay.hint}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            </div>
+                            <div className="p-4">
+                            <h4 className="font-semibold text-lg">{stay.name}</h4>
+                             <p className="text-sm text-muted-foreground flex items-center mt-1">
+                                {stay.type === 'Hotel' ? <Hotel className="w-4 h-4 mr-2" /> : <Utensils className="w-4 h-4 mr-2" />}
+                                {stay.location}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-2">{stay.description}</p>
+                            </div>
+                        </Card>
+                        ))}
+                    </div>
+                </ScrollArea>
             </TabsContent>
             <TabsContent value="car" className="pt-4">
               <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -260,12 +295,6 @@ export default function SearchCardPage() {
                 </div>
                 <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search Cars</Button>
               </form>
-            </TabsContent>
-            <TabsContent value="menu" className="pt-4">
-              <div className="text-center text-muted-foreground p-8">
-                <Utensils className="mx-auto h-12 w-12" />
-                <p className="mt-4">Menu section coming soon!</p>
-              </div>
             </TabsContent>
           </Tabs>
           {selectedGuide && (
