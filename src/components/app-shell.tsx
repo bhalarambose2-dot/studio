@@ -12,7 +12,8 @@ import {
   Globe,
   Briefcase,
   PanelLeft,
-  Home
+  Home,
+  Phone
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -94,8 +95,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         {isMobile && <div className="md:hidden">{mobileNav}</div>}
          <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-            <div className="ml-auto flex-1 sm:flex-initial">
-              {/* Search bar could go here */}
+            <div className="ml-auto flex-1 sm:flex-initial" />
+            <div className="flex items-center gap-2">
+              <Phone className="h-4 w-4 text-primary" />
+              <a href="tel:8769930595" className="font-semibold text-sm">8769930595</a>
             </div>
         </div>
       </header>
