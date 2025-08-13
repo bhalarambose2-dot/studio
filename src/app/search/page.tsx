@@ -52,13 +52,7 @@ export default function SearchPage() {
           <Card className="mt-8 w-full max-w-4xl shadow-2xl">
             <CardContent className="p-4 md:p-6">
               <Tabs defaultValue="trip" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
-                  <TabsTrigger value="trip"><Search className="mr-2" /> Trip</TabsTrigger>
-                  <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
-                  <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
-                  <TabsTrigger value="menu"><Utensils className="mr-2" /> Menu</TabsTrigger>
-                  <TabsTrigger value="profile"><User className="mr-2" /> Profile</TabsTrigger>
-                </TabsList>
+                
                 <TabsContent value="trip" className="pt-4">
                   <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                     <div className="space-y-2">
@@ -135,6 +129,13 @@ export default function SearchPage() {
                     <p className="mt-4">User profile section coming soon!</p>
                   </div>
                 </TabsContent>
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mt-4">
+                  <TabsTrigger value="trip"><Search className="mr-2" /> Trip</TabsTrigger>
+                  <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
+                  <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
+                  <TabsTrigger value="menu"><Utensils className="mr-2" /> Menu</TabsTrigger>
+                  <TabsTrigger value="profile"><User className="mr-2" /> Profile</TabsTrigger>
+                </TabsList>
               </Tabs>
             </CardContent>
           </Card>
