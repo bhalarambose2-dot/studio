@@ -26,6 +26,7 @@ import {
   Briefcase,
   PanelLeft,
   LogIn,
+  Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,7 +35,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SheetHeader, SheetTitle } from './ui/sheet';
 
 const navItems = [
-  { href: '/', label: 'Search & Book', icon: Plane },
+  { href: '/search', label: 'Search & Book', icon: Plane },
   { href: '/itinerary-builder', label: 'Itinerary Builder', icon: Wand2 },
   { href: '/manage-bookings', label: 'Manage Bookings', icon: BookOpenCheck },
   { href: '/destination-guides', label: 'Destination Guides', icon: Globe },
@@ -44,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMobile = useIsMobile();
   
-  const sidebarContent = (
+  const mainContent = (
     <>
       <SidebarHeader>
         <div className="flex items-center gap-2">
@@ -58,6 +59,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
+          <SidebarMenuItem>
+              <Link href="/">
+                <SidebarMenuButton
+                  isActive={pathname === '/'}
+                  tooltip='Home'
+                >
+                  <Home />
+                  <span>Home</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <Link href={item.href}>
@@ -86,6 +98,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </>
   );
 
+  if (pathname === '/') {
+    return <main className="p-4 md:p-6">{children}</main>;
+  }
+
+
   return (
     <SidebarProvider>
       <Sidebar
@@ -93,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         variant={isMobile ? 'sidebar' : 'inset'}
         className="bg-card/80 backdrop-blur-sm"
       >
-        {sidebarContent}
+        {mainContent}
       </Sidebar>
       <SidebarInset>
         <header className={cn("flex items-center justify-between p-2 md:hidden", isMobile ? "sticky top-0 z-40 bg-background/80 backdrop-blur-sm" : "")}>
