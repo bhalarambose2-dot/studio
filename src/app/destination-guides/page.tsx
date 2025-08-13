@@ -15,9 +15,10 @@ const guides = [
   { name: 'London, UK', description: 'A vibrant mix of history, culture, and modernity.', image: 'https://placehold.co/600x400.png', hint: 'london bridge' },
   { name: 'Bora Bora', description: 'Ultimate tropical paradise with overwater bungalows.', image: 'https://placehold.co/600x400.png', hint: 'bora bora' },
   { name: 'Kedarnath Temple', description: 'A sacred Hindu temple in the Himalayas.', image: 'https://images.unsplash.com/photo-1649147313351-c86537fda0eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxLZWRhcm5hdGglMjB8ZW58MHx8fHwxNzU1MDU2NDI4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'himalayan temple' },
+  { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://placehold.co/600x400.png', hint: 'jaipur palace' },
 ];
 
-export default function DestinationGuidesPage() {
+export default function DestinationGuidesPage({params, searchParams}: {params: {}, searchParams: {}}) {
   return (
     <div className="container mx-auto">
       <div className="text-center mb-12">
