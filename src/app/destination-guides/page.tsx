@@ -22,7 +22,7 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {guides.map((guide) => (
           <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="p-0">
