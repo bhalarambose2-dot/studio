@@ -10,12 +10,17 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { Checkbox } from './ui/checkbox';
+import Link from 'next/link';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
   email: z.string().email('Invalid email address.'),
   phone: z.string().optional(),
   travelers: z.coerce.number().min(1, 'At least one traveler is required.'),
+  terms: z.literal(true, {
+    errorMap: () => ({ message: 'You must accept the terms and conditions.' }),
+  }),
 });
 
 type BookingFormValues = z.infer<typeof bookingSchema>;
@@ -34,6 +39,7 @@ export function BookingForm({ tripName }: BookingFormProps) {
       email: '',
       phone: '',
       travelers: 1,
+      terms: false,
     },
   });
 
@@ -102,6 +108,30 @@ export function BookingForm({ tripName }: BookingFormProps) {
                 <Input type="number" min="1" {...field} />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="terms"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  I agree to the{' '}
+                  <Link href="#" className="text-primary hover:underline">
+                    Terms and Conditions
+                  </Link>
+                  .
+                </FormLabel>
+                <FormMessage />
+              </div>
             </FormItem>
           )}
         />
