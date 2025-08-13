@@ -31,9 +31,9 @@ export default function Home() {
            <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
            <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"></div>
            <Image
-              src="https://placehold.co/1920x1080.png"
-              alt="Tropical beach background"
-              data-ai-hint="tropical beach"
+              src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWolMjBtYWhhbHxlbnwwfHx8fDE3MTY0OTQzMTB8MA&ixlib=rb-4.0.3&q=80&w=1080"
+              alt="Taj Mahal"
+              data-ai-hint="taj mahal"
               fill
               className="object-cover"
               priority
@@ -45,7 +45,7 @@ export default function Home() {
               Your Next Adventure Starts Here
             </h1>
             <p className="mt-4 max-w-2xl text-lg md:text-xl text-primary-foreground/90 drop-shadow-sm">
-              Search and book flights & hotels with ease. Let BR TRIP handle the planning.
+              Search and book flights & hotels with ease. Let All India Trip handle the planning.
             </p>
           </div>
           <Card className="mt-8 w-full max-w-4xl shadow-2xl">
