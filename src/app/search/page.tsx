@@ -25,6 +25,8 @@ import { newSeasonDestinations } from '../newSeasonDestinations';
 
 export default function SearchPage() {
   const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+  const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -116,10 +118,67 @@ export default function SearchPage() {
                   </form>
                 </TabsContent>
                  <TabsContent value="hotel" className="pt-4">
-                  <div className="text-center text-muted-foreground p-8">
-                    <Hotel className="mx-auto h-12 w-12" />
-                    <p className="mt-4">Hotel booking form coming soon!</p>
-                  </div>
+                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div className="space-y-2 lg:col-span-2">
+                      <Label htmlFor="hotel-location">Location</Label>
+                      <Input id="hotel-location" placeholder="e.g., Jaipur, India" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="hotel-dates">Dates</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            id="hotel-dates"
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !hotelDates.from && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {hotelDates.from ? (
+                              hotelDates.to ? (
+                                <>
+                                  {format(hotelDates.from, "LLL dd, y")} -{" "}
+                                  {format(hotelDates.to, "LLL dd, y")}
+                                </>
+                              ) : (
+                                format(hotelDates.from, "LLL dd, y")
+                              )
+                            ) : (
+                              <span>Pick check-in/out dates</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            initialFocus
+                            mode="range"
+                            defaultMonth={hotelDates.from}
+                            selected={hotelDates}
+                            onSelect={(range) => setHotelDates({from: range?.from, to: range?.to})}
+                            numberOfMonths={2}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="guests">Guests</Label>
+                      <Select defaultValue="2">
+                        <SelectTrigger id="guests">
+                          <SelectValue placeholder="Select guests" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1 Guest</SelectItem>
+                          <SelectItem value="2">2 Guests</SelectItem>
+                          <SelectItem value="3">3 Guests</SelectItem>
+                          <SelectItem value="4">4 Guests</SelectItem>
+                          <SelectItem value="5+">5+ Guests</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search Hotels</Button>
+                  </form>
                 </TabsContent>
                 <TabsContent value="car" className="pt-4">
                    <div className="text-center text-muted-foreground p-8">
