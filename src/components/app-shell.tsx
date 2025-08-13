@@ -20,7 +20,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 
 const navItems = [
-  { href: '/search', label: 'Search & Book', icon: Plane },
+  { href: '/search-page', label: 'Search & Book', icon: Plane },
   { href: '/itinerary-builder', label: 'Itinerary Builder', icon: Wand2 },
   { href: '/manage-bookings', label: 'Manage Bookings', icon: BookOpenCheck },
   { href: '/destination-guides', label: 'Destination Guides', icon: Globe },
