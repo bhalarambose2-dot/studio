@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { SheetTitle } from './ui/sheet';
 
 const navItems = [
   { href: '/', label: 'Search & Book', icon: Plane },
@@ -57,13 +58,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href}>
+              <Link href={item.href} legacyBehavior passHref>
                 <SidebarMenuButton
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >
-                  <item.icon />
-                  <span>{item.label}</span>
+                  
+                    <item.icon />
+                    <span>{item.label}</span>
+                  
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
