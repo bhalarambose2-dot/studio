@@ -93,6 +93,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         variant={isMobile ? 'sidebar' : 'inset'}
         className="bg-card/80 backdrop-blur-sm"
       >
+        <SheetHeader>
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+        </SheetHeader>
         {sidebarContent}
       </Sidebar>
       <SidebarInset>
@@ -106,7 +109,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
              </h2>
            </div>
           <SidebarTrigger>
-            <Button variant="ghost" size="icon" />
           </SidebarTrigger>
         </header>
         <main className="p-4 md:p-6">{children}</main>
