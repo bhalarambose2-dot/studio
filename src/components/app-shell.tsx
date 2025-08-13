@@ -25,6 +25,7 @@ import {
   CircleUserRound,
   Briefcase,
   PanelLeft,
+  LogIn,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -74,14 +75,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </SidebarContent>
       <SidebarFooter>
          <div className="flex items-center gap-3 p-2 rounded-md transition-colors">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="https://placehold.co/40x40.png" alt="@user" data-ai-hint="person smiling"/>
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                <span className="text-sm font-medium text-foreground">User</span>
-                <span className="text-xs text-muted-foreground">user@email.com</span>
-            </div>
+            <Link href="/auth" className="w-full">
+               <Button variant="outline" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-2">
+                 <LogIn className="group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:w-4"/>
+                 <span className="group-data-[collapsible=icon]:hidden">Login / Sign Up</span>
+               </Button>
+            </Link>
         </div>
       </SidebarFooter>
     </>
