@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { BookingForm } from "@/components/booking-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Link from "next/link";
 
 const guides = [
   { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1673807095861-04b24a39b0db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqYWlwdXIlMjBwYWxhY2V8ZW58MHx8fHwxNzU1MDU4Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
@@ -67,10 +68,10 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
                   <span>{guide.price}</span>
                 </div>
               )}
-              <div className="flex items-center text-sm text-primary mt-2 font-semibold">
+              <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm text-primary mt-2 font-semibold hover:underline">
                 <MapPin className="w-4 h-4 mr-2" />
-                <span>Read Guide</span>
-              </div>
+                <span>View on Map</span>
+              </Link>
             </CardContent>
             {guide.price && (
               <div className="p-4 pt-0">
@@ -96,6 +97,8 @@ export default function DestinationGuidesPage({params, searchParams}: {params: {
     </div>
   );
 }
+
+    
 
     
 
