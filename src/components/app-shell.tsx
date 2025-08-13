@@ -13,7 +13,8 @@ import {
   Briefcase,
   PanelLeft,
   Home,
-  Phone
+  Phone,
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ const navItems = [
   { href: '/itinerary-builder', label: 'Itinerary Builder', icon: Wand2 },
   { href: '/manage-bookings', label: 'Manage Bookings', icon: BookOpenCheck },
   { href: '/destination-guides', label: 'Destination Guides', icon: Globe },
+  { href: '/profile', label: 'Profile', icon: User },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
