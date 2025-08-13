@@ -21,6 +21,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { popularDestinations } from '../popularDestinations';
+import { newSeasonDestinations } from '../newSeasonDestinations';
 
 export default function SearchPage() {
   const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
@@ -149,6 +150,37 @@ export default function SearchPage() {
         <p className="text-center text-muted-foreground mt-2 mb-8">Explore breathtaking places curated for you.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {popularDestinations.map((dest) => (
+            <Link href="/destination-guides" key={dest.name}>
+              <Card className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="p-0">
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={dest.image}
+                      alt={`Image of ${dest.name}`}
+                      data-ai-hint={dest.hint}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-lg">{dest.name}</h3>
+                  <div className="flex items-center text-sm text-muted-foreground mt-1">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    <span>Destination Guide</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center">New Season Destinations</h2>
+        <p className="text-center text-muted-foreground mt-2 mb-8">Discover perfect getaways for the current season.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {newSeasonDestinations.map((dest) => (
             <Link href="/destination-guides" key={dest.name}>
               <Card className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
                 <CardHeader className="p-0">
