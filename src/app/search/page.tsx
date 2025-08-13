@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Users, Hotel, Plane, Search, MapPin, Car, Utensils, User } from 'lucide-react';
+import { Calendar as CalendarIcon, Users, Hotel, Plane, Search, MapPin, Car, Utensils, User, Globe } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -60,8 +60,8 @@ export default function SearchPage() {
                   <TabsTrigger value="profile"><User className="mr-2" /> Profile</TabsTrigger>
                 </TabsList>
                 <TabsContent value="trip" className="pt-4">
-                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
-                    <div className="space-y-2">
+                  <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div className="space-y-2 lg:col-span-2">
                       <Label htmlFor="destination">Destination</Label>
                       <Input id="destination" placeholder="e.g., Paris, France" />
                     </div>
@@ -108,7 +108,10 @@ export default function SearchPage() {
                       <Label htmlFor="interests">Activities / Interests</Label>
                       <Input id="interests" placeholder="e.g., Museums, Hiking" />
                     </div>
-                    <Button type="submit" className="w-full h-10 lg:col-span-3"><Search className="mr-2" /> Search</Button>
+                    <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search</Button>
+                    <Link href="/destination-guides" className="w-full h-10 lg:col-span-2">
+                      <Button variant="outline" className="w-full h-10"><Globe className="mr-2" /> Destination Guides</Button>
+                    </Link>
                   </form>
                 </TabsContent>
                  <TabsContent value="hotel" className="pt-4">
