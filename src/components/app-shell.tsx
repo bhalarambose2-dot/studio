@@ -110,14 +110,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 className={cn(
                   'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms') && 'text-primary'
+                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/wallet') && 'text-primary'
                 )}
               >
                 <Menu className="h-5 w-5" />
                 <span className="text-xs">More</span>
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="rounded-l-lg">
+            <SheetContent side="left" className="rounded-r-lg">
               <SheetHeader>
                 <SheetTitle>More Options</SheetTitle>
               </SheetHeader>
