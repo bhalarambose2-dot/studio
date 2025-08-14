@@ -84,16 +84,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Wand2 className="h-5 w-5" />
             <span className="text-xs">Itinerary</span>
           </Link>
-            <Link
-                href="/search-page"
-                className={cn(
-                'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                pathname === '/search-page' && 'text-primary'
-                )}
-            >
-                <Search className="h-5 w-5" />
-                <span className="text-xs">Search</span>
-            </Link>
           <Link
             href="/manage-bookings"
             className={cn(
@@ -104,27 +94,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <BookOpenCheck className="h-5 w-5" />
             <span className="text-xs">My Trips</span>
           </Link>
+          <Link
+            href="/profile"
+            className={cn(
+              'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
+              pathname === '/profile' && 'text-primary'
+            )}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs">Profile</span>
+          </Link>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <button
                 className={cn(
                   'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                  (pathname === '/profile' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms') && 'text-primary'
+                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms') && 'text-primary'
                 )}
               >
                 <Menu className="h-5 w-5" />
                 <span className="text-xs">More</span>
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-lg">
+            <SheetContent side="right" className="rounded-l-lg">
               <SheetHeader>
                 <SheetTitle>More Options</SheetTitle>
               </SheetHeader>
               <div className="grid grid-cols-2 gap-4 py-4">
-                <Link href="/profile" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <User className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Profile</span>
-                </Link>
                 <Link href="/language" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
                     <Languages className="h-6 w-6 text-primary" />
                     <span className="text-sm font-medium">Language</span>
