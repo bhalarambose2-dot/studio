@@ -51,6 +51,7 @@ export default function AuthPage() {
   const handleSignIn = async (values: SignInFormValues) => {
     setIsLoading(true);
     console.log('Sign In:', values);
+    console.log(`Sending notification to 8769930595 for new sign-in: ${values.email}`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     toast({
@@ -64,6 +65,7 @@ export default function AuthPage() {
   const handleSignUp = async (values: SignUpFormValues) => {
     setIsLoading(true);
     console.log('Sign Up:', values);
+    console.log(`Sending notification to 8769930595 for new sign-up: ${values.email}`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     toast({

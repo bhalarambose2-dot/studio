@@ -45,7 +45,9 @@ export function BookingForm({ tripName }: BookingFormProps) {
 
   const onSubmit = async (values: BookingFormValues) => {
     setIsLoading(true);
-    console.log({ ...values, tripName });
+    const bookingDetails = { ...values, tripName };
+    console.log('Booking:', bookingDetails);
+    console.log(`Sending notification to 8769930595 for new booking: ${JSON.stringify(bookingDetails)}`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     toast({
