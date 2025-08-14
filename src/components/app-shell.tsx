@@ -10,7 +10,10 @@ import {
   Search,
   Wand2,
   User,
-  Briefcase
+  Briefcase,
+  Phone,
+  Hotel,
+  Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,7 +42,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Briefcase className="h-6 w-6 text-primary" />
             <span className='font-bold'>BR Trip</span>
-          </Link>
+        </Link>
+        <div className="ml-auto flex items-center gap-2">
+            <a href="tel:8769930595" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary">
+                <Phone className="h-4 w-4" />
+                <span>8769930595</span>
+            </a>
+        </div>
       </header>
       
       <main className="flex-1 overflow-y-auto pb-24">
@@ -70,18 +79,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Wand2 className="h-5 w-5" />
             <span className="text-xs">Itinerary</span>
           </Link>
-           <Link
-            href="/search-page"
-            className={cn(
-              'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/search-page' && 'text-primary'
-            )}
-          >
-            <div className="flex h-16 w-16 -translate-y-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-                <Search className="h-6 w-6" />
-            </div>
-            <span className="sr-only">Search</span>
-          </Link>
+          <div className="flex items-center gap-4">
+             <Link
+                href="/search-page"
+                className={cn(
+                'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
+                pathname === '/search-page' && 'text-primary'
+                )}
+            >
+                <Hotel className="h-5 w-5" />
+                <span className="text-xs">Hotel</span>
+            </Link>
+            <Link
+                href="/destination-guides"
+                className={cn(
+                'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
+                pathname === '/destination-guides' && 'text-primary'
+                )}
+            >
+                <Utensils className="h-5 w-5" />
+                <span className="text-xs">Restaurant</span>
+            </Link>
+          </div>
           <Link
             href="/manage-bookings"
             className={cn(
