@@ -22,6 +22,7 @@ import {
   Settings,
   Package,
   Hotel,
+  LayoutGrid,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
@@ -98,14 +99,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="text-xs">Hotel</span>
           </Link>
           <Link
-            href="/manage-bookings"
+            href="/search"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/manage-bookings' && 'text-primary'
+               pathname.startsWith('/search') && 'text-primary'
             )}
           >
-            <BookOpenCheck className="h-5 w-5" />
-            <span className="text-xs">My Trips</span>
+            <LayoutGrid className="h-5 w-5" />
+            <span className="text-xs">Services</span>
           </Link>
           <Link
             href="/destination-guides"
