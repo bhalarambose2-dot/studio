@@ -25,7 +25,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui
 const navItems = [
   { href: '/trip', label: 'Trip', icon: Plane },
   { href: '/search-page', label: 'Hotels & Cars', icon: Wand2 },
-  { href: '/manage-bookings', label: 'Manage Bookings', icon: BookOpenCheck },
+  { href: '/manage-bookings', label: 'My Trips', icon: BookOpenCheck },
   { href: '/destination-guides', label: 'Destination Guides', icon: Globe },
   { href: '/menu', label: 'Menu', icon: Menu },
   { href: '/profile', label: 'Profile', icon: User },
