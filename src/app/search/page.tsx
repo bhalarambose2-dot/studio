@@ -300,6 +300,15 @@ export default function HomePage() {
         </Card>
       </section>
 
+      <section className="container mx-auto px-4">
+        <h2 className="text-2xl font-bold text-center mb-6">Explore Services</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {services.map((service) => (
+                <ServiceCard key={service.name} icon={service.icon} name={service.name} href={service.href} />
+            ))}
+        </div>
+      </section>
+
       <section className="container mx-auto">
         <h2 className="text-3xl font-bold text-center">All Guides</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
