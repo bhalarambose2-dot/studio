@@ -19,6 +19,7 @@ import {
   FileText,
   Wallet,
   Settings,
+  Package,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
@@ -105,14 +106,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="text-xs">My Trips</span>
           </Link>
           <Link
-            href="/profile"
+            href="/destination-guides"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/profile' && 'text-primary'
+              pathname === '/destination-guides' && 'text-primary'
             )}
           >
-            <User className="h-5 w-5" />
-            <span className="text-xs">Profile</span>
+            <Package className="h-5 w-5" />
+            <span className="text-xs">Packages</span>
           </Link>
           <Link
             href="/menu"
