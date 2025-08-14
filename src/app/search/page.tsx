@@ -89,7 +89,50 @@ export default function SearchPage() {
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
-      <section className="container mx-auto -mt-8 relative z-30">
+      <section className="container mx-auto">
+        <h2 className="text-3xl font-bold text-center">All Guides</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+          {guides.map((guide) => (
+            <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
+              <CardHeader className="p-0">
+                <div className="relative h-56 w-full">
+                  <Image
+                    src={guide.image}
+                    alt={`Image of ${guide.name}`}
+                    data-ai-hint={guide.hint}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 flex-grow flex flex-col">
+                <h2 className="text-xl font-semibold mb-2">{guide.name}</h2>
+                <p className="text-muted-foreground flex-grow">{guide.description}</p>
+                {guide.price && (
+                  <div className="flex items-center text-lg font-bold text-accent mt-4">
+                    <IndianRupee className="w-5 h-5 mr-2" />
+                    <span>{guide.price}</span>
+                  </div>
+                )}
+                <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm text-primary mt-2 font-semibold hover:underline">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  <span>View on Map</span>
+                </Link>
+              </CardContent>
+              {guide.price && (
+                <div className="p-4 pt-0">
+                   <Button className="w-full" onClick={() => handleBookNow(guide)}>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Book Now
+                  </Button>
+                </div>
+              )}
+            </Card>
+          ))}
+        </div>
+      </section>
+      
+      <section className="container mx-auto relative z-10">
         <Card className="w-full max-w-4xl mx-auto shadow-2xl">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -161,50 +204,6 @@ export default function SearchPage() {
             ))}
         </div>
       </section>
-
-      <section className="container mx-auto">
-        <h2 className="text-3xl font-bold text-center">All Guides</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          {guides.map((guide) => (
-            <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
-              <CardHeader className="p-0">
-                <div className="relative h-56 w-full">
-                  <Image
-                    src={guide.image}
-                    alt={`Image of ${guide.name}`}
-                    data-ai-hint={guide.hint}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 flex-grow flex flex-col">
-                <h2 className="text-xl font-semibold mb-2">{guide.name}</h2>
-                <p className="text-muted-foreground flex-grow">{guide.description}</p>
-                {guide.price && (
-                  <div className="flex items-center text-lg font-bold text-accent mt-4">
-                    <IndianRupee className="w-5 h-5 mr-2" />
-                    <span>{guide.price}</span>
-                  </div>
-                )}
-                <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm text-primary mt-2 font-semibold hover:underline">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  <span>View on Map</span>
-                </Link>
-              </CardContent>
-              {guide.price && (
-                <div className="p-4 pt-0">
-                   <Button className="w-full" onClick={() => handleBookNow(guide)}>
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Book Now
-                  </Button>
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-      </section>
-
 
       {selectedGuide && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
