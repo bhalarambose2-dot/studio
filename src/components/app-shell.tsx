@@ -14,7 +14,8 @@ import {
   PanelLeft,
   Home,
   Phone,
-  User
+  User,
+  Menu
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,10 +23,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 
 const navItems = [
-  { href: '/search-page', label: 'Search & Book', icon: Plane },
-  { href: '/itinerary-builder', label: 'Itinerary Builder', icon: Wand2 },
+  { href: '/trip', label: 'Trip', icon: Plane },
+  { href: '/search-page', label: 'Hotels & Cars', icon: Wand2 },
   { href: '/manage-bookings', label: 'Manage Bookings', icon: BookOpenCheck },
   { href: '/destination-guides', label: 'Destination Guides', icon: Globe },
+  { href: '/menu', label: 'Menu', icon: Menu },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 

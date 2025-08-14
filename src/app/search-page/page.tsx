@@ -15,19 +15,18 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, User, Globe, IndianRupee, CreditCard, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const guides = [
   { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1673807095861-04b24a39b0db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqYWlwdXIlMjBwYWxhY2V8ZW58MHx8fHwxNzU1MDU4Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
-  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1698574996391-73f103113f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxVdHJha2hhbmQlMjB8ZW58MHx8fHwxNzU1MDU4NDM4fDA&ixlib-rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
+  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1698574996391-73f103113f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxVdHJha2hhbmQlMjB8ZW58MHx8fHwxNzU1MDU4NDM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
   { name: 'Goa, India', description: 'Famous for its beaches, nightlife, and Portuguese-influenced architecture.', image: 'https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxHb2F8ZW58MHx8fHwxNzU1MDU2MzAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'goa beach', price: '30,000' },
   { name: 'Kerala, India', description: "Known as 'God's Own Country', famous for its backwaters, lush greenery, and serene beaches.", image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZXJhbGElMjBiYWNrd2F0ZXJzfGVufDB8fHx8MTc1NTExODc0MXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'kerala backwaters', price: '35,000' },
   { name: 'Jaisalmer, Rajasthan', description: 'The Golden City, known for its massive fort and camel safaris in the Thar Desert.', image: 'https://images.unsplash.com/photo-1713349881676-594b95a5742b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8SmFpc2FsbWVyJTIwfGVufDB8fHx8MTc1NTA2MDQ5NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaisalmer fort', price: '28,000' },
@@ -53,7 +52,6 @@ const rajasthanStays = [
 
 
 export default function SearchCardPage() {
-  const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
   const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
@@ -70,64 +68,11 @@ export default function SearchCardPage() {
     <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">
       <Card className="w-full max-w-4xl shadow-2xl">
         <CardContent className="p-4 md:p-6">
-          <Tabs defaultValue="trip" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3">
-              <TabsTrigger value="trip"><Plane className="mr-2" /> Trip</TabsTrigger>
+          <Tabs defaultValue="hotel" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
               <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
             </TabsList>
-            <TabsContent value="trip" className="pt-4">
-              <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                <div className="space-y-2 lg:col-span-2">
-                  <Label htmlFor="destination">Destination</Label>
-                  <Input id="destination" placeholder="e.g., Paris, France" />
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="trip-dates">Dates</Label>
-                   <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="trip-dates"
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !tripDates.from && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {tripDates.from ? (
-                          tripDates.to ? (
-                            <>
-                              {format(tripDates.from, "LLL dd, y")} -{" "}
-                              {format(tripDates.to, "LLL dd, y")}
-                            </>
-                          ) : (
-                            format(tripDates.from, "LLL dd, y")
-                          )
-                        ) : (
-                          <span>Pick dates</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={tripDates.from}
-                        selected={tripDates}
-                        onSelect={(range) => setTripDates({from: range?.from, to: range?.to})}
-                        numberOfMonths={2}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="interests">Activities / Interests</Label>
-                  <Input id="interests" placeholder="e.g., Museums, Hiking" />
-                </div>
-                <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search</Button>
-              </form>
-            </TabsContent>
              <TabsContent value="hotel" className="pt-4">
               <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-6">
                 <div className="space-y-2 lg:col-span-2">
@@ -312,5 +257,3 @@ export default function SearchCardPage() {
     </div>
   );
 }
-
-    
