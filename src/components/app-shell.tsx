@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from 'react';
@@ -38,7 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   // Don't show nav on the root auth page
-  if (pathname === '/auth') {
+  if (pathname === '/') {
     return <main className="p-4 md:p-6">{children}</main>;
   }
 
@@ -47,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-40">
         <div className="flex items-center gap-2">
             <Link
-                href="/"
+                href="/search"
                 className="flex items-center gap-2 text-lg font-semibold md:text-base"
             >
                 <Briefcase className="h-6 w-6 text-primary" />
@@ -77,10 +78,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-sm">
         <nav className="grid h-16 grid-cols-5 items-center justify-items-center gap-4 px-4 text-sm font-medium">
           <Link
-            href="/"
+            href="/search"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/' && 'text-primary'
+              pathname === '/search' && 'text-primary'
             )}
           >
             <Home className="h-5 w-5" />
