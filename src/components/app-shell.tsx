@@ -20,6 +20,7 @@ import {
   Wallet,
   Settings,
   Package,
+  Hotel,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
@@ -86,14 +87,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="text-xs">Home</span>
           </Link>
            <Link
-            href="/itinerary-builder"
+            href="/search-page"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/itinerary-builder' && 'text-primary'
+              pathname === '/search-page' && 'text-primary'
             )}
           >
-            <Wand2 className="h-5 w-5" />
-            <span className="text-xs">Itinerary</span>
+            <Hotel className="h-5 w-5" />
+            <span className="text-xs">Hotel</span>
           </Link>
           <Link
             href="/manage-bookings"
