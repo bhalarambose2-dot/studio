@@ -18,6 +18,7 @@ import {
   HandCoins,
   FileText,
   Wallet,
+  Settings,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
@@ -118,7 +119,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 className={cn(
                   'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/wallet') && 'text-primary'
+                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings') && 'text-primary'
                 )}
               >
                 <Menu className="h-5 w-5" />
@@ -145,6 +146,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/terms" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
                     <FileText className="h-6 w-6 text-primary" />
                     <span className="text-sm font-medium">Terms</span>
+                </Link>
+                 <Link href="/settings" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <Settings className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Settings</span>
                 </Link>
               </div>
             </SheetContent>
