@@ -106,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <LayoutGrid className="h-5 w-5" />
-            <span className="text-xs">Services</span>
+            <span className="text-xs">Explore</span>
           </Link>
           <Link
             href="/destination-guides"
