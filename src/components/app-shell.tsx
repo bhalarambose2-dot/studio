@@ -114,46 +114,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <User className="h-5 w-5" />
             <span className="text-xs">Profile</span>
           </Link>
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <button
-                className={cn(
-                  'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                  (pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings') && 'text-primary'
-                )}
-              >
-                <Menu className="h-5 w-5" />
-                <span className="text-xs">More</span>
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="rounded-r-lg">
-              <SheetHeader>
-                <SheetTitle>More Options</SheetTitle>
-              </SheetHeader>
-              <div className="grid grid-cols-2 gap-4 py-4">
-                <Link href="/language" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <Languages className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Language</span>
-                </Link>
-                 <Link href="/gift-card" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <Gift className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Gift Card</span>
-                </Link>
-                 <Link href="/refer-and-earn" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <HandCoins className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Refer & Earn</span>
-                </Link>
-                <Link href="/terms" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <FileText className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Terms</span>
-                </Link>
-                 <Link href="/settings" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
-                    <Settings className="h-6 w-6 text-primary" />
-                    <span className="text-sm font-medium">Settings</span>
-                </Link>
-              </div>
-            </SheetContent>
-          </Sheet>
+          <Link
+            href="/menu"
+            className={cn(
+              'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
+              (pathname === '/menu' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings') && 'text-primary'
+            )}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="text-xs">More</span>
+          </Link>
         </nav>
       </footer>
     </div>
