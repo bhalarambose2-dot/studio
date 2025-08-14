@@ -12,8 +12,6 @@ import {
   User,
   Briefcase,
   Phone,
-  Hotel,
-  Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -79,28 +77,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Wand2 className="h-5 w-5" />
             <span className="text-xs">Itinerary</span>
           </Link>
-          <div className="flex items-center gap-4">
-             <Link
+            <Link
                 href="/search-page"
                 className={cn(
                 'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
                 pathname === '/search-page' && 'text-primary'
                 )}
             >
-                <Hotel className="h-5 w-5" />
-                <span className="text-xs">Hotel</span>
+                <Search className="h-5 w-5" />
+                <span className="text-xs">Search</span>
             </Link>
-            <Link
-                href="/destination-guides"
-                className={cn(
-                'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-                pathname === '/destination-guides' && 'text-primary'
-                )}
-            >
-                <Utensils className="h-5 w-5" />
-                <span className="text-xs">Restaurant</span>
-            </Link>
-          </div>
           <Link
             href="/manage-bookings"
             className={cn(
