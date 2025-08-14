@@ -12,19 +12,26 @@ import {
   User,
   Briefcase,
   Phone,
+  Menu,
+  Languages,
+  Gift,
+  HandCoins,
+  FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
+import { Button } from './ui/button';
 
 const navItems = [
-    { href: '/search', label: 'Search', icon: Search },
-    { href: '/itinerary-builder', label: 'Itinerary', icon: Wand2 },
-    { href: '/manage-bookings', label: 'My Trips', icon: BookOpenCheck },
-    { href: '/profile', label: 'Profile', icon: User },
+  { href: '/search', label: 'Search', icon: Search },
+  { href: '/itinerary-builder', label: 'Itinerary', icon: Wand2 },
+  { href: '/manage-bookings', label: 'My Trips', icon: BookOpenCheck },
+  { href: '/profile', label: 'Profile', icon: User },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   // Don't show nav on the root auth page
   if (pathname === '/') {
@@ -97,16 +104,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <BookOpenCheck className="h-5 w-5" />
             <span className="text-xs">My Trips</span>
           </Link>
-          <Link
-            href="/profile"
-            className={cn(
-              'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              pathname === '/profile' && 'text-primary'
-            )}
-          >
-            <User className="h-5 w-5" />
-            <span className="text-xs">Profile</span>
-          </Link>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <button
+                className={cn(
+                  'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
+                  (pathname === '/profile' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms') && 'text-primary'
+                )}
+              >
+                <Menu className="h-5 w-5" />
+                <span className="text-xs">More</span>
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="rounded-t-lg">
+              <SheetHeader>
+                <SheetTitle>More Options</SheetTitle>
+              </SheetHeader>
+              <div className="grid grid-cols-2 gap-4 py-4">
+                <Link href="/profile" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <User className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Profile</span>
+                </Link>
+                <Link href="/language" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <Languages className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Language</span>
+                </Link>
+                 <Link href="/gift-card" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <Gift className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Gift Card</span>
+                </Link>
+                 <Link href="/refer-and-earn" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <HandCoins className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Refer & Earn</span>
+                </Link>
+                <Link href="/terms" onClick={() => setIsSheetOpen(false)} className="flex flex-col items-center gap-2 rounded-lg p-4 hover:bg-muted">
+                    <FileText className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Terms</span>
+                </Link>
+              </div>
+            </SheetContent>
+          </Sheet>
         </nav>
       </footer>
     </div>
