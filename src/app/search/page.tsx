@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -49,7 +49,7 @@ const rajasthanStays = [
 ];
 
 const services = [
-    { name: 'Flights', icon: Plane, href: '/trip' },
+    { name: 'Flights', icon: Plane, href: '#' },
     { name: 'Hotels', icon: Hotel, href: '/search-page' },
     { name: 'Train & Bus', icon: Train, href: '#' },
     { name: 'Holiday Packages', icon: Package, href: '/destination-guides' },
@@ -71,13 +71,12 @@ const ServiceCard = ({ icon: Icon, name, href }: { icon: React.ElementType, name
 );
 
 
-export default function HomePage() {
+export default function SearchPage() {
   const [selectedGuide, setSelectedGuide] = useState<typeof guides[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
-  const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
-  const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
-  const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
+  const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+
 
   const handleBookNow = (guide: typeof guides[0]) => {
     setSelectedGuide(guide);
@@ -90,212 +89,66 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
-      <section className="relative -mx-4 -mt-8 md:-mx-8 md:-mt-8">
-        <div className="relative h-[560px] w-full overflow-hidden">
-           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
-           <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"></div>
-           <Image
-              src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWolMjBtYWhhbHxlbnwwfHx8fDE3MTY0OTQzMTB8MA&ixlib=rb-4.0.3&q=80&w=1080"
-              alt="Taj Mahal"
-              data-ai-hint="taj mahal"
-              fill
-              className="object-cover"
-              priority
-            />
-        </div>
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-4">
-          <div className="max-w-4xl mx-auto flex flex-col items-center">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-primary-foreground drop-shadow-md">
-              Your Next Adventure Starts Here
-            </h1>
-            <p className="mt-4 max-w-2xl text-lg md:text-xl text-primary-foreground/90 drop-shadow-sm">
-              Search and book flights & hotels with ease. Let All India Trip handle the planning.
-            </p>
-             <Button size="lg" className="mt-8" onClick={handleSearchClick}>
-                <Search className="mr-2" />
-                Start Searching
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      <section className="container mx-auto -mt-24 relative z-30">
-        <Card className="w-full max-w-4xl mx-auto shadow-lg">
+      <section className="container mx-auto -mt-8 relative z-30">
+        <Card className="w-full max-w-4xl mx-auto shadow-2xl">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <Plane className="text-primary"/>
+                    Plan Your Trip
+                </CardTitle>
+                <CardDescription>Find the best flights and plan your next adventure.</CardDescription>
+            </CardHeader>
             <CardContent className="p-4 md:p-6">
-            <Tabs defaultValue="hotel" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="hotel"><Hotel className="mr-2" /> Hotel</TabsTrigger>
-                <TabsTrigger value="car"><Car className="mr-2" /> Car</TabsTrigger>
-                </TabsList>
-                <TabsContent value="hotel" className="pt-4">
-                <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-6">
-                    <div className="space-y-2 lg:col-span-2">
-                    <Label htmlFor="hotel-location">Location</Label>
-                    <Input id="hotel-location" placeholder="e.g., Jaipur, India" />
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="hotel-dates">Dates</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            id="hotel-dates"
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !hotelDates.from && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {hotelDates.from ? (
-                            hotelDates.to ? (
-                                <>
-                                {format(hotelDates.from, "LLL dd, y")} -{" "}
-                                {format(hotelDates.to, "LLL dd, y")}
-                                </>
-                            ) : (
-                                format(hotelDates.from, "LLL dd, y")
-                            )
-                            ) : (
-                            <span>Pick check-in/out dates</span>
-                            )}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            initialFocus
-                            mode="range"
-                            defaultMonth={hotelDates.from}
-                            selected={hotelDates}
-                            onSelect={(range) => setHotelDates({from: range?.from, to: range?.to})}
-                            numberOfMonths={2}
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="guests">Guests</Label>
-                    <Select defaultValue="2">
-                        <SelectTrigger id="guests">
-                        <SelectValue placeholder="Select guests" />
-                        </SelectTrigger>
-                        <SelectContent>
-                        <SelectItem value="1">1 Guest</SelectItem>
-                        <SelectItem value="2">2 Guests</SelectItem>
-                        <SelectItem value="3">3 Guests</SelectItem>
-                        <SelectItem value="4">4 Guests</SelectItem>
-                        <SelectItem value="5+">5+ Guests</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
-                    <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search Hotels</Button>
-                </form>
-                <h3 className="text-xl font-semibold text-center mb-4">Major Hotels & Restaurants in Rajasthan</h3>
-                    <ScrollArea className="h-[400px] w-full">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
-                            {rajasthanStays.map((stay) => (
-                            <Card key={stay.name} className="overflow-hidden group">
-                                <div className="relative h-40 w-full">
-                                <Image
-                                    src={stay.image}
-                                    alt={`Image of ${stay.name}`}
-                                    data-ai-hint={stay.hint}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
-                                </div>
-                                <div className="p-4">
-                                <h4 className="font-semibold text-lg">{stay.name}</h4>
-                                <p className="text-sm text-muted-foreground flex items-center mt-1">
-                                    {stay.type === 'Hotel' ? <Hotel className="w-4 h-4 mr-2" /> : <Utensils className="w-4 h-4 mr-2" />}
-                                    {stay.location}
-                                </p>
-                                <p className="text-sm text-muted-foreground mt-2">{stay.description}</p>
-                                </div>
-                            </Card>
-                            ))}
-                        </div>
-                    </ScrollArea>
-                </TabsContent>
-                <TabsContent value="car" className="pt-4">
-                <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <div className="space-y-2">
-                    <Label htmlFor="pickup-location">Pick-up Location</Label>
-                    <Input id="pickup-location" placeholder="e.g., Delhi Airport" />
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="dropoff-location">Drop-off Location</Label>
-                    <Input id="dropoff-location" placeholder="e.g., Jaipur City" />
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="pickup-date">Pick-up Date</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            id="pickup-date"
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !carPickUpDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {carPickUpDate ? format(carPickUpDate, "LLL dd, y") : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={carPickUpDate}
-                            onSelect={setCarPickUpDate}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    </div>
-                    <div className="space-y-2">
-                    <Label htmlFor="dropoff-date">Drop-off Date</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            id="dropoff-date"
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !carDropOffDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {carDropOffDate ? format(carDropOffDate, "LLL dd, y") : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={carDropOffDate}
-                            onSelect={setCarDropOffDate}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    </div>
-                    <div className="space-y-2 lg:col-span-2">
-                    <Label htmlFor="car-type">Car Type</Label>
-                    <Select defaultValue="sedan">
-                        <SelectTrigger id="car-type">
-                        <SelectValue placeholder="Select car type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                        <SelectItem value="sedan">Sedan</SelectItem>
-                        <SelectItem value="suv">SUV</SelectItem>
-                        <SelectItem value="hatchback">Hatchback</SelectItem>
-                        <SelectItem value="luxury">Luxury</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
-                    <Button type="submit" className="w-full h-10 lg:col-span-2"><Search className="mr-2" /> Search Cars</Button>
-                </form>
-                </TabsContent>
-            </Tabs>
+              <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                <div className="space-y-2 lg:col-span-2">
+                  <Label htmlFor="destination">Destination</Label>
+                  <Input id="destination" placeholder="e.g., Paris, France" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="trip-dates">Dates</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="trip-dates"
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !tripDates.from && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {tripDates.from ? (
+                          tripDates.to ? (
+                            <>
+                              {format(tripDates.from, "LLL dd, y")} -{" "}
+                              {format(tripDates.to, "LLL dd, y")}
+                            </>
+                          ) : (
+                            format(tripDates.from, "LLL dd, y")
+                          )
+                        ) : (
+                          <span>Pick dates</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={tripDates.from}
+                        selected={tripDates}
+                        onSelect={(range) => setTripDates({ from: range?.from, to: range?.to })}
+                        numberOfMonths={2}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="interests">Activities / Interests</Label>
+                  <Input id="interests" placeholder="e.g., Museums, Hiking" />
+                </div>
+                <Button type="submit" className="w-full h-10 lg:col-span-4"><Search className="mr-2" /> Search</Button>
+              </form>
             </CardContent>
         </Card>
       </section>
