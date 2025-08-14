@@ -42,20 +42,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-40">
-        <Link
-            href="/search"
-            className="flex items-center gap-2 text-lg font-semibold md:text-base"
-          >
-            <Briefcase className="h-6 w-6 text-primary" />
-            <span className='font-bold'>BR Trip</span>
-        </Link>
-        <div className="ml-auto flex items-center gap-2">
-            <Link href="/wallet">
+        <div className="flex items-center gap-2">
+            <Link
+                href="/search"
+                className="flex items-center gap-2 text-lg font-semibold md:text-base"
+            >
+                <Briefcase className="h-6 w-6 text-primary" />
+                <span className='font-bold'>BR Trip</span>
+            </Link>
+             <Link href="/wallet">
               <Button variant="ghost" size="icon">
                 <Wallet className="h-6 w-6 text-primary" />
                 <span className="sr-only">Wallet</span>
               </Button>
             </Link>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
             <a href="tel:8769930595" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary">
                 <Phone className="h-4 w-4" />
                 <span>8769930595</span>
