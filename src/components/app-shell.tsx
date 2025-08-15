@@ -122,7 +122,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href="/menu"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-primary',
-              (pathname === '/menu' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings') && 'text-primary'
+              (pathname === '/menu' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings' || pathname === '/partnership') && 'text-primary'
             )}
           >
             <Menu className="h-5 w-5" />

@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee } from "lucide-react";
+import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -87,6 +87,23 @@ export default function MenuPage() {
                 </div>
             </div>
            </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>For Business</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link href="/partnership">
+            <div className="flex items-center justify-between p-4 rounded-lg hover:bg-muted transition-colors">
+              <div className="flex items-center gap-4">
+                <Building2 className="h-6 w-6 text-primary"/>
+                <p>Partner with Us</p>
+              </div>
+              <ChevronRight />
+            </div>
+          </Link>
         </CardContent>
       </Card>
       
