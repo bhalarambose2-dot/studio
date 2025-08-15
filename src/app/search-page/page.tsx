@@ -40,6 +40,7 @@ export default function SearchCardPage() {
   const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
   const [selectedStay, setSelectedStay] = useState<typeof rajasthanStays[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [trainDate, setTrainDate] = useState<Date | undefined>();
 
   const handleBookNow = (stay: typeof rajasthanStays[0]) => {
     setSelectedStay(stay);
@@ -51,9 +52,10 @@ export default function SearchCardPage() {
     <div className="flex flex-col gap-8">
       <Card>
         <Tabs defaultValue="hotel">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="hotel"><Hotel className="mr-2"/>Hotel</TabsTrigger>
             <TabsTrigger value="car"><Car className="mr-2"/>Car</TabsTrigger>
+            <TabsTrigger value="train"><Train className="mr-2"/>Train & Bus</TabsTrigger>
           </TabsList>
           <TabsContent value="hotel">
             <CardContent className="p-4 md:p-6 space-y-4">
@@ -178,6 +180,43 @@ export default function SearchCardPage() {
               </div>
                <div>
                 <Button className="w-full"><Search className="mr-2" /> Search Cars</Button>
+              </div>
+            </CardContent>
+          </TabsContent>
+          <TabsContent value="train">
+            <CardContent className="p-4 md:p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="from-location">From</Label>
+                  <Input id="from-location" placeholder="e.g., Jaipur" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="to-location">To</Label>
+                  <Input id="to-location" placeholder="e.g., Jodhpur" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="train-date">Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !trainDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {trainDate ? format(trainDate, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar mode="single" selected={trainDate} onSelect={setTrainDate} initialFocus />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div>
+                <Button className="w-full"><Search className="mr-2" /> Search Trains & Buses</Button>
               </div>
             </CardContent>
           </TabsContent>
