@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, Package, Home, Train, HandCoins, Gift, Shield, CreditCard, IndianRupee, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, Package, Home, Train, HandCoins, Gift, Shield, CreditCard, IndianRupee, MapPin, Star, Wifi, ParkingCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -25,24 +25,128 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 
 
-const rajasthanStays = [
-    { name: 'Rambagh Palace', location: 'Jaipur', type: 'Hotel', description: 'A former royal palace with ornate rooms, sprawling gardens, and a luxe spa.', image: 'https://images.unsplash.com/photo-1596386461350-326ccb383e9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxSYW1iYWdoJTIwUGFsYWNlfGVufDB8fHx8MTc1NjA5NzE5OXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'Rambagh Palace Jaipur', price: '45,000' },
-    { name: 'Umaid Bhawan Palace', location: 'Jodhpur', type: 'Hotel', description: 'A grand, art deco palace offering opulent suites, a spa, and pools.', image: 'https://images.unsplash.com/photo-1618821434313-937a4a25de8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVbWFpZCUyMEJoYXdhbiUyMFBhbGFjZXxlbnwwfHx8fDE3NTYwOTcyODV8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'Umaid Bhawan Palace Jodhpur', price: '55,000' },
-    { name: 'The Oberoi Udaivilas', location: 'Udaipur', type: 'Hotel', description: 'A luxurious hotel with grand architecture, intricate domes, and serene pools.', image: 'https://images.unsplash.com/photo-1620177391308-4182dc7a77b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxUaGUlMjBPYmVyb2klMjBVZGFpdmlsYXN8ZW58MHx8fHwxNzU2MDk3MzM5fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'The Oberoi Udaivilas', price: '65,000' },
-    { name: 'Suvarna Mahal', location: 'Jaipur', type: 'Restaurant', description: 'Located in Rambagh Palace, this restaurant offers authentic Indian cuisine.', image: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'restaurant interior' },
-    { name: '1135 AD', location: 'Amer, Jaipur', type: 'Restaurant', description: 'A fine-dining restaurant with regal, candlelit interiors, and live music.', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'luxury restaurant' },
-    { name: 'Cinnamon', location: 'Jaipur', type: 'Restaurant', description: 'An elegant restaurant in a historic mansion, serving creative Indian cuisine.', image: 'https://images.unsplash.com/photo-1578422473879-05244197793d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxyZXN0YXVyYW50JTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU2MDk3NDAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'elegant dining' },
+const hotels = [
+    {
+        "name": "Hotel Lake View",
+        "location": "Udaipur",
+        "price": "1200",
+        "rating": 4.3,
+        "facilities": ["Wi-Fi", "Breakfast", "Lake View Rooms"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "udaipur hotel",
+        "rooms_available": 10,
+        "description": "Enjoy stunning views of the lake from our comfortable rooms."
+    },
+    {
+        "name": "Desert Safari Camp",
+        "location": "Jaisalmer",
+        "price": "1800",
+        "rating": 4.5,
+        "facilities": ["Camel Safari", "Cultural Show", "Dinner"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "jaisalmer desert",
+        "rooms_available": 8,
+        "description": "Experience the magic of the desert with our safari camps."
+    },
+    {
+        "name": "Heritage Haveli",
+        "location": "Jaipur",
+        "price": "2500",
+        "rating": 4.4,
+        "facilities": ["Royal Rooms", "Restaurant", "Free Parking"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "jaipur haveli",
+        "rooms_available": 6,
+        "description": "Live like royalty in this beautifully restored heritage haveli."
+    },
+    {
+        "name": "Blue City Guest House",
+        "location": "Jodhpur",
+        "price": "900",
+        "rating": 4,
+        "facilities": ["Budget Stay", "Rooftop View", "Wi-Fi"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "jodhpur guesthouse",
+        "rooms_available": 12,
+        "description": "Affordable comfort in the heart of the Blue City."
+    },
+    {
+        "name": "Mount Abu Hill Resort",
+        "location": "Mount Abu",
+        "price": "2000",
+        "rating": 4.2,
+        "facilities": ["Hill View", "Garden", "Restaurant"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "mount abu resort",
+        "rooms_available": 5,
+        "description": "Relax and rejuvenate amidst the serene hills of Mount Abu."
+    },
+    {
+        "name": "Kedarnath Guest House",
+        "location": "Kedarnath",
+        "price": "1500",
+        "rating": 4.1,
+        "facilities": ["Basic Stay", "Hot Water", "Near Temple"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "kedarnath guesthouse",
+        "rooms_available": 7,
+        "description": "Simple and clean accommodation close to the holy temple."
+    },
+    {
+        "name": "Vaishno Devi Lodge",
+        "location": "Katra",
+        "price": "1000",
+        "rating": 3.9,
+        "facilities": ["Budget Rooms", "Restaurant", "Taxi Service"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "katra lodge",
+        "rooms_available": 9,
+        "description": "Conveniently located for pilgrims visiting Vaishno Devi."
+    },
+    {
+        "name": "Mumbai Beach Hotel",
+        "location": "Mumbai",
+        "price": "3500",
+        "rating": 4.6,
+        "facilities": ["Sea View", "Swimming Pool", "Restaurant"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "mumbai hotel",
+        "rooms_available": 15,
+        "description": "Luxurious stay with breathtaking views of the Arabian Sea."
+    },
+    {
+        "name": "Delhi City Inn",
+        "location": "Delhi",
+        "price": "2200",
+        "rating": 4.2,
+        "facilities": ["AC Rooms", "Free Wi-Fi", "Restaurant"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "delhi inn",
+        "rooms_available": 11,
+        "description": "A comfortable and modern hotel in the bustling capital city."
+    },
+    {
+        "name": "Bangalore Tech Park Hotel",
+        "location": "Bangalore",
+        "price": "2800",
+        "rating": 4.4,
+        "facilities": ["Business Rooms", "Gym", "Wi-Fi"],
+        "image": "https://placehold.co/600x400.png",
+        "hint": "bangalore hotel",
+        "rooms_available": 10,
+        "description": "Ideal for business travelers with state-of-the-art facilities."
+    }
 ];
 
 export default function SearchCardPage() {
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
   const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
-  const [selectedStay, setSelectedStay] = useState<typeof rajasthanStays[0] | null>(null);
+  const [selectedStay, setSelectedStay] = useState<typeof hotels[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [trainDate, setTrainDate] = useState<Date | undefined>();
 
-  const handleBookNow = (stay: typeof rajasthanStays[0]) => {
+  const handleBookNow = (stay: typeof hotels[0]) => {
     setSelectedStay(stay);
     setIsDialogOpen(true);
   }
@@ -224,32 +328,41 @@ export default function SearchCardPage() {
       </Card>
       
       <section>
-        <h2 className="text-2xl font-bold mb-4">Major Hotels & Restaurants in Rajasthan</h2>
+        <h2 className="text-2xl font-bold mb-4">Major Hotels in India</h2>
         <ScrollArea className="w-full whitespace-nowrap rounded-lg">
             <div className="flex w-max space-x-4 pb-4">
-                {rajasthanStays.map((stay) => (
-                    <Card key={stay.name} className="w-[300px] overflow-hidden group">
+                {hotels.map((hotel) => (
+                    <Card key={hotel.name} className="w-[300px] overflow-hidden group">
                         <div className="relative h-40">
                             <Image
-                                src={stay.image}
-                                alt={`Image of ${stay.name}`}
-                                data-ai-hint={stay.hint}
+                                src={hotel.image}
+                                alt={`Image of ${hotel.name}`}
+                                data-ai-hint={hotel.hint}
                                 fill
                                 className="object-cover"
                             />
                         </div>
                         <CardContent className="p-4">
-                            <h3 className="font-semibold text-lg">{stay.name}</h3>
-                            <p className="text-sm text-muted-foreground">{stay.location}</p>
-                            <p className="text-sm mt-2 h-10 overflow-hidden">{stay.description}</p>
-                            {stay.price && (
+                            <h3 className="font-semibold text-lg">{hotel.name}</h3>
+                            <p className="text-sm text-muted-foreground">{hotel.location}</p>
+                            <div className="flex items-center text-sm mt-1">
+                                <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
+                                <span className="font-semibold">{hotel.rating}</span>
+                                <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
+                            </div>
+                            <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
+                                {hotel.facilities.map(f => (
+                                    <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
+                                ))}
+                            </div>
+                            {hotel.price && (
                               <div className="flex items-center text-lg font-bold text-accent mt-4">
                                 <IndianRupee className="w-5 h-5 mr-1" />
-                                <span>{stay.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
+                                <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
                               </div>
                             )}
                              <div className="mt-4 flex flex-col gap-2">
-                                <Button className="w-full" onClick={() => handleBookNow(stay)}>
+                                <Button className="w-full" onClick={() => handleBookNow(hotel)}>
                                     <CreditCard className="mr-2 h-4 w-4" />
                                     Book Now
                                 </Button>
