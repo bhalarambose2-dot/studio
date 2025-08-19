@@ -90,7 +90,6 @@ export default function SearchPage() {
   return (
     <div className="flex flex-col gap-8 md:gap-12">
       <section className="container mx-auto">
-        <h2 className="text-3xl font-bold text-center">All Guides</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
           {guides.map((guide) => (
             <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col">
