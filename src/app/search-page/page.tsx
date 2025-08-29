@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -144,11 +144,25 @@ export default function SearchCardPage() {
   const [selectedStay, setSelectedStay] = useState<typeof hotels[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [trainDate, setTrainDate] = useState<Date | undefined>();
+  const [hotelLocation, setHotelLocation] = useState('');
+  const [displayedHotels, setDisplayedHotels] = useState(hotels);
+
 
   const handleBookNow = (stay: typeof hotels[0]) => {
     setSelectedStay(stay);
     setIsDialogOpen(true);
   }
+
+  const handleHotelSearch = () => {
+    if (!hotelLocation) {
+        setDisplayedHotels(hotels);
+        return;
+    }
+    const filteredHotels = hotels.filter(hotel => 
+        hotel.location.toLowerCase().includes(hotelLocation.toLowerCase())
+    );
+    setDisplayedHotels(filteredHotels);
+  };
 
 
   return (
@@ -165,7 +179,12 @@ export default function SearchCardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="hotel-location">Location</Label>
-                  <Input id="hotel-location" placeholder="e.g., Jaipur" />
+                  <Input 
+                    id="hotel-location" 
+                    placeholder="e.g., Jaipur" 
+                    value={hotelLocation}
+                    onChange={(e) => setHotelLocation(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="hotel-dates">Dates</Label>
@@ -223,7 +242,7 @@ export default function SearchCardPage() {
                 </Select>
               </div>
               <div>
-                <Button className="w-full"><Search className="mr-2" /> Search Hotels</Button>
+                <Button className="w-full" onClick={handleHotelSearch}><Search className="mr-2" /> Search Hotels</Button>
               </div>
             </CardContent>
           </TabsContent>
@@ -330,45 +349,49 @@ export default function SearchCardPage() {
         <h2 className="text-2xl font-bold mb-4">Major Hotels in India</h2>
         <ScrollArea className="w-full whitespace-nowrap rounded-lg">
             <div className="flex w-max space-x-4 pb-4">
-                {hotels.map((hotel) => (
-                    <Card key={hotel.name} className="w-[300px] overflow-hidden group">
-                        <div className="relative h-40">
-                            <Image
-                                src={hotel.image}
-                                alt={`Image of ${hotel.name}`}
-                                data-ai-hint={hotel.hint}
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <CardContent className="p-4">
-                            <h3 className="font-semibold text-lg">{hotel.name}</h3>
-                            <p className="text-sm text-muted-foreground">{hotel.location}</p>
-                            <div className="flex items-center text-sm mt-1">
-                                <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
-                                <span className="font-semibold">{hotel.rating}</span>
-                                <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
+                {displayedHotels.length > 0 ? (
+                    displayedHotels.map((hotel) => (
+                        <Card key={hotel.name} className="w-[300px] overflow-hidden group">
+                            <div className="relative h-40">
+                                <Image
+                                    src={hotel.image}
+                                    alt={`Image of ${hotel.name}`}
+                                    data-ai-hint={hotel.hint}
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
-                            <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
-                                {hotel.facilities.map(f => (
-                                    <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
-                                ))}
-                            </div>
-                            {hotel.price && (
-                              <div className="flex items-center text-lg font-bold text-accent mt-4">
-                                <IndianRupee className="w-5 h-5 mr-1" />
-                                <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
-                              </div>
-                            )}
-                             <div className="mt-4 flex flex-col gap-2">
-                                <Button className="w-full" onClick={() => handleBookNow(hotel)}>
-                                    <CreditCard className="mr-2 h-4 w-4" />
-                                    Book Now
-                                </Button>
-                             </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            <CardContent className="p-4">
+                                <h3 className="font-semibold text-lg">{hotel.name}</h3>
+                                <p className="text-sm text-muted-foreground">{hotel.location}</p>
+                                <div className="flex items-center text-sm mt-1">
+                                    <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
+                                    <span className="font-semibold">{hotel.rating}</span>
+                                    <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
+                                    {hotel.facilities.map(f => (
+                                        <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
+                                    ))}
+                                </div>
+                                {hotel.price && (
+                                <div className="flex items-center text-lg font-bold text-accent mt-4">
+                                    <IndianRupee className="w-5 h-5 mr-1" />
+                                    <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
+                                </div>
+                                )}
+                                <div className="mt-4 flex flex-col gap-2">
+                                    <Button className="w-full" onClick={() => handleBookNow(hotel)}>
+                                        <CreditCard className="mr-2 h-4 w-4" />
+                                        Book Now
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    <p className="text-muted-foreground">No hotels found for the selected location.</p>
+                )}
             </div>
             <ScrollBar orientation="horizontal" />
         </ScrollArea>
