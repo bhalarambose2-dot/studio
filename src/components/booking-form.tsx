@@ -46,13 +46,18 @@ export function BookingForm({ tripName }: BookingFormProps) {
   const onSubmit = async (values: BookingFormValues) => {
     setIsLoading(true);
     const bookingDetails = { ...values, tripName };
-    console.log('Booking:', bookingDetails);
+    
+    // Simulate sending booking details to the specified number
+    console.log(`SEND BOOKING DETAILS TO 8306930595:`, JSON.stringify(bookingDetails, null, 2));
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
     toast({
         title: 'Booking Confirmed!',
         description: `Your trip to ${tripName} has been booked for ${values.travelers} traveler(s).`,
     });
+    
     setIsLoading(false);
     // Here you would typically handle form submission, e.g., call an API
   };
@@ -93,7 +98,7 @@ export function BookingForm({ tripName }: BookingFormProps) {
             <FormItem>
               <FormLabel>Phone Number (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="+1 234 567 890" {...field} />
+                <Input placeholder="+91 12345 67890" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -126,7 +131,7 @@ export function BookingForm({ tripName }: BookingFormProps) {
               <div className="space-y-1 leading-none">
                 <FormLabel>
                   I agree to the{' '}
-                  <Link href="#" className="text-primary hover:underline">
+                  <Link href="/terms" className="text-primary hover:underline">
                     Terms and Conditions
                   </Link>
                   .
