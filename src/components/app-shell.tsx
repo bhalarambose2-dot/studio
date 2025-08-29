@@ -63,10 +63,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
         </div>
         <div className="ml-auto flex items-center gap-2">
-            <a href="tel:8769930595" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary">
-                <Phone className="h-4 w-4" />
-                <span>8769930595</span>
-            </a>
         </div>
       </header>
       
