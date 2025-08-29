@@ -15,14 +15,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Utensils, Package, Home, Train, HandCoins, Gift, Shield, CreditCard, IndianRupee, MapPin, Star, Wifi, ParkingCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Train, CreditCard, IndianRupee, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import Link from 'next/link';
 
 
 const hotels = [
