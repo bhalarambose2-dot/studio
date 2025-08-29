@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogIn, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -77,15 +78,23 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
-      <Card className="w-full max-w-md">
+    <div className="relative flex items-center justify-center min-h-screen w-full">
+       <Image
+          src="https://images.unsplash.com/photo-1488866022504-f2584929ca5f?q=80&w=2062&auto=format&fit=crop"
+          alt="Starry night sky"
+          data-ai-hint="starry night"
+          fill
+          className="object-cover -z-10"
+        />
+        <div className="absolute inset-0 bg-black/50 -z-10" />
+      <Card className="w-full max-w-md bg-transparent border-white/20 text-white">
         <CardHeader className="text-center">
           <CardTitle>Welcome to BR-Trip</CardTitle>
-          <CardDescription>Sign in or create an account to plan your next adventure</CardDescription>
+          <CardDescription className="text-white/80">Sign in or create an account to plan your next adventure</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 text-white/70">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
@@ -99,7 +108,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} />
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -112,7 +121,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -135,7 +144,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input placeholder="John Doe" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -148,7 +157,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} />
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -161,7 +170,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -174,7 +183,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

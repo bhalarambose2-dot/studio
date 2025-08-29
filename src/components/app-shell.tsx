@@ -41,7 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Don't show nav on the root auth page
   if (pathname === '/') {
-    return <main className="p-4 md:p-6">{children}</main>;
+    return <main>{children}</main>;
   }
 
   return (
