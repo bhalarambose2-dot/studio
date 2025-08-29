@@ -64,6 +64,7 @@ export default function PartnershipPage() {
           <CardTitle className="mt-4">Partner With Us</CardTitle>
           <CardDescription>
             Join our network of hotels and car rentals to reach more customers and grow your business.
+            Fill out the form below or call us at 8306930595.
           </CardDescription>
         </CardHeader>
         <CardContent>

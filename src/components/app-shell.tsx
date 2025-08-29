@@ -63,6 +63,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
         </div>
         <div className="ml-auto flex items-center gap-2">
+           <a href="tel:8306930595">
+              <Button variant="outline" size="sm">
+                <Phone className="mr-2 h-4 w-4" />
+                Contact Us
+              </Button>
+            </a>
         </div>
       </header>
       
