@@ -15,6 +15,9 @@ import { LogIn, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useFirebase } from '@/firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -38,6 +41,7 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const { auth, firestore } = useFirebase();
 
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -51,28 +55,52 @@ export default function AuthPage() {
 
   const handleSignIn = async (values: SignInFormValues) => {
     setIsLoading(true);
-    console.log('Sign In:', values);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    toast({
-      title: 'Signed In Successfully',
-      description: `Welcome back, ${values.email}!`,
-    });
-    setIsLoading(false);
-    router.push('/search');
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: 'Signed In Successfully',
+        description: `Welcome back!`,
+      });
+      router.push('/search');
+    } catch (error: any) {
+      console.error('Sign In Error:', error);
+      toast({
+        title: 'Sign In Failed',
+        description: error.message || 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = async (values: SignUpFormValues) => {
     setIsLoading(true);
-    console.log('Sign Up:', values);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    toast({
-      title: 'Account Created',
-      description: 'Your account has been created successfully.',
-    });
-    setIsLoading(false);
-    router.push('/search');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      
+      // Create a user profile in Firestore
+      await setDoc(doc(firestore, "users", user.uid), {
+        fullName: values.fullName,
+        email: values.email,
+      });
+
+      toast({
+        title: 'Account Created',
+        description: 'Your account has been created successfully.',
+      });
+      router.push('/search');
+    } catch (error: any) {
+      console.error('Sign Up Error:', error);
+      toast({
+        title: 'Sign Up Failed',
+        description: error.message || 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

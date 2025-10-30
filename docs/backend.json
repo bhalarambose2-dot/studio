@@ -10,37 +10,19 @@
           "type": "string",
           "description": "Unique identifier for the user entity."
         },
-        "firstName": {
+        "fullName": {
           "type": "string",
-          "description": "The first name of the user."
-        },
-        "lastName": {
-          "type": "string",
-          "description": "The last name of the user."
+          "description": "The full name of the user."
         },
         "email": {
           "type": "string",
           "description": "The email address of the user.",
           "format": "email"
-        },
-        "phone": {
-          "type": "string",
-          "description": "The phone number of the user."
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "description": "The date of birth of the user.",
-          "format": "date-time"
-        },
-        "address": {
-          "type": "string",
-          "description": "The address of the user."
         }
       },
       "required": [
         "id",
-        "firstName",
-        "lastName",
+        "fullName",
         "email"
       ]
     },
@@ -243,6 +225,20 @@
         "destinationName",
         "description"
       ]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "A user's public profile information.",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "description": "The user's full name.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fullName"
+      ]
     }
   },
   "auth": {
@@ -252,22 +248,14 @@
     ]
   },
   "firestore": {
+    "rules": "firestore.rules",
     "structure": [
       {
         "path": "/users/{userId}",
-        "definition": {
-          "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Stores user profiles. Uses path-based ownership for private user data.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            }
-          ]
-        }
+        "schema": {
+          "$ref": "#/entities/UserProfile"
+        },
+        "description": "Stores user profiles. Uses path-based ownership for private user data."
       },
       {
         "path": "/users/{userId}/flightBookings/{flightBookingId}",
