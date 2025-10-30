@@ -1,0 +1,161 @@
+/**
+ * @fileoverview Firestore Security Rules for the BR TRIP application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for user profiles, flight bookings, hotel bookings, and itineraries.
+ * Destination guides are publicly readable.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles.
+ * - /users/{userId}/flightBookings/{flightBookingId}: Stores flight bookings for a specific user.
+ * - /users/{userId}/hotelBookings/{hotelBookingId}: Stores hotel bookings for a specific user.
+ * - /users/{userId}/itineraries/{itineraryId}: Stores itineraries for a specific user.
+ * - /destinationGuides/{destinationGuideId}: Stores destination guides (publicly readable).
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed.
+ * - All user-specific data is secured via path-based ownership.
+ * - Destination guides are publicly readable but write access is restricted (TODO: Implement admin/owner control if needed).
+ *
+ * Denormalization for Authorization:
+ *  - The `userId` is present in all subcollections under `/users/{userId}`.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to user profiles.
+     * @path /users/{userId}
+     * @allow (create) Signed-in user can create their own profile if the userId matches their auth.uid.
+     * @allow (get, update, delete, list) Signed-in user can get, update, and delete their own profile if the userId matches their auth.uid.
+     * @deny (create) An unauthenticated user attempts to create a profile.
+     * @deny (get, update, delete, list) A different user attempts to access this profile.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false; // User listing is not allowed
+
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to flight bookings for a specific user.
+     * @path /users/{userId}/flightBookings/{flightBookingId}
+     * @allow (create) Signed-in user can create a flight booking under their userId.
+     * @allow (get, update, delete, list) Signed-in user can get, update, and delete their own flight bookings.
+     * @deny (create) An unauthenticated user attempts to create a flight booking.
+     * @deny (get, update, delete, list) A different user attempts to access this flight booking.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/flightBookings/{flightBookingId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to hotel bookings for a specific user.
+     * @path /users/{userId}/hotelBookings/{hotelBookingId}
+     * @allow (create) Signed-in user can create a hotel booking under their userId.
+     * @allow (get, update, delete, list) Signed-in user can get, update, and delete their own hotel bookings.
+     * @deny (create) An unauthenticated user attempts to create a hotel booking.
+     * @deny (get, update, delete, list) A different user attempts to access this hotel booking.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/hotelBookings/{hotelBookingId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to itineraries for a specific user.
+     * @path /users/{userId}/itineraries/{itineraryId}
+     * @allow (create) Signed-in user can create an itinerary under their userId.
+     * @allow (get, update, delete, list) Signed-in user can get, update, and delete their own itineraries.
+     * @deny (create) An unauthenticated user attempts to create an itinerary.
+     * @deny (get, update, delete, list) A different user attempts to access this itinerary.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/itineraries/{itineraryId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to destination guides.
+     * @path /destinationGuides/{destinationGuideId}
+     * @allow (get, list) All users can read destination guides.
+     * @deny (create, update, delete) Only authenticated users can create, update or delete destination guides.
+     * @principle Allows public read access, restricts write access.
+     */
+    match /destinationGuides/{destinationGuideId} {
+      allow get, list: if true; // Public read access
+
+      // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create, update, delete: if false;
+    }
+  }
+}

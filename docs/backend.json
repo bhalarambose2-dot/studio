@@ -1,0 +1,351 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the BR TRIP application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the user."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The date of birth of the user.",
+          "format": "date-time"
+        },
+        "address": {
+          "type": "string",
+          "description": "The address of the user."
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email"
+      ]
+    },
+    "FlightBooking": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FlightBooking",
+      "type": "object",
+      "description": "Represents a flight booking made by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the flight booking."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N FlightBooking)"
+        },
+        "flightNumber": {
+          "type": "string",
+          "description": "The flight number for this booking."
+        },
+        "departureAirport": {
+          "type": "string",
+          "description": "The departure airport code."
+        },
+        "arrivalAirport": {
+          "type": "string",
+          "description": "The arrival airport code."
+        },
+        "departureDate": {
+          "type": "string",
+          "description": "The departure date and time.",
+          "format": "date-time"
+        },
+        "arrivalDate": {
+          "type": "string",
+          "description": "The arrival date and time.",
+          "format": "date-time"
+        },
+        "numberOfPassengers": {
+          "type": "number",
+          "description": "The number of passengers for this booking."
+        },
+        "bookingDate": {
+          "type": "string",
+          "description": "The date and time the booking was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "flightNumber",
+        "departureAirport",
+        "arrivalAirport",
+        "departureDate",
+        "arrivalDate",
+        "numberOfPassengers"
+      ]
+    },
+    "HotelBooking": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HotelBooking",
+      "type": "object",
+      "description": "Represents a hotel booking made by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the hotel booking."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N HotelBooking)"
+        },
+        "hotelName": {
+          "type": "string",
+          "description": "The name of the hotel."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the hotel is located."
+        },
+        "checkInDate": {
+          "type": "string",
+          "description": "The check-in date.",
+          "format": "date-time"
+        },
+        "checkOutDate": {
+          "type": "string",
+          "description": "The check-out date.",
+          "format": "date-time"
+        },
+        "numberOfGuests": {
+          "type": "number",
+          "description": "The number of guests for this booking."
+        },
+        "roomType": {
+          "type": "string",
+          "description": "The type of room booked."
+        },
+        "bookingDate": {
+          "type": "string",
+          "description": "The date and time the booking was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "hotelName",
+        "city",
+        "checkInDate",
+        "checkOutDate",
+        "numberOfGuests"
+      ]
+    },
+    "Itinerary": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Itinerary",
+      "type": "object",
+      "description": "Represents a personalized trip itinerary generated for a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the itinerary."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Itinerary)"
+        },
+        "destination": {
+          "type": "string",
+          "description": "The destination city or location for the itinerary."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The start date of the itinerary.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end date of the itinerary.",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the itinerary, including activities and suggested travel plans."
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "The date and time the itinerary was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "destination",
+        "startDate",
+        "endDate",
+        "description"
+      ]
+    },
+    "DestinationGuide": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DestinationGuide",
+      "type": "object",
+      "description": "Represents a destination guide with information on attractions, activities, and local customs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the destination guide."
+        },
+        "destinationName": {
+          "type": "string",
+          "description": "The name of the destination."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the destination, including its history, culture, and attractions."
+        },
+        "popularAttractions": {
+          "type": "array",
+          "description": "A list of popular attractions in the destination.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "localCustoms": {
+          "type": "string",
+          "description": "Information on local customs and etiquette."
+        },
+        "bestTimeToVisit": {
+          "type": "string",
+          "description": "The best time to visit the destination."
+        }
+      },
+      "required": [
+        "id",
+        "destinationName",
+        "description"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Uses path-based ownership for private user data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/flightBookings/{flightBookingId}",
+        "definition": {
+          "entityName": "FlightBooking",
+          "schema": {
+            "$ref": "#/backend/entities/FlightBooking"
+          },
+          "description": "Stores flight bookings made by a user. Uses path-based ownership. Ensures only the user can access their bookings.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "flightBookingId",
+              "description": "The unique identifier for the flight booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/hotelBookings/{hotelBookingId}",
+        "definition": {
+          "entityName": "HotelBooking",
+          "schema": {
+            "$ref": "#/backend/entities/HotelBooking"
+          },
+          "description": "Stores hotel bookings made by a user. Uses path-based ownership. Ensures only the user can access their bookings.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "hotelBookingId",
+              "description": "The unique identifier for the hotel booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/itineraries/{itineraryId}",
+        "definition": {
+          "entityName": "Itinerary",
+          "schema": {
+            "$ref": "#/backend/entities/Itinerary"
+          },
+          "description": "Stores personalized trip itineraries generated for a user. Uses path-based ownership. Ensures only the user can access their itineraries.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "itineraryId",
+              "description": "The unique identifier for the itinerary."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/destinationGuides/{destinationGuideId}",
+        "definition": {
+          "entityName": "DestinationGuide",
+          "schema": {
+            "$ref": "#/backend/entities/DestinationGuide"
+          },
+          "description": "Stores destination guides with information on attractions, activities, and local customs. Accessible to all users.",
+          "params": [
+            {
+              "name": "destinationGuideId",
+              "description": "The unique identifier for the destination guide."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to store user data, flight bookings, hotel bookings, itineraries, and destination guides for the BR TRIP application. The structure emphasizes path-based ownership for user-related data (users, flight bookings, hotel bookings, and itineraries) and a flat collection for destination guides, as these are likely global and shared across users. This approach facilitates straightforward security rules based on user IDs and avoids complex authorization logic. Each document is directly associated with a user, making it easy to manage and query data related to specific users. It also enables efficient data retrieval and management for personalized user experiences. Using path based ownership means the security rules will be simple. QAPs is supported because all list queries are scoped to `/users/{userId}`."
+  }
+}
