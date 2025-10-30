@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -32,39 +33,26 @@
       "type": "object",
       "description": "Represents a flight booking made by a user.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the flight booking."
+        "tripName": {
+            "type": "string",
+            "description": "The name of the trip or destination."
         },
-        "userId": {
-          "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N FlightBooking)"
+        "customerName": {
+            "type": "string",
+            "description": "Name of the customer who made the booking."
         },
-        "flightNumber": {
-          "type": "string",
-          "description": "The flight number for this booking."
+        "customerEmail": {
+            "type": "string",
+            "description": "Email of the customer.",
+            "format": "email"
         },
-        "departureAirport": {
-          "type": "string",
-          "description": "The departure airport code."
+        "customerPhone": {
+            "type": "string",
+            "description": "Phone number of the customer."
         },
-        "arrivalAirport": {
-          "type": "string",
-          "description": "The arrival airport code."
-        },
-        "departureDate": {
-          "type": "string",
-          "description": "The departure date and time.",
-          "format": "date-time"
-        },
-        "arrivalDate": {
-          "type": "string",
-          "description": "The arrival date and time.",
-          "format": "date-time"
-        },
-        "numberOfPassengers": {
-          "type": "number",
-          "description": "The number of passengers for this booking."
+        "travelers": {
+            "type": "number",
+            "description": "Number of travelers for this booking."
         },
         "bookingDate": {
           "type": "string",
@@ -73,14 +61,11 @@
         }
       },
       "required": [
-        "id",
-        "userId",
-        "flightNumber",
-        "departureAirport",
-        "arrivalAirport",
-        "departureDate",
-        "arrivalDate",
-        "numberOfPassengers"
+        "tripName",
+        "customerName",
+        "customerEmail",
+        "travelers",
+        "bookingDate"
       ]
     },
     "HotelBooking": {
@@ -259,23 +244,10 @@
       },
       {
         "path": "/users/{userId}/flightBookings/{flightBookingId}",
-        "definition": {
-          "entityName": "FlightBooking",
-          "schema": {
-            "$ref": "#/backend/entities/FlightBooking"
-          },
-          "description": "Stores flight bookings made by a user. Uses path-based ownership. Ensures only the user can access their bookings.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "flightBookingId",
-              "description": "The unique identifier for the flight booking."
-            }
-          ]
-        }
+        "schema": {
+          "$ref": "#/entities/FlightBooking"
+        },
+        "description": "Stores flight bookings made by a user. Ensures only the user can access their bookings."
       },
       {
         "path": "/users/{userId}/hotelBookings/{hotelBookingId}",

@@ -12,6 +12,8 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Checkbox } from './ui/checkbox';
 import Link from 'next/link';
+import { useFirebase } from '@/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
@@ -32,34 +34,60 @@ interface BookingFormProps {
 export function BookingForm({ tripName }: BookingFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { firestore, user } = useFirebase();
+
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
+      name: user?.displayName || '',
+      email: user?.email || '',
+      phone: user?.phoneNumber || '',
       travelers: 1,
       terms: false,
     },
   });
 
   const onSubmit = async (values: BookingFormValues) => {
-    setIsLoading(true);
-    const bookingDetails = { ...values, tripName };
-    
-    // Simulate sending booking details to the specified number
-    console.log(`SEND BOOKING DETAILS TO 8306930595:`, JSON.stringify(bookingDetails, null, 2));
+    if (!user) {
+        toast({
+            title: 'Authentication Error',
+            description: 'You must be logged in to book a trip.',
+            variant: 'destructive',
+        });
+        return;
+    }
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsLoading(true);
     
-    toast({
-        title: 'Booking Confirmed!',
-        description: `Your trip to ${tripName} has been booked for ${values.travelers} traveler(s).`,
-    });
+    const bookingDetails = { 
+        userId: user.uid,
+        tripName: tripName,
+        customerName: values.name,
+        customerEmail: values.email,
+        customerPhone: values.phone,
+        travelers: values.travelers,
+        bookingDate: serverTimestamp(),
+    };
     
-    setIsLoading(false);
-    // Here you would typically handle form submission, e.g., call an API
+    try {
+        const bookingsColRef = collection(firestore, 'users', user.uid, 'flightBookings');
+        await addDoc(bookingsColRef, bookingDetails);
+        
+        toast({
+            title: 'Booking Confirmed!',
+            description: `Your trip to ${tripName} has been booked for ${values.travelers} traveler(s).`,
+        });
+
+    } catch (error: any) {
+        console.error("Booking Error: ", error);
+        toast({
+            title: 'Booking Failed',
+            description: 'Something went wrong while confirming your booking. Please try again.',
+            variant: 'destructive',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -141,7 +169,7 @@ export function BookingForm({ tripName }: BookingFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading} className="w-full">
+        <Button type="submit" disabled={isLoading || !user} className="w-full">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Confirm Booking
         </Button>
