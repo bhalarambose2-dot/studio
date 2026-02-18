@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -56,10 +56,13 @@ export default function MenuPage() {
       <div className="grid grid-cols-1 gap-4">
         {userProfile?.role === 'admin' && (
             <Link href="/admin">
-                <Card className="p-6 bg-red-500 text-white hover:bg-red-600 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
+                <Card className="p-6 bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <ShieldAlert className="h-8 w-8" />
-                        <p className="font-black uppercase tracking-tight">Admin Console</p>
+                        <div>
+                            <p className="font-black uppercase tracking-tight">एडमिन कंसोल (Admin Console)</p>
+                            <p className="text-[10px] opacity-80 font-bold">Manage Platform & Users</p>
+                        </div>
                     </div>
                     <ChevronRight className="h-5 w-5" />
                 </Card>
@@ -71,7 +74,10 @@ export default function MenuPage() {
                 <Card className="p-6 bg-accent text-white hover:bg-accent/90 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <ClipboardList className="h-8 w-8" />
-                        <p className="font-black uppercase tracking-tight">Duty Dashboard (Staff)</p>
+                        <div>
+                            <p className="font-black uppercase tracking-tight">ड्यूटी डैशबोर्ड (Duty Dashboard)</p>
+                            <p className="text-[10px] opacity-80 font-bold">Manage Operations & Boarding</p>
+                        </div>
                     </div>
                     <ChevronRight className="h-5 w-5" />
                 </Card>
@@ -83,7 +89,10 @@ export default function MenuPage() {
                 <Card className="p-6 bg-primary text-white hover:bg-primary/90 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Bus className="h-8 w-8" />
-                        <p className="font-black uppercase tracking-tight">Owner Dashboard</p>
+                        <div>
+                            <p className="font-black uppercase tracking-tight">बस मालिक (Owner Dashboard)</p>
+                            <p className="text-[10px] opacity-80 font-bold">Monitor Fleet & Earnings</p>
+                        </div>
                     </div>
                     <ChevronRight className="h-5 w-5" />
                 </Card>
@@ -94,7 +103,10 @@ export default function MenuPage() {
           <Card className="p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <User className="h-8 w-8 text-primary" />
-                <p className="font-bold">मेरा खाता (My Account)</p>
+                <div>
+                    <p className="font-bold">मेरा खाता (My Account)</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black">Profile & Settings</p>
+                </div>
               </div>
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </Card>
@@ -102,15 +114,24 @@ export default function MenuPage() {
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold">Trip Management</CardTitle>
+        <CardHeader className="pb-2 border-b bg-muted/20">
+          <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground">ट्रिप मैनेजमेंट (Trip Management)</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Link href="/manage-bookings">
-            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
+            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors border-b">
               <div className="flex items-center gap-4">
                 <Briefcase className="h-5 w-5 text-primary"/>
-                <p className="text-sm font-medium">ट्रिप्स देखें, मैनेज करें</p>
+                <p className="text-sm font-bold">ट्रिप्स देखें, मैनेज करें (View & Manage Trips)</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </Link>
+          <Link href="/wallet">
+            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
+              <div className="flex items-center gap-4">
+                <Wallet className="h-5 w-5 text-primary"/>
+                <p className="text-sm font-bold">पैसा और वॉलेट (Money & Wallet)</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -119,15 +140,18 @@ export default function MenuPage() {
       </Card>
       
       <Card className="border-none shadow-sm overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold">Bussiness & Rewards</CardTitle>
+        <CardHeader className="pb-2 border-b bg-muted/20">
+          <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground">बिज़नेस और इनाम (Business & Rewards)</CardTitle>
         </CardHeader>
         <CardContent className="p-0 divide-y">
           <Link href="/partnership">
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-4">
                     <Handshake className="h-5 w-5 text-primary"/>
-                    <p className="text-sm font-medium">पार्टनरशिप (Partnership)</p>
+                    <div>
+                        <p className="text-sm font-bold">पार्टनरशिप (Partnership - Sahi Nivesh)</p>
+                        <p className="text-[9px] text-primary font-black uppercase italic">Invest Right for Growth</p>
+                    </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -136,7 +160,7 @@ export default function MenuPage() {
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-4">
                     <Gift className="h-5 w-5 text-primary"/>
-                    <p className="text-sm font-medium">गिफ्ट कार्ड</p>
+                    <p className="text-sm font-bold">गिफ्ट कार्ड (Gift Cards)</p>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -145,7 +169,7 @@ export default function MenuPage() {
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-4">
                     <Users className="h-5 w-5 text-primary"/>
-                    <p className="text-sm font-medium">रेफर करें और कमाएं</p>
+                    <p className="text-sm font-bold">रेफर करें और कमाएं (Refer & Earn)</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold text-white bg-primary px-2 py-0.5 rounded-full">NEW</span>
@@ -159,7 +183,7 @@ export default function MenuPage() {
       <div className="px-4 pt-4">
         <Button 
           variant="destructive" 
-          className="w-full flex items-center justify-center gap-2 h-14 font-bold text-lg rounded-2xl shadow-lg shadow-destructive/10" 
+          className="w-full flex items-center justify-center gap-2 h-14 font-black text-lg rounded-2xl shadow-lg shadow-destructive/10 uppercase tracking-widest italic" 
           onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />
