@@ -13,6 +13,7 @@ import { Building2, Handshake, Loader2, Star, ShieldCheck, TrendingUp, MessageCi
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import Image from 'next/image';
+import { Badge } from "@/components/ui/badge";
 
 const partnershipSchema = z.object({
   fullName: z.string().min(2, 'Full name is required.'),
