@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -102,34 +102,39 @@ const buses = [
         "rating": 4.7,
         "seats": 5,
         "amenities": ["Leg Rest", "CCTV", "Movies"]
-    },
+    }
+];
+
+const bikes = [
     {
-        "name": "Shrinath Travels",
-        "busNumber": "DL-01-RT-5566",
-        "from": "Delhi",
-        "to": "Agra",
-        "departure": "06:30 AM",
-        "arrival": "10:30 AM",
-        "duration": "4h 00m",
-        "price": "550",
-        "type": "AC Seater",
-        "rating": 4.1,
-        "seats": 18,
-        "amenities": ["WiFi", "Water Bottle"]
-    },
-    {
-        "name": "VRL Travels",
-        "busNumber": "KA-01-VK-7744",
-        "from": "Bangalore",
-        "to": "Goa",
-        "departure": "08:45 PM",
-        "arrival": "08:00 AM",
-        "duration": "11h 15m",
+        "name": "Royal Enfield Bullet 350",
+        "location": "Jodhpur",
         "price": "1200",
-        "type": "Multi-Axle AC Sleeper",
-        "rating": 4.4,
-        "seats": 10,
-        "amenities": ["Pillow", "Snacks", "SOS Button"]
+        "rating": 4.9,
+        "image": "https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=2070&auto=format&fit=crop",
+        "hint": "bullet bike",
+        "type": "Cruiser",
+        "description": "Jodhpur ki galliyon ke liye asli Bullet ka maza."
+    },
+    {
+        "name": "Honda Activa 6G",
+        "location": "Jodhpur",
+        "price": "500",
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1620939511593-3cd71350645f?q=80&w=1974&auto=format&fit=crop",
+        "hint": "activa scooter",
+        "type": "Scooter",
+        "description": "Easy commuting for Blue City exploration."
+    },
+    {
+        "name": "KTM Duke 390",
+        "location": "Jodhpur",
+        "price": "1500",
+        "rating": 4.8,
+        "image": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2070&auto=format&fit=crop",
+        "hint": "ktm duke",
+        "type": "Sports",
+        "description": "High performance for long rides around Rajasthan."
     }
 ];
 
@@ -140,6 +145,7 @@ export default function SearchCardPage() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [busDate, setBusDate] = useState<Date | undefined>();
+  const [bikeDate, setBikeDate] = useState<Date | undefined>();
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -150,6 +156,9 @@ export default function SearchCardPage() {
   const [busFrom, setBusFrom] = useState('');
   const [busTo, setBusTo] = useState('');
   const [displayedBuses, setDisplayedBuses] = useState(buses);
+
+  const [bikeLocation, setBikeLocation] = useState('Jodhpur');
+  const [displayedBikes, setDisplayedBikes] = useState(bikes);
 
   useEffect(() => {
     setActiveTab(searchParams.get('tab') || 'hotel');
@@ -183,14 +192,26 @@ export default function SearchCardPage() {
     setDisplayedBuses(filteredBuses);
   };
 
+  const handleBikeSearch = () => {
+    if (!bikeLocation) {
+        setDisplayedBikes(bikes);
+        return;
+    }
+    const filteredBikes = bikes.filter(bike => 
+        bike.location.toLowerCase().includes(bikeLocation.toLowerCase())
+    );
+    setDisplayedBikes(filteredBikes);
+  };
+
   return (
     <div className="flex flex-col gap-8 pb-20">
       <Card className="border-none shadow-lg">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 h-14 bg-muted/50 p-1">
-            <TabsTrigger value="hotel" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Hotel className="mr-1 sm:mr-2 h-4 w-4"/>Hotel</TabsTrigger>
-            <TabsTrigger value="bus" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Bus className="mr-1 sm:mr-2 h-4 w-4"/>Bus</TabsTrigger>
-            <TabsTrigger value="car" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Car className="mr-1 sm:mr-2 h-4 w-4"/>Car</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 h-14 bg-muted/50 p-1">
+            <TabsTrigger value="hotel" className="text-[10px] sm:text-xs"><Hotel className="mr-1 h-3 w-3"/>Hotel</TabsTrigger>
+            <TabsTrigger value="bus" className="text-[10px] sm:text-xs"><Bus className="mr-1 h-3 w-3"/>Bus</TabsTrigger>
+            <TabsTrigger value="bike" className="text-[10px] sm:text-xs"><Bike className="mr-1 h-3 w-3"/>Bike</TabsTrigger>
+            <TabsTrigger value="car" className="text-[10px] sm:text-xs"><Car className="mr-1 h-3 w-3"/>Car</TabsTrigger>
           </TabsList>
           
           <TabsContent value="hotel">
@@ -298,6 +319,46 @@ export default function SearchCardPage() {
               </div>
               <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleBusSearch}>
                 <Search className="mr-2 h-5 w-5" /> Search Buses
+              </Button>
+            </CardContent>
+          </TabsContent>
+
+          <TabsContent value="bike">
+            <CardContent className="p-4 md:p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="bike-location">Location (Jodhpur Special)</Label>
+                  <Input 
+                    id="bike-location" 
+                    placeholder="E.g. Jodhpur" 
+                    value={bikeLocation}
+                    onChange={(e) => setBikeLocation(e.target.value)}
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Rental Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal h-11",
+                          !bikeDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {bikeDate ? format(bikeDate, "PPP") : <span>Select Date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar mode="single" selected={bikeDate} onSelect={setBikeDate} initialFocus />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleBikeSearch}>
+                <Search className="mr-2 h-5 w-5" /> Find Bikes
               </Button>
             </CardContent>
           </TabsContent>
@@ -457,17 +518,62 @@ export default function SearchCardPage() {
           </section>
       )}
 
+      {activeTab === 'bike' && (
+        <section>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold">Bike Rentals in {bikeLocation}</h2>
+                <Badge variant="outline" className="bg-primary text-white border-none">Available Now</Badge>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedBikes.map((bike) => (
+                    <Card key={bike.name} className="overflow-hidden group border-none shadow-md hover:shadow-xl transition-all">
+                        <div className="relative h-48">
+                            <Image
+                                src={bike.image}
+                                alt={bike.name}
+                                data-ai-hint={bike.hint}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
+                        <CardContent className="p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="font-bold text-lg">{bike.name}</h3>
+                                <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">
+                                    {bike.rating} <Star className="w-3 h-3 ml-1 fill-green-700" />
+                                </div>
+                            </div>
+                            <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
+                                <MapPin className="w-3 h-3" /> {bike.location}
+                            </p>
+                             <Badge variant="secondary" className="mb-4 text-[10px] uppercase font-bold">{bike.type}</Badge>
+                            <p className="text-xs text-muted-foreground italic mb-4 line-clamp-2">{bike.description}</p>
+                            <div className="flex items-center justify-between mt-auto">
+                                <div className="text-lg font-bold text-primary">
+                                    ₹{bike.price}<span className="text-xs font-normal text-muted-foreground">/day</span>
+                                </div>
+                                <Button size="sm" onClick={() => handleBookNow(bike)}>Book Bike</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </section>
+      )}
+
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                {activeTab === 'bus' ? <Bus className="text-primary" /> : <Hotel className="text-primary" />}
-                Confirm {activeTab === 'bus' ? 'Bus Ticket' : 'Booking'}
+                {activeTab === 'bus' ? <Bus className="text-primary" /> : activeTab === 'bike' ? <Bike className="text-primary" /> : <Hotel className="text-primary" />}
+                Confirm {activeTab === 'bus' ? 'Bus Ticket' : activeTab === 'bike' ? 'Bike Rental' : 'Booking'}
               </DialogTitle>
               <DialogDescription>
                 {activeTab === 'bus' 
                     ? `Booking seat on ${selectedItem.name} (${selectedItem.busNumber}) from ${selectedItem.from} to ${selectedItem.to}.` 
+                    : activeTab === 'bike'
+                    ? `Booking ${selectedItem.name} in ${selectedItem.location}.`
                     : `Confirming your stay at ${selectedItem.name}, ${selectedItem.location}.`
                 }
               </DialogDescription>
@@ -475,6 +581,8 @@ export default function SearchCardPage() {
             <BookingForm 
                 tripName={activeTab === 'bus' 
                     ? `${selectedItem.name} - ${selectedItem.busNumber} (${selectedItem.from} to ${selectedItem.to})` 
+                    : activeTab === 'bike'
+                    ? `${selectedItem.name} (Bike Rental Jodhpur)`
                     : `${selectedItem.name} (${selectedItem.location})`
                 } 
                 bookingType={activeTab}

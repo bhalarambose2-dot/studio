@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map, Bus } from 'lucide-react';
+import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map, Bus, Bike } from 'lucide-react';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
@@ -38,6 +38,7 @@ const guides = [
 const services = [
     { name: 'Hotels', icon: Hotel, href: '/search-page' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus' },
+    { name: 'Bike Rental', icon: Bike, href: '/search-page?tab=bike' },
     { name: 'Holiday Packages', icon: Package, href: '/destination-guides' },
     { name: 'Airport Cabs', icon: Car, href: '#' },
     { name: 'Homestays', icon: Home, href: '#' },
