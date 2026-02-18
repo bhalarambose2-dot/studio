@@ -7,7 +7,6 @@ import {
   Wallet, 
   ChevronRight, 
   Hotel, 
-  Plane, 
   Train, 
   Bus, 
   Clock, 
@@ -19,7 +18,8 @@ import {
   Star,
   Zap,
   Ticket,
-  MapPin
+  MapPin,
+  Plane
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -37,9 +37,9 @@ export default function SearchPage() {
   const [activeOfferTab, setActiveOfferTab] = useState('All');
 
   const offers = [
-    { title: "Europe vibes @ desi price- up to 25% OFF* on flights!", date: "Limited period offer", type: "Flights", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" },
+    { title: "Special Deal: Get up to 25% OFF* on Hotels!", date: "Limited period offer", type: "Hotels", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" },
     { title: "Hottest Deals: Up to 30% OFF on Jaipur Hotels!", date: "Limited period offer", type: "Hotels", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1080" },
-    { title: "Jodhpur Bike Taxi: 1st Ride FREE!", date: "Limited period offer", type: "Bike", image: "https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=1080" }
+    { title: "Rajasthan Road Trip: Book Bus & Save Big!", date: "Limited period offer", type: "Bus", image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1080" }
   ];
 
   return (
@@ -79,10 +79,9 @@ export default function SearchPage() {
         <div className="absolute bottom-[-100px] left-4 right-4 z-20">
           <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
             <CardContent className="p-4 md:p-6 bg-white">
-              <div className="grid grid-cols-4 gap-3 md:gap-6 mb-8">
+              <div className="grid grid-cols-3 gap-3 md:gap-6 mb-8">
                 {[
                   { name: 'Hotels', icon: Hotel, color: 'text-orange-500', bg: 'bg-orange-50', href: '/search-page?tab=hotel' },
-                  { name: 'Flights', icon: Plane, color: 'text-blue-500', bg: 'bg-blue-50', href: '#' },
                   { name: 'Trains', icon: Train, color: 'text-gray-600', bg: 'bg-gray-50', href: '#' },
                   { name: 'Bus', icon: Bus, color: 'text-orange-600', bg: 'bg-orange-50', href: '/search-page?tab=bus' },
                 ].map((service) => (
@@ -124,7 +123,7 @@ export default function SearchPage() {
         <Link href="/destination-guides">
           <Card className="bg-gradient-to-r from-orange-600 to-orange-400 text-white border-none shadow-xl rounded-[2rem] overflow-hidden relative group">
             <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 pointer-events-none">
-                <Plane className="w-full h-full -rotate-12 translate-x-12 scale-150" />
+                <Hotel className="w-full h-full -rotate-12 translate-x-12 scale-150" />
             </div>
             <CardContent className="p-8 relative z-10 flex items-center justify-between">
               <div className="space-y-2">
@@ -152,12 +151,12 @@ export default function SearchPage() {
           <Link href="/destination-guides" className="text-primary text-xs font-black uppercase">View All</Link>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <Link href="/search-page?tab=bike" className="relative h-40 rounded-[2rem] overflow-hidden group">
-            <Image src="https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=1080" alt="Bike Taxi" fill className="object-cover transition-transform group-hover:scale-110" data-ai-hint="bike ride" />
+          <Link href="/destination-guides" className="relative h-40 rounded-[2rem] overflow-hidden group">
+            <Image src="https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" alt="Jaipur" fill className="object-cover transition-transform group-hover:scale-110" data-ai-hint="jaipur palace" />
             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 text-center">
-              <Zap className="h-8 w-8 text-yellow-400 mb-1" />
-              <span className="text-white font-black italic uppercase text-sm">Bike Taxi</span>
-              <span className="text-white/80 text-[10px] font-bold">JODHPUR</span>
+              <MapPin className="h-8 w-8 text-orange-400 mb-1" />
+              <span className="text-white font-black italic uppercase text-sm">Jaipur</span>
+              <span className="text-white/80 text-[10px] font-bold">PINK CITY</span>
             </div>
           </Link>
           <Link href="/destination-guides" className="relative h-40 rounded-[2rem] overflow-hidden group">
@@ -172,14 +171,14 @@ export default function SearchPage() {
       </section>
 
       {/* Offers Section */}
-      <section className="mt-12 space-y-6">
+      <section className="mt-12 space-y-6 pb-12">
         <div className="px-4 flex items-center justify-between">
           <h2 className="text-2xl font-black italic tracking-tighter">Offers For You</h2>
         </div>
 
         <ScrollArea className="w-full px-4">
           <div className="flex gap-3 pb-4">
-            {['All', 'Flights', 'Hotels', 'Bus'].map((tab) => (
+            {['All', 'Hotels', 'Bus', 'Trains'].map((tab) => (
               <Button 
                 key={tab} 
                 onClick={() => setActiveOfferTab(tab)}
@@ -197,7 +196,7 @@ export default function SearchPage() {
         </ScrollArea>
 
         <ScrollArea className="w-full px-4">
-          <div className="flex gap-6 pb-20">
+          <div className="flex gap-6 pb-10">
             {offers.map((offer, idx) => (
               <Card key={idx} className="min-w-[300px] border-none shadow-lg rounded-[2rem] overflow-hidden bg-white group hover:shadow-2xl transition-all">
                 <div className="relative h-44 w-full">

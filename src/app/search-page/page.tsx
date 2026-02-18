@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -118,50 +117,11 @@ const buses = [
     }
 ];
 
-const bikes = [
-    {
-        "name": "Standard Ride (Bike Taxi)",
-        "location": "Jodhpur",
-        "price": "15",
-        "priceUnit": "/km",
-        "rating": 4.9,
-        "image": "https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=2070&auto=format&fit=crop",
-        "hint": "bike ride",
-        "type": "Rapido Style",
-        "isTaxi": true,
-        "description": "Sahi Nivesh ke saath sahi safar. Jodhpur city mein asani se ride book karein."
-    },
-    {
-        "name": "Premium Ride (Royal Enfield)",
-        "location": "Jodhpur",
-        "price": "30",
-        "priceUnit": "/km",
-        "rating": 5.0,
-        "image": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2070&auto=format&fit=crop",
-        "hint": "bullet ride",
-        "type": "Premium Taxi",
-        "isTaxi": true,
-        "description": "Blue City ki galliyon mein Bullet ride ka maza."
-    },
-    {
-        "name": "Quick Activa Ride",
-        "location": "Jodhpur",
-        "price": "10",
-        "priceUnit": "/km",
-        "rating": 4.7,
-        "image": "https://images.unsplash.com/photo-1620939511593-3cd71350645f?q=80&w=1974&auto=format&fit=crop",
-        "hint": "scooter ride",
-        "type": "Economy Taxi",
-        "isTaxi": true,
-        "description": "Short distance ke liye fast aur sasti bike taxi."
-    }
-];
-
 export default function SearchCardPage() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') || 'hotel';
   
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(initialTab === 'bike' ? 'hotel' : initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [busDate, setBusDate] = useState<Date | undefined>();
   
@@ -175,11 +135,11 @@ export default function SearchCardPage() {
   const [busTo, setBusTo] = useState('');
   const [displayedBuses, setDisplayedBuses] = useState(buses);
 
-  const [bikeLocation, setBikeLocation] = useState('Jodhpur');
-  const [displayedBikes, setDisplayedBikes] = useState(bikes);
-
   useEffect(() => {
-    setActiveTab(searchParams.get('tab') || 'hotel');
+    const tab = searchParams.get('tab');
+    if (tab && tab !== 'bike') {
+      setActiveTab(tab);
+    }
   }, [searchParams]);
 
   const handleBookNow = (item: any) => {
@@ -211,28 +171,13 @@ export default function SearchCardPage() {
     setDisplayedBuses(filteredBuses);
   };
 
-  const handleBikeSearch = () => {
-    if (!bikeLocation) {
-        setDisplayedBikes(bikes);
-        return;
-    }
-    const filteredBikes = bikes.filter(bike => 
-        bike.location.toLowerCase().includes(bikeLocation.toLowerCase())
-    );
-    setDisplayedBikes(filteredBikes);
-  };
-
   return (
     <div className="flex flex-col gap-8 pb-20">
       <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 h-16 bg-muted/30 p-1">
+          <TabsList className="grid w-full grid-cols-3 h-16 bg-muted/30 p-1">
             <TabsTrigger value="hotel" className="text-xs font-black italic uppercase"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
             <TabsTrigger value="bus" className="text-xs font-black italic uppercase"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
-            <TabsTrigger value="bike" className="text-xs font-black italic uppercase relative">
-                <Bike className="mr-2 h-4 w-4"/>Bike Taxi
-                <Badge className="absolute -top-1 -right-1 bg-primary text-white text-[8px] h-4 px-1 border-none animate-pulse">LIVE</Badge>
-            </TabsTrigger>
             <TabsTrigger value="car" className="text-xs font-black italic uppercase"><Car className="mr-2 h-4 w-4"/>Cab</TabsTrigger>
           </TabsList>
           
@@ -327,92 +272,6 @@ export default function SearchCardPage() {
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBusSearch}>
                 <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN BUSES
-              </Button>
-            </CardContent>
-          </TabsContent>
-
-          <TabsContent value="bike">
-            <CardContent className="p-6 md:p-10 space-y-6">
-              <div className="bg-primary/5 p-6 rounded-[2rem] border-2 border-dashed border-primary/20 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-primary p-3 rounded-2xl shadow-lg">
-                        <Zap className="text-white h-8 w-8" />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-black italic tracking-tighter">RAPIDO STYLE RIDE</h3>
-                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Available in Jodhpur (Expanding Soon in Rajasthan)</p>
-                    </div>
-                </div>
-                <Badge className="bg-green-500 text-white border-none font-black italic">ACTIVE NOW</Badge>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup Location</Label>
-                  <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
-                    <Input 
-                        placeholder="Current Location in Jodhpur" 
-                        value={bikeLocation}
-                        onChange={(e) => setBikeLocation(e.target.value)}
-                        className="h-14 pl-12 rounded-2xl border-primary/20 bg-primary/5 font-bold"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Ride Time</Label>
-                  <Button variant="outline" className="w-full h-14 rounded-2xl justify-start font-bold">
-                    <Clock className="mr-2 h-4 w-4" /> Immediate (Within 5 mins)
-                  </Button>
-                </div>
-              </div>
-
-              {/* Live Map Status Section */}
-              <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white relative h-64 md:h-80 group">
-                  <Image 
-                    src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop"
-                    alt="Jodhpur Live Map"
-                    data-ai-hint="jodhpur map"
-                    fill
-                    className="object-cover brightness-75 group-hover:scale-105 transition-transform duration-1000"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  
-                  {/* Simulated Live Biker Icons */}
-                  <div className="absolute top-1/4 left-1/3 animate-bounce">
-                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
-                        <Bike className="h-3 w-3 text-white" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-1/3 right-1/4 animate-pulse">
-                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
-                        <Bike className="h-3 w-3 text-white" />
-                    </div>
-                  </div>
-                  <div className="absolute top-1/2 right-1/2 animate-bounce delay-700">
-                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
-                        <Bike className="h-3 w-3 text-white" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
-                    <div>
-                        <h4 className="text-white font-black italic tracking-tighter text-xl">LIVE MAP STATUS</h4>
-                        <div className="flex items-center gap-2 text-[10px] text-white/80 font-bold uppercase tracking-widest">
-                            <span className="h-2 w-2 rounded-full bg-green-500 animate-ping" />
-                            8 Bikers Near You (Jodhpur)
-                        </div>
-                    </div>
-                    <Link href={`https://www.google.com/maps/search/Jodhpur+Traffic/@26.2389,73.0243,13z`} target="_blank">
-                        <Button variant="secondary" size="sm" className="font-black italic uppercase text-[10px] h-10 rounded-xl">
-                            <Map className="mr-2 h-4 w-4" /> Full Map
-                        </Button>
-                    </Link>
-                  </div>
-              </Card>
-
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBikeSearch}>
-                <Zap className="mr-2 h-6 w-6" /> FIND RIDE IN JODHPUR
               </Button>
             </CardContent>
           </TabsContent>
@@ -572,79 +431,17 @@ export default function SearchCardPage() {
           </section>
       )}
 
-      {activeTab === 'bike' && (
-        <section className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter text-primary">BIKE TAXI IN {bikeLocation}</h2>
-                <Badge className="bg-primary text-white border-none font-black italic animate-bounce">RAPIDO STYLE</Badge>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {displayedBikes.map((bike) => (
-                    <Card key={bike.name} className="overflow-hidden group border-none shadow-xl hover:shadow-2xl transition-all rounded-[2.5rem] bg-white relative">
-                        {bike.isTaxi && (
-                          <div className="absolute top-4 left-4 z-20">
-                            <Badge className="bg-primary text-white border-none font-black italic px-3 py-1 shadow-lg">TAXI RIDE</Badge>
-                          </div>
-                        )}
-                        <div className="relative h-56">
-                            <Image
-                                src={bike.image}
-                                alt={bike.name}
-                                data-ai-hint={bike.hint}
-                                fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                            <div className="absolute bottom-4 left-6 text-white">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Jodhpur City</p>
-                                <h3 className="font-black text-2xl italic tracking-tighter">{bike.name}</h3>
-                            </div>
-                        </div>
-                        <CardContent className="p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <Badge variant="secondary" className="text-[10px] font-black uppercase italic tracking-widest bg-primary/10 text-primary border-none">{bike.type}</Badge>
-                                <div className="flex items-center text-primary font-black">
-                                    <Star className="w-4 h-4 mr-1 fill-primary" />
-                                    {bike.rating}
-                                </div>
-                            </div>
-                            <p className="text-xs text-muted-foreground italic mb-6 line-clamp-2 font-medium">{bike.description}</p>
-                            <div className="flex items-center justify-between mt-auto border-t pt-4">
-                                <div className="text-3xl font-black text-primary italic">
-                                    ₹{bike.price}<span className="text-[10px] font-medium text-muted-foreground not-italic">{bike.priceUnit || '/day'}</span>
-                                </div>
-                                <Button className="h-12 rounded-xl font-black italic uppercase px-6 shadow-lg shadow-primary/20" onClick={() => handleBookNow(bike)}>
-                                  <Zap className="mr-2 h-4 w-4" />
-                                  BOOK RIDE
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-            <div className="bg-primary/5 p-8 rounded-[3rem] border-2 border-dashed border-primary/20 text-center space-y-4">
-                <h3 className="text-2xl font-black italic tracking-tighter">BIKE CHALAYEIN AUR KAMAYEIN (PARTNER WITH US)</h3>
-                <p className="text-sm text-muted-foreground font-medium max-w-2xl mx-auto">Agar aapke paas bike hai aur aap Rajasthan mein extra kamai karna chahte hain, toh aaj hi humare saath judiye. "Sahi Nivesh" se apni bike ko taxi banayein.</p>
-                <Link href="/partnership">
-                  <Button variant="outline" className="mt-4 border-primary text-primary font-black italic uppercase h-12 rounded-xl hover:bg-primary hover:text-white transition-all">BECOME A PARTNER</Button>
-                </Link>
-            </div>
-        </section>
-      )}
-
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter">
-                {activeTab === 'bus' ? <Bus className="text-primary h-8 w-8" /> : activeTab === 'bike' ? <Zap className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
-                CONFIRM {activeTab === 'bus' ? 'BUS TICKET' : activeTab === 'bike' ? 'BIKE RIDE' : 'BOOKING'}
+                {activeTab === 'bus' ? <Bus className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
+                CONFIRM {activeTab === 'bus' ? 'BUS TICKET' : 'BOOKING'}
               </DialogTitle>
               <DialogDescription className="font-medium text-muted-foreground">
                 {activeTab === 'bus' 
                     ? `Booking seat on ${selectedItem.name} (${selectedItem.busNumber}) from ${selectedItem.from} to ${selectedItem.to}.` 
-                    : activeTab === 'bike'
-                    ? `Confirming ${selectedItem.name} for your immediate ride in Jodhpur.`
                     : `Confirming your stay at ${selectedItem.name}, ${selectedItem.location}.`
                 }
               </DialogDescription>
@@ -652,8 +449,6 @@ export default function SearchCardPage() {
             <BookingForm 
                 tripName={activeTab === 'bus' 
                     ? `${selectedItem.name} - ${selectedItem.busNumber} (${selectedItem.from} to ${selectedItem.to})` 
-                    : activeTab === 'bike'
-                    ? `${selectedItem.name} (Bike Taxi Jodhpur)`
                     : `${selectedItem.name} (${selectedItem.location})`
                 } 
                 bookingType={activeTab}
