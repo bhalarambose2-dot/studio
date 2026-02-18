@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet, IndianRupee, CreditCard, Loader2, QrCode, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { Wallet, IndianRupee, CreditCard, Loader2, QrCode, ShieldAlert, CheckCircle2, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -46,10 +46,13 @@ export default function WalletPage() {
   };
 
   const handleVerifyPayment = () => {
-    if (!txnId || txnId.length < 6) {
+    // UPI Reference Number (UTR) is always 12 digits in India
+    const utrRegex = /^\d{12}$/;
+    
+    if (!utrRegex.test(txnId)) {
         toast({
-            title: 'Transaction ID Zaruri Hai',
-            description: 'Kripya apne UPI app se Transaction ID ya Ref No. yahan bharein.',
+            title: 'Invalid Reference Number',
+            description: 'Kripya apna 12-digit ka UPI Transaction ID (UTR) bharein jo aapke payment app mein dikh raha hai.',
             variant: 'destructive'
         });
         return;
@@ -60,9 +63,10 @@ export default function WalletPage() {
     
     toast({
       title: 'Verifying with Bank',
-      description: 'Transaction ID verify ki ja rahi hai...',
+      description: 'Aapka transaction status bank se confirm kiya ja raha hai...',
     });
 
+    // Simulate bank confirmation delay
     setTimeout(async () => {
       const amountToAdd = parseFloat(addAmount);
       const currentBalance = userProfile?.walletBalance || 0;
@@ -73,8 +77,8 @@ export default function WalletPage() {
       setTxnId('');
       
       toast({
-        title: 'Payment Confirmed!',
-        description: `₹${amountToAdd} aapke wallet mein add kar diye gaye hain.`,
+        title: 'Payment Successful!',
+        description: `₹${amountToAdd} aapke wallet mein safaltapoorvak add kar diye gaye hain.`,
       });
     }, 5000);
   };
@@ -113,15 +117,18 @@ export default function WalletPage() {
                 {isProcessingPayment && (
                     <div className="absolute inset-0 bg-white/95 dark:bg-black/95 z-20 flex flex-col items-center justify-center text-center p-6 backdrop-blur-sm">
                         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                        <h3 className="text-xl font-bold">Verifying Payment...</h3>
-                        <p className="text-sm text-muted-foreground mt-2">Transaction ID: <span className="font-mono text-primary">{txnId}</span></p>
-                        <p className="text-xs text-muted-foreground mt-4 italic">Kripya intezar karein, hum bank server se response ka intezar kar rahe hain.</p>
+                        <h3 className="text-xl font-bold">Verifying Status...</h3>
+                        <p className="text-sm text-muted-foreground mt-2">Ref ID: <span className="font-mono text-primary">{txnId}</span></p>
+                        <p className="text-xs text-muted-foreground mt-4 italic">Kripya Page Refresh Na Karein. Hum bank se confirmation le rahe hain.</p>
                     </div>
                 )}
                 
                 {showQR && (
                     <div className="absolute inset-0 bg-white z-20 flex flex-col items-center justify-center p-6 space-y-4 overflow-y-auto">
-                        <h3 className="text-lg font-bold">Scan to Pay ₹{addAmount}</h3>
+                        <div className="flex flex-col items-center gap-2">
+                            <h3 className="text-lg font-bold">Scan to Pay ₹{addAmount}</h3>
+                            <BadgeCheck className="h-4 w-4 text-green-600" />
+                        </div>
                         <div className="bg-white p-4 rounded-xl border-2 border-primary shadow-inner">
                             <Image 
                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(getUpiUrl())}`}
@@ -132,19 +139,27 @@ export default function WalletPage() {
                             />
                         </div>
                         <div className="w-full space-y-2">
-                            <Label htmlFor="txn-id" className="text-xs font-bold text-primary">UPI Transaction ID / Ref No.</Label>
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="txn-id" className="text-xs font-bold text-primary">UPI Reference Number (12 Digits)</Label>
+                                {txnId.length > 0 && txnId.length !== 12 && (
+                                    <span className="text-[10px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3"/> Need 12 digits</span>
+                                )}
+                            </div>
                             <Input 
                                 id="txn-id" 
-                                placeholder="Enter 12 digit ID (e.g. 401234...)" 
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="E.g. 401234567890" 
                                 value={txnId}
-                                onChange={(e) => setTxnId(e.target.value)}
-                                className="border-primary/40 focus:ring-primary"
+                                maxLength={12}
+                                onChange={(e) => setTxnId(e.target.value.replace(/\D/g, ''))}
+                                className={`border-primary/40 focus:ring-primary h-11 text-center font-mono tracking-widest ${txnId.length === 12 ? 'border-green-500' : ''}`}
                             />
                         </div>
-                        <p className="text-[10px] text-muted-foreground text-center">Payment karne ke baad apna Transaction ID yahan bharein aur Verify dabayein.</p>
+                        <p className="text-[10px] text-muted-foreground text-center">Apne GPay/PhonePe/Paytm app mein Transaction History se 12-digit ka UTR number yahan bharein.</p>
                         <div className="flex gap-2 w-full">
-                            <Button variant="outline" className="flex-1" onClick={() => { setShowQR(false); setTxnId(''); }}>Cancel</Button>
-                            <Button className="flex-1" onClick={handleVerifyPayment} disabled={!txnId || txnId.length < 6}>Verify Now</Button>
+                            <Button variant="outline" className="flex-1" onClick={() => { setShowQR(false); setTxnId(''); }}>Back</Button>
+                            <Button className="flex-1" onClick={handleVerifyPayment} disabled={txnId.length !== 12}>Confirm Payment</Button>
                         </div>
                     </div>
                 )}
@@ -168,7 +183,7 @@ export default function WalletPage() {
                             <Input 
                                 id="amount" 
                                 type="number" 
-                                placeholder="Kitne paise add karne hain? (e.g. 500)" 
+                                placeholder="E.g. 500" 
                                 value={addAmount}
                                 onChange={(e) => setAddAmount(e.target.value)}
                                 className="h-12 text-lg"
@@ -177,22 +192,22 @@ export default function WalletPage() {
                         </div>
                         <Button onClick={handleShowQR} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount || isProcessingPayment}>
                             <QrCode className="mr-2 h-5 w-5" />
-                            Generate Payment QR
+                            Scan & Pay Now
                         </Button>
                         <Button variant="ghost" className="w-full text-xs text-muted-foreground" onClick={copyUPI}>
-                             Copy UPI ID: {upiId}
+                             UPI ID: {upiId}
                         </Button>
                     </div>
                 </CardFooter>
             </Card>
 
             <div className="space-y-6">
-                <Card className="shadow-sm border-yellow-200 bg-yellow-50/50">
+                <Card className="shadow-sm border-blue-200 bg-blue-50/50">
                     <CardContent className="p-4 flex items-start gap-3">
-                        <ShieldAlert className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
+                        <ShieldAlert className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
                         <div className="text-xs">
-                            <p className="font-bold text-yellow-700 uppercase">Prototype Notice</p>
-                            <p className="text-yellow-600 mt-1">Real app mein bank verification automatically hota hai. Yahan testing ke liye aapko koi bhi Transaction ID daalni hogi verification trigger karne ke liye.</p>
+                            <p className="font-bold text-blue-700 uppercase">Verification Rules</p>
+                            <p className="text-blue-600 mt-1">Payment confirm karne ke liye aapko sahi **12-digit numeric Reference ID** daalna hoga. Simulation ke liye aap koi bhi 12-digit number (jaise 123456789012) use kar sakte hain.</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -265,8 +280,8 @@ export default function WalletPage() {
             <CardContent className="p-4 flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                 <div className="text-sm">
-                    <p className="font-bold text-accent">Security Info</p>
-                    <p className="text-muted-foreground italic">Aapke payment details encrypted aur secure hain. Hum Google Cloud Platform ke security protocols use karte hain.</p>
+                    <p className="font-bold text-accent">Safe & Secure Payments</p>
+                    <p className="text-muted-foreground italic">BR Trip aapke payments ko monitor karta hai. Galat Transaction ID bharna kanoonan jurm ho sakta hai.</p>
                 </div>
             </CardContent>
         </Card>
