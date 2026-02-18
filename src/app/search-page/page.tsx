@@ -140,8 +140,6 @@ export default function SearchCardPage() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [busDate, setBusDate] = useState<Date | undefined>();
-  const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
-  const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -190,9 +188,9 @@ export default function SearchCardPage() {
       <Card className="border-none shadow-lg">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3 h-14 bg-muted/50 p-1">
-            <TabsTrigger value="hotel" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
-            <TabsTrigger value="bus" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
-            <TabsTrigger value="car" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Car className="mr-2 h-4 w-4"/>Car</TabsTrigger>
+            <TabsTrigger value="hotel" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Hotel className="mr-1 sm:mr-2 h-4 w-4"/>Hotel</TabsTrigger>
+            <TabsTrigger value="bus" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Bus className="mr-1 sm:mr-2 h-4 w-4"/>Bus</TabsTrigger>
+            <TabsTrigger value="car" className="data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs sm:text-sm"><Car className="mr-1 sm:mr-2 h-4 w-4"/>Car</TabsTrigger>
           </TabsList>
           
           <TabsContent value="hotel">
