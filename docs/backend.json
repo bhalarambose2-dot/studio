@@ -33,6 +33,10 @@
       "type": "object",
       "description": "Represents a flight booking made by a user.",
       "properties": {
+        "userId": {
+            "type": "string",
+            "description": "The ID of the user who made the booking."
+        },
         "tripName": {
             "type": "string",
             "description": "The name of the trip or destination."
@@ -55,12 +59,12 @@
             "description": "Number of travelers for this booking."
         },
         "bookingDate": {
-          "type": "string",
-          "description": "The date and time the booking was made.",
-          "format": "date-time"
+          "type": "object",
+          "description": "The Firestore Timestamp of the booking."
         }
       },
       "required": [
+        "userId",
         "tripName",
         "customerName",
         "customerEmail",
@@ -266,16 +270,15 @@
         "schema": {
           "$ref": "#/entities/UserProfile"
         },
-        "description": "Stores user profiles. Uses path-based ownership for private user data."
+        "description": "Stores user profiles including wallet balance and KYC status."
       },
       {
         "path": "/users/{userId}/flightBookings/{flightBookingId}",
         "schema": {
           "$ref": "#/entities/FlightBooking"
         },
-        "description": "Stores flight bookings made by a user. Ensures only the user can access their bookings."
+        "description": "Stores flight bookings for a user."
       }
-    ],
-    "reasoning": "The Firestore data structure is optimized for security and scalability, using path-based ownership for user data."
+    ]
   }
 }
