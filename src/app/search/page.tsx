@@ -1,237 +1,228 @@
-
 'use client';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map, Bus, Bike, Zap, Flag } from 'lucide-react';
+import { 
+  Bell, 
+  Wallet, 
+  ChevronRight, 
+  Hotel, 
+  Plane, 
+  Train, 
+  Bus, 
+  Clock, 
+  Bed, 
+  Umbrella, 
+  Car, 
+  ShieldCheck, 
+  Users, 
+  ChevronLeft,
+  Star,
+  Zap,
+  Ticket
+} from 'lucide-react';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { BookingForm } from '@/components/booking-form';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { useFirebase } from '@/firebase';
+import { useUserProfile } from '@/lib/firebase/use-user-profile';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { popularDestinations } from '../popularDestinations';
-
-const rajasthanGuides = popularDestinations.filter(d => d.name.includes('Rajasthan'));
-
-const services = [
-    { name: 'Hotels', icon: Hotel, href: '/search-page' },
-    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus' },
-    { name: 'Bike Taxi', icon: Bike, href: '/search-page?tab=bike', isNew: true },
-    { name: 'Holiday Packages', icon: Package, href: '/destination-guides' },
-    { name: 'Airport Cabs', icon: Car, href: '#' },
-    { name: 'Gift Cards', icon: Gift, href: '/gift-card' },
-];
-
-const ServiceCard = ({ icon: Icon, name, href, isNew }: { icon: React.ElementType, name: string, href: string, isNew?: boolean }) => (
-    <Link href={href}>
-        <Card className="flex flex-col items-center justify-center p-4 text-center hover:bg-muted transition-colors h-full border-primary/20 shadow-sm hover:shadow-md relative overflow-hidden group">
-            {isNew && (
-              <Badge className="absolute top-2 right-2 bg-primary text-white border-none text-[8px] px-1 py-0 h-4 uppercase animate-pulse">New</Badge>
-            )}
-            <Icon className="w-8 h-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
-            <p className="text-sm font-bold uppercase tracking-tighter italic">{name}</p>
-        </Card>
-    </Link>
-);
-
+import { Card, CardContent } from '@/components/ui/card';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export default function SearchPage() {
-  const [selectedGuide, setSelectedGuide] = useState<any>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter();
-  const [tripDates, setTripDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+  const { user } = useFirebase();
+  const { userProfile } = useUserProfile(user?.uid);
+  const [activeOfferTab, setActiveOfferTab] = useState('All');
 
-
-  const handleBookNow = (guide: any) => {
-    setSelectedGuide(guide);
-    setIsDialogOpen(true);
-  }
+  const offers = [
+    { title: "Europe vibes @ desi price- up to 25% OFF* on flights!", date: "Limited period offer", type: "Flights", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" },
+    { title: "Hottest Deals: Up to 30% OFF on Jaipur Hotels!", date: "Limited period offer", type: "Hotels", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1080" },
+    { title: "Jodhpur Bike Taxi: 1st Ride FREE!", date: "Limited period offer", type: "Bike", image: "https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=1080" }
+  ];
 
   return (
-    <div className="flex flex-col gap-8 md:gap-12 pb-10">
-      {/* Explore Services section moved to the top */}
-      <section className="container mx-auto px-4">
-        <h2 className="text-2xl font-black italic tracking-tighter text-center mb-6 flex items-center justify-center gap-2">
-          <Zap className="text-primary h-6 w-6" />
-          EXPLORE SERVICES
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {services.map((service) => (
-                <ServiceCard key={service.name} icon={service.icon} name={service.name} href={service.href} isNew={service.isNew} />
-            ))}
+    <div className="flex flex-col min-h-screen bg-slate-50 -mt-8 -mx-4 md:-mx-8">
+      {/* Top Header Section */}
+      <section className="bg-primary pt-12 pb-20 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+        
+        <header className="flex items-center justify-between mb-8 relative z-10">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12 border-2 border-white shadow-lg">
+              <AvatarImage src={user?.photoURL || `https://picsum.photos/seed/${user?.uid}/100/100`} data-ai-hint="user avatar" />
+              <AvatarFallback className="bg-white text-primary font-black uppercase">{userProfile?.fullName?.[0] || 'B'}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <h1 className="text-white text-lg font-black tracking-tight leading-none">Hey {userProfile?.fullName?.split(' ')[0] || 'Bhala'}</h1>
+              <Link href="/menu" className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1 mt-1 flex items-center gap-1 group transition-all hover:bg-white/30">
+                <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explore goTribe</span>
+                <ChevronRight className="h-3 w-3 text-white transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <Link href="/wallet" className="bg-secondary text-white rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg shadow-secondary/30 transition-transform active:scale-95">
+              <Wallet className="h-4 w-4" />
+              <span className="text-sm font-black italic">₹{userProfile?.walletBalance || 0}</span>
+            </Link>
+            <Button variant="ghost" size="icon" className="text-white bg-white/10 rounded-full h-10 w-10 relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-primary" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white bg-white/10 rounded-full h-10 w-10">
+              <Users className="h-5 w-5" />
+            </Button>
+          </div>
+        </header>
+
+        {/* Main Service Grid (Floating) */}
+        <div className="absolute bottom-[-100px] left-4 right-4 z-20">
+          <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
+            <CardContent className="p-4 md:p-6 bg-white">
+              <div className="grid grid-cols-4 gap-3 md:gap-6 mb-8">
+                {[
+                  { name: 'Hotels', icon: Hotel, color: 'text-orange-500', bg: 'bg-orange-50', href: '/search-page?tab=hotel' },
+                  { name: 'Flights', icon: Plane, color: 'text-blue-500', bg: 'bg-blue-50', href: '#' },
+                  { name: 'Trains', icon: Train, color: 'text-gray-600', bg: 'bg-gray-50', href: '#' },
+                  { name: 'Bus', icon: Bus, color: 'text-orange-600', bg: 'bg-orange-50', href: '/search-page?tab=bus' },
+                ].map((service) => (
+                  <Link href={service.href} key={service.name} className="flex flex-col items-center gap-2 group">
+                    <div className={cn("h-16 w-16 md:h-20 md:w-20 rounded-3xl flex items-center justify-center transition-all group-hover:scale-105 group-active:scale-95 shadow-inner", service.bg)}>
+                      <service.icon className={cn("h-8 w-8 md:h-10 md:w-10", service.color)} />
+                    </div>
+                    <span className="text-[11px] font-black uppercase tracking-tight text-slate-700">{service.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-5 gap-2 md:gap-4">
+                {[
+                  { name: 'Hourly Stays', icon: Clock },
+                  { name: 'Hostels', icon: Bed },
+                  { name: 'Holiday Packages', icon: Umbrella },
+                  { name: 'Cabs', icon: Car },
+                  { name: 'Travel Insurance', icon: ShieldCheck },
+                ].map((sub) => (
+                  <Link href="#" key={sub.name} className="flex flex-col items-center gap-2 group">
+                    <div className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center transition-all group-hover:bg-primary/5">
+                      <sub.icon className="h-5 w-5 md:h-6 md:w-6 text-slate-600 group-hover:text-primary" />
+                    </div>
+                    <span className="text-[9px] font-bold text-center leading-tight text-slate-500">{sub.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      {/* Rajasthan Special Section */}
-      <section className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-            <div className="text-left">
-                <h2 className="text-4xl font-black italic tracking-tighter flex items-center gap-3">
-                    <Flag className="text-primary h-8 w-8" />
-                    DISCOVER RAJASTHAN
-                </h2>
-                <p className="text-muted-foreground font-medium uppercase text-xs tracking-[0.3em] mt-1">Sahi Safar Across the Desert Jewel</p>
+      {/* Spacer for floating grid */}
+      <div className="h-24" />
+
+      {/* Hero Offer Banner */}
+      <section className="px-4 mt-8">
+        <Link href="/destination-guides">
+          <Card className="bg-gradient-to-r from-orange-600 to-orange-400 text-white border-none shadow-xl rounded-[2rem] overflow-hidden relative group">
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 pointer-events-none">
+                <Plane className="w-full h-full -rotate-12 translate-x-12 scale-150" />
             </div>
-            <Link href="/search-page?tab=bike">
-              <Button variant="outline" className="border-primary text-primary font-black italic rounded-xl h-12 uppercase tracking-widest text-[10px]">Jodhpur Bike Taxi Available Now</Button>
-            </Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {rajasthanGuides.map((guide) => (
-            <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col border-none shadow-lg bg-white rounded-[2rem]">
-              <CardHeader className="p-0">
-                <div className="relative h-56 w-full">
-                  <Image
-                    src={guide.image}
-                    alt={`Image of ${guide.name}`}
-                    data-ai-hint={guide.hint}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] font-black italic px-2 py-1 rounded-lg shadow-lg">RAJASTHAN SPECIAL</div>
-                  {guide.name.includes('Jodhpur') && (
-                    <div className="absolute top-4 right-4 bg-green-500 text-white text-[8px] font-black uppercase px-2 py-1 rounded-full animate-pulse flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" /> Live Status
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 flex-grow flex flex-col">
-                <h2 className="text-xl font-black italic tracking-tight mb-2 uppercase">{guide.name.split(',')[0]}</h2>
-                <p className="text-muted-foreground flex-grow text-[10px] font-bold uppercase tracking-widest opacity-60">Experience the Royal Heritage</p>
-                <div className="flex items-center text-xl font-black text-primary mt-4 italic">
-                    <IndianRupee className="w-5 h-5 mr-1" />
-                    <span>₹2,499 Onwards</span>
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-[10px] text-primary font-black uppercase tracking-widest hover:underline">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    <span>View Map</span>
-                  </Link>
-                  {guide.name.includes('Jodhpur') && (
-                    <Link href="/search-page?tab=bike" className="flex items-center text-[10px] text-green-600 font-black uppercase tracking-widest hover:underline">
-                        <Zap className="w-3 h-3 mr-1" />
-                        <span>Live Taxi</span>
-                    </Link>
-                  )}
-                </div>
-              </CardContent>
-              <div className="p-4 pt-0">
-                  <Button className="w-full shadow-primary/20 shadow-lg font-black italic uppercase rounded-xl h-12" onClick={() => handleBookNow(guide)}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Book Now
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
-      
-      {/* Jodhpur Bike Taxi Banner */}
-      <section className="container mx-auto px-4">
-        <Link href="/search-page?tab=bike">
-          <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-2xl overflow-hidden relative group cursor-pointer rounded-[2.5rem]">
-            <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-20 group-hover:opacity-30 transition-opacity">
-              <Bike className="w-full h-full -rotate-12 translate-x-10 scale-150" />
-            </div>
-            <CardContent className="p-10 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <CardContent className="p-8 relative z-10 flex items-center justify-between">
               <div className="space-y-2">
-                <Badge className="bg-white text-primary border-none font-black italic mb-2">JODHPUR SPECIAL</Badge>
-                <h2 className="text-4xl font-black italic tracking-tighter">BIKE TAXI & LIVE MAP STATUS!</h2>
-                <p className="font-medium opacity-90 max-w-md">Rapido ki tarah asani se bike ride book karein Blue City mein. Jodhpur ki galliyon mein live status aur "Sahi Safar" shuru karein.</p>
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Make Your</p>
+                <h2 className="text-3xl font-black italic tracking-tighter">1st Hotel Booking</h2>
+                <p className="text-sm font-bold mt-1">Grab <span className="bg-white text-orange-600 px-2 py-0.5 rounded-lg">FLAT 25% OFF*</span></p>
+                <p className="text-[10px] font-black mt-4 uppercase tracking-tighter">Code: GOIBIBO</p>
               </div>
-              <Button size="lg" variant="secondary" className="font-black italic uppercase tracking-widest h-14 px-8 rounded-2xl shadow-xl">
-                VIEW LIVE STATUS
-              </Button>
+              <div className="relative h-24 w-24 hidden md:block">
+                 <Image src="https://picsum.photos/seed/travel/200/200" alt="Traveler" fill className="object-cover rounded-2xl shadow-lg border-2 border-white/50" data-ai-hint="traveler" />
+              </div>
             </CardContent>
           </Card>
         </Link>
+        <div className="flex justify-center gap-1.5 mt-4">
+          <div className="h-1 w-6 bg-primary rounded-full" />
+          <div className="h-1 w-3 bg-slate-200 rounded-full" />
+        </div>
       </section>
 
-      {/* Plan Custom Trip section */}
-      <section className="container mx-auto px-4 relative z-10">
-        <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/10 rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="bg-muted/30">
-                <CardTitle className="flex items-center gap-2 font-black italic">
-                    <Map className="text-primary"/>
-                    PLAN YOUR CUSTOMIZED RAJASTHAN TRIP
-                </CardTitle>
-                <CardDescription className="font-medium">Sahi Nivesh se Sahi Safar tak. Plan your desert adventure.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 md:p-8">
-              <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                <div className="space-y-2 lg:col-span-2">
-                  <Label htmlFor="destination" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Rajasthan Destination</Label>
-                  <Input id="destination" placeholder="e.g., Udaipur, Jaisalmer" className="h-12 rounded-xl" />
+      {/* Offers Section */}
+      <section className="mt-12 space-y-6">
+        <div className="px-4 flex items-center justify-between">
+          <h2 className="text-2xl font-black italic tracking-tighter">Offers For You</h2>
+          <Link href="/destination-guides" className="text-secondary text-sm font-black uppercase tracking-widest flex items-center gap-1 hover:underline">
+            View All <ChevronRight className="h-4 w-4 bg-secondary text-white rounded-full p-0.5" />
+          </Link>
+        </div>
+
+        <ScrollArea className="w-full px-4">
+          <div className="flex gap-3 pb-4">
+            {['All', 'Bank Offers', 'Flights', 'Hotels', 'Cabs', 'Bus'].map((tab) => (
+              <Button 
+                key={tab} 
+                onClick={() => setActiveOfferTab(tab)}
+                variant={activeOfferTab === tab ? "default" : "outline"}
+                className={cn(
+                    "rounded-xl font-black uppercase text-xs h-10 px-6 tracking-tight",
+                    activeOfferTab !== tab && "bg-white border-slate-200 text-slate-500"
+                )}
+              >
+                {tab}
+              </Button>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+
+        <ScrollArea className="w-full px-4">
+          <div className="flex gap-6 pb-8">
+            {offers.map((offer, idx) => (
+              <Card key={idx} className="min-w-[300px] border-none shadow-lg rounded-[2rem] overflow-hidden bg-white group hover:shadow-2xl transition-all">
+                <div className="relative h-44 w-full">
+                  <Image src={offer.image} alt={offer.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" data-ai-hint="travel offer" />
+                  <div className="absolute top-4 left-4">
+                     <Badge className="bg-white/90 backdrop-blur-sm text-primary border-none font-black text-[10px] italic">{offer.type}</Badge>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="trip-dates" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Dates</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="trip-dates"
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal h-12 rounded-xl",
-                          !tripDates.from && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {tripDates.from ? (
-                          tripDates.to ? (
-                            <>
-                              {format(tripDates.from, "LLL dd")} - {format(tripDates.to, "LLL dd")}
-                            </>
-                          ) : (
-                            format(tripDates.from, "LLL dd, y")
-                          )
-                        ) : (
-                          <span>Pick dates</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={tripDates.from}
-                        selected={tripDates}
-                        onSelect={(range) => setTripDates({ from: range?.from, to: range?.to })}
-                        numberOfMonths={2}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                <CardContent className="p-6 space-y-3">
+                  <h3 className="font-black text-lg italic leading-tight uppercase line-clamp-2">{offer.title}</h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-[10px] text-destructive font-bold uppercase italic">
+                      <Clock className="h-3 w-3" />
+                      {offer.date}
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-secondary/10 text-secondary">
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </section>
+
+      {/* Birthday Banner */}
+      <section className="px-4 mb-20">
+          <Card className="bg-white border-2 border-dashed border-primary/20 rounded-[2rem] shadow-sm">
+            <CardContent className="p-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Star className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-black italic">Let us celebrate with you!</p>
+                        <p className="text-[11px] text-secondary font-bold hover:underline cursor-pointer">Add birthday to your Profile</p>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="interests" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Activities</Label>
-                  <Input id="interests" placeholder="e.g., Desert Safari" className="h-12 rounded-xl" />
-                </div>
-                <Button type="submit" className="w-full h-12 lg:col-span-4 mt-4 font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-xl"><Search className="mr-2" /> Search Now</Button>
-              </form>
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
+                    <ChevronRight className="h-5 w-5 text-slate-400" />
+                </Button>
             </CardContent>
-        </Card>
+          </Card>
       </section>
-
-      {selectedGuide && (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[425px] rounded-[2rem]">
-            <DialogHeader>
-              <DialogTitle className="font-black italic text-2xl">Book Trip to {selectedGuide.name}</DialogTitle>
-            </DialogHeader>
-            <BookingForm tripName={selectedGuide.name} />
-          </DialogContent>
-        </Dialog>
-      )}
-
     </div>
   );
 }

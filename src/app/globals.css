@@ -15,10 +15,10 @@ body {
     --card-foreground: 20 15% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 20 15% 20%;
-    --primary: 24 96% 54%;
+    --primary: 24 96% 54%; /* Goibibo style Orange */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 210 100% 50%; /* Goibibo style Blue */
+    --secondary-foreground: 0 0% 100%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
     --accent: 170 45% 45%;
@@ -83,4 +83,12 @@ body {
 
 .glass-card {
   @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
