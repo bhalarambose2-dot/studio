@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -21,6 +20,7 @@ import {
   Settings,
   Package,
   Hotel,
+  LayoutDashboard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
@@ -68,7 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md">
-        <nav className="grid h-16 grid-cols-5 items-center justify-items-center gap-1 px-2 text-sm font-medium">
+        <nav className="grid h-16 grid-cols-6 items-center justify-items-center gap-1 px-2 text-[10px] font-medium leading-tight">
           <Link
             href="/search"
             className={cn(
@@ -77,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Home className="h-5 w-5" />
-            <span className="text-[10px] font-semibold">Home</span>
+            <span>Home</span>
           </Link>
            <Link
             href="/search-page"
@@ -87,7 +87,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Hotel className="h-5 w-5" />
-            <span className="text-[10px] font-semibold">Hotel</span>
+            <span>Hotel</span>
+          </Link>
+          <Link
+            href="/owner-dashboard"
+            className={cn(
+              'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
+              pathname === '/owner-dashboard' && 'text-primary'
+            )}
+          >
+            <LayoutDashboard className="h-5 w-5" />
+            <span>Bus Malik</span>
           </Link>
           <Link
             href="/search"
@@ -97,7 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <LayoutGrid className="h-5 w-5" />
-            <span className="text-[10px] font-semibold">Explore</span>
+            <span>Explore</span>
           </Link>
           <Link
             href="/destination-guides"
@@ -107,7 +117,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Package className="h-5 w-5" />
-            <span className="text-[10px] font-semibold">Packages</span>
+            <span>Packages</span>
           </Link>
           <Link
             href="/menu"
@@ -117,7 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Menu className="h-5 w-5" />
-            <span className="text-[10px] font-semibold">More</span>
+            <span>More</span>
           </Link>
         </nav>
       </footer>
