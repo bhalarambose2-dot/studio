@@ -82,7 +82,7 @@ export default function SearchPage() {
               <div className="grid grid-cols-4 gap-3 md:gap-4 mb-8">
                 {[
                   { name: 'Hotels', icon: Hotel, color: 'text-orange-500', bg: 'bg-orange-50', href: '/search-page?tab=hotel' },
-                  { name: 'Trains', icon: Train, color: 'text-gray-600', bg: 'bg-gray-50', href: '#' },
+                  { name: 'Cab Ride', icon: Car, color: 'text-blue-600', bg: 'bg-blue-50', href: '/search-page?tab=car' },
                   { name: 'Bus', icon: Bus, color: 'text-orange-600', bg: 'bg-orange-50', href: '/search-page?tab=bus' },
                   { name: 'Bike', icon: Bike, color: 'text-blue-600', bg: 'bg-blue-50', href: '/search-page?tab=bike' },
                 ].map((service) => (
