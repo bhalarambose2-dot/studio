@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { useUser } from "@/firebase";
 import { useUserProfile } from "@/lib/firebase/use-user-profile";
 import { useEffect, useState } from "react";
-import { Camera, ShieldCheck } from "lucide-react";
+import { Camera, ShieldCheck, BadgeCheck, Clock } from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default function ProfilePage() {
     const { user } = useUser();
@@ -31,6 +33,25 @@ export default function ProfilePage() {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
     }
 
+    const renderKycBadge = () => {
+        if (userProfile.kycStatus === 'verified') {
+            return (
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 flex items-center gap-1 border-green-200">
+                    <BadgeCheck className="h-3 w-3" />
+                    Verified
+                </Badge>
+            );
+        } else if (userProfile.kycStatus === 'pending') {
+            return (
+                <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100 flex items-center gap-1 border-yellow-200">
+                    <Clock className="h-3 w-3" />
+                    Pending
+                </Badge>
+            );
+        }
+        return null;
+    };
+
     return (
         <div className="flex justify-center items-center flex-1">
             <div className="flex flex-col items-center space-y-4 p-8 max-w-md w-full">
@@ -45,15 +66,25 @@ export default function ProfilePage() {
                     </div>
                 </div>
                 
-                <div className="flex gap-3">
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
-                        <Camera className="h-4 w-4" />
-                        Add photo
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 border-accent text-accent hover:bg-accent/10">
-                        <ShieldCheck className="h-4 w-4" />
-                        Add KYC
-                    </Button>
+                <div className="flex flex-col items-center gap-2">
+                    <div className="flex gap-3">
+                        <Button variant="outline" size="sm" className="flex items-center gap-2">
+                            <Camera className="h-4 w-4" />
+                            Add photo
+                        </Button>
+                        <Link href="/kyc">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className={`flex items-center gap-2 ${userProfile.kycStatus === 'verified' ? 'border-green-500 text-green-600 bg-green-50' : 'border-accent text-accent hover:bg-accent/10'}`}
+                                disabled={userProfile.kycStatus === 'pending' || userProfile.kycStatus === 'verified'}
+                            >
+                                <ShieldCheck className="h-4 w-4" />
+                                {userProfile.kycStatus === 'verified' ? 'KYC Done' : 'Add KYC'}
+                            </Button>
+                        </Link>
+                    </div>
+                    {renderKycBadge()}
                 </div>
 
                 <div className="text-center space-y-1">

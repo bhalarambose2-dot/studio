@@ -1,12 +1,15 @@
+
 'use client';
 
 import { useCallback } from 'react';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { toast } from '@/hooks/use-toast';
 
-interface UserProfile {
+export interface UserProfile {
   fullName: string;
+  kycStatus?: 'none' | 'pending' | 'verified';
+  kycDocumentType?: string;
 }
 
 export function useUserProfile(userId: string | undefined) {

@@ -219,6 +219,15 @@
         "fullName": {
           "description": "The user's full name.",
           "type": "string"
+        },
+        "kycStatus": {
+          "description": "The status of the user's KYC verification.",
+          "type": "string",
+          "enum": ["none", "pending", "verified"]
+        },
+        "kycDocumentType": {
+          "description": "The type of document used for KYC.",
+          "type": "string"
         }
       },
       "required": [
