@@ -83,11 +83,6 @@ export default function WalletPage() {
     }, 5000);
   };
 
-  const copyUPI = () => {
-    navigator.clipboard.writeText(upiId);
-    toast({ title: "Copied!", description: "UPI ID copied to clipboard." });
-  }
-
   const handleAddCard = async () => {
     if (newCard.number.length < 16) {
         toast({ title: "Invalid Card", description: "Please enter a valid card number.", variant: "destructive" });
@@ -193,9 +188,6 @@ export default function WalletPage() {
                         <Button onClick={handleShowQR} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount || isProcessingPayment}>
                             <QrCode className="mr-2 h-5 w-5" />
                             Scan & Pay Now
-                        </Button>
-                        <Button variant="ghost" className="w-full text-xs text-muted-foreground" onClick={copyUPI}>
-                             UPI ID: {upiId}
                         </Button>
                     </div>
                 </CardFooter>
