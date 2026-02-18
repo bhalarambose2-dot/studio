@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -15,14 +15,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-
+import { Badge } from '@/components/ui/badge';
 
 const hotels = [
     {
@@ -57,92 +57,79 @@ const hotels = [
         "hint": "jaipur haveli",
         "rooms_available": 6,
         "description": "Live like royalty in this beautifully restored heritage haveli."
-    },
-    {
-        "name": "Blue City Guest House",
-        "location": "Jodhpur",
-        "price": "900",
-        "rating": 4,
-        "facilities": ["Budget Stay", "Rooftop View", "Wi-Fi"],
-        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
-        "hint": "jodhpur guesthouse",
-        "rooms_available": 12,
-        "description": "Affordable comfort in the heart of the Blue City."
-    },
-    {
-        "name": "Mount Abu Hill Resort",
-        "location": "Mount Abu",
-        "price": "2000",
-        "rating": 4.2,
-        "facilities": ["Hill View", "Garden", "Restaurant"],
-        "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
-        "hint": "mount abu resort",
-        "rooms_available": 5,
-        "description": "Relax and rejuvenate amidst the serene hills of Mount Abu."
-    },
-    {
-        "name": "Kedarnath Guest House",
-        "location": "Kedarnath",
-        "price": "1500",
-        "rating": 4.1,
-        "facilities": ["Basic Stay", "Hot Water", "Near Temple"],
-        "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop",
-        "hint": "kedarnath guesthouse",
-        "rooms_available": 7,
-        "description": "Simple and clean accommodation close to the holy temple."
     }
 ];
 
 const buses = [
     {
         "name": "Raj Travels",
+        "busNumber": "RJ-14-PB-2024",
         "from": "Jaipur",
         "to": "Delhi",
-        "time": "10:30 PM",
+        "departure": "10:30 PM",
+        "arrival": "04:30 AM",
+        "duration": "6h 00m",
         "price": "850",
         "type": "AC Sleeper (2+1)",
         "rating": 4.5,
-        "seats": 12
+        "seats": 12,
+        "amenities": ["Water Bottle", "Blanket", "Charging Point"]
     },
     {
         "name": "Gujarat Travels",
+        "busNumber": "GJ-01-AX-9988",
         "from": "Udaipur",
         "to": "Ahmedabad",
-        "time": "09:00 PM",
+        "departure": "09:00 PM",
+        "arrival": "03:00 AM",
+        "duration": "6h 00m",
         "price": "700",
         "type": "Non-AC Sleeper",
         "rating": 4.2,
-        "seats": 24
+        "seats": 24,
+        "amenities": ["Emergency Exit", "Reading Light"]
     },
     {
         "name": "Neeta Bus",
+        "busNumber": "MH-04-BT-1122",
         "from": "Mumbai",
         "to": "Pune",
-        "time": "07:00 AM",
+        "departure": "07:00 AM",
+        "arrival": "10:30 AM",
+        "duration": "3h 30m",
         "price": "450",
         "type": "AC Seater",
         "rating": 4.7,
-        "seats": 5
+        "seats": 5,
+        "amenities": ["Leg Rest", "CCTV", "Movies"]
     },
     {
         "name": "Shrinath Travels",
+        "busNumber": "DL-01-RT-5566",
         "from": "Delhi",
         "to": "Agra",
-        "time": "06:30 AM",
+        "departure": "06:30 AM",
+        "arrival": "10:30 AM",
+        "duration": "4h 00m",
         "price": "550",
         "type": "AC Seater",
         "rating": 4.1,
-        "seats": 18
+        "seats": 18,
+        "amenities": ["WiFi", "Water Bottle"]
     },
     {
         "name": "VRL Travels",
+        "busNumber": "KA-01-VK-7744",
         "from": "Bangalore",
         "to": "Goa",
-        "time": "08:45 PM",
+        "departure": "08:45 PM",
+        "arrival": "08:00 AM",
+        "duration": "11h 15m",
         "price": "1200",
         "type": "Multi-Axle AC Sleeper",
         "rating": 4.4,
-        "seats": 10
+        "seats": 10,
+        "amenities": ["Pillow", "Snacks", "SOS Button"]
     }
 ];
 
@@ -199,25 +186,26 @@ export default function SearchCardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <Card>
+    <div className="flex flex-col gap-8 pb-20">
+      <Card className="border-none shadow-lg">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="hotel"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
-            <TabsTrigger value="bus"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
-            <TabsTrigger value="car"><Car className="mr-2 h-4 w-4"/>Car</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-14 bg-muted/50 p-1">
+            <TabsTrigger value="hotel" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
+            <TabsTrigger value="bus" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
+            <TabsTrigger value="car" className="data-[state=active]:bg-background data-[state=active]:shadow-sm"><Car className="mr-2 h-4 w-4"/>Car</TabsTrigger>
           </TabsList>
           
           <TabsContent value="hotel">
             <CardContent className="p-4 md:p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="hotel-location">Location</Label>
+                  <Label htmlFor="hotel-location">Destination</Label>
                   <Input 
                     id="hotel-location" 
-                    placeholder="e.g., Jaipur" 
+                    placeholder="Enter city or hotel name" 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
+                    className="h-11"
                   />
                 </div>
                 <div className="space-y-2">
@@ -228,7 +216,7 @@ export default function SearchCardPage() {
                         id="hotel-dates"
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-full justify-start text-left font-normal h-11",
                           !hotelDates.from && "text-muted-foreground"
                         )}
                       >
@@ -260,7 +248,9 @@ export default function SearchCardPage() {
                   </Popover>
                 </div>
               </div>
-              <Button className="w-full" onClick={handleHotelSearch}><Search className="mr-2 h-4 w-4" /> Search Hotels</Button>
+              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleHotelSearch}>
+                <Search className="mr-2 h-5 w-5" /> Search Hotels
+              </Button>
             </CardContent>
           </TabsContent>
 
@@ -268,36 +258,38 @@ export default function SearchCardPage() {
             <CardContent className="p-4 md:p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="bus-from">From</Label>
+                  <Label htmlFor="bus-from">From City</Label>
                   <Input 
                     id="bus-from" 
-                    placeholder="Starting City" 
+                    placeholder="Starting From" 
                     value={busFrom}
                     onChange={(e) => setBusFrom(e.target.value)}
+                    className="h-11"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="bus-to">To</Label>
+                  <Label htmlFor="bus-to">To City</Label>
                   <Input 
                     id="bus-to" 
-                    placeholder="Destination City" 
+                    placeholder="Going To" 
                     value={busTo}
                     onChange={(e) => setBusTo(e.target.value)}
+                    className="h-11"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Date</Label>
+                  <Label>Travel Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-full justify-start text-left font-normal h-11",
                           !busDate && "text-muted-foreground"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {busDate ? format(busDate, "PPP") : <span>Journey Date</span>}
+                        {busDate ? format(busDate, "PPP") : <span>Select Date</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -306,7 +298,9 @@ export default function SearchCardPage() {
                   </Popover>
                 </div>
               </div>
-              <Button className="w-full" onClick={handleBusSearch}><Search className="mr-2 h-4 w-4" /> Search Buses</Button>
+              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleBusSearch}>
+                <Search className="mr-2 h-5 w-5" /> Search Buses
+              </Button>
             </CardContent>
           </TabsContent>
           
@@ -315,56 +309,16 @@ export default function SearchCardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div className="space-y-2">
                   <Label htmlFor="pickup-location">Pick-up Location</Label>
-                  <Input id="pickup-location" placeholder="e.g., Jaipur Airport" />
+                  <Input id="pickup-location" placeholder="e.g., Jaipur Airport" className="h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="dropoff-location">Drop-off Location</Label>
-                  <Input id="dropoff-location" placeholder="e.g., Jodhpur Hotel" />
+                  <Input id="dropoff-location" placeholder="e.g., Hotel Name" className="h-11" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="pickup-date">Pick-up Date</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !carPickUpDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {carPickUpDate ? format(carPickUpDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" selected={carPickUpDate} onSelect={setCarPickUpDate} initialFocus />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="dropoff-date">Drop-off Date</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !carDropOffDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {carDropOffDate ? format(carDropOffDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" selected={carDropOffDate} onSelect={setCarDropOffDate} initialFocus />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-              </div>
-              <Button className="w-full"><Search className="mr-2 h-4 w-4" /> Search Cars</Button>
+              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20">
+                <Search className="mr-2 h-5 w-5" /> Search Cabs
+              </Button>
             </CardContent>
           </TabsContent>
         </Tabs>
@@ -372,93 +326,134 @@ export default function SearchCardPage() {
       
       {activeTab === 'hotel' && (
         <section>
-            <h2 className="text-2xl font-bold mb-4">Major Hotels in India</h2>
-            <ScrollArea className="w-full whitespace-nowrap rounded-lg">
-                <div className="flex w-max space-x-4 pb-4">
-                    {displayedHotels.length > 0 ? (
-                        displayedHotels.map((hotel) => (
-                            <Card key={hotel.name} className="w-[300px] overflow-hidden group">
-                                <div className="relative h-40">
-                                    <Image
-                                        src={hotel.image}
-                                        alt={`Image of ${hotel.name}`}
-                                        data-ai-hint={hotel.hint}
-                                        fill
-                                        className="object-cover"
-                                    />
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold">Top Hotels</h2>
+                <Badge variant="outline">{displayedHotels.length} Results</Badge>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedHotels.map((hotel) => (
+                    <Card key={hotel.name} className="overflow-hidden group border-none shadow-md hover:shadow-xl transition-all">
+                        <div className="relative h-48">
+                            <Image
+                                src={hotel.image}
+                                alt={hotel.name}
+                                data-ai-hint={hotel.hint}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
+                        <CardContent className="p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="font-bold text-lg">{hotel.name}</h3>
+                                <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">
+                                    {hotel.rating} <Star className="w-3 h-3 ml-1 fill-green-700" />
                                 </div>
-                                <CardContent className="p-4">
-                                    <h3 className="font-semibold text-lg">{hotel.name}</h3>
-                                    <p className="text-sm text-muted-foreground">{hotel.location}</p>
-                                    <div className="flex items-center text-sm mt-1">
-                                        <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
-                                        <span className="font-semibold">{hotel.rating}</span>
-                                        <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
-                                    </div>
-                                    <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
-                                        {hotel.facilities.map(f => (
-                                            <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
-                                        ))}
-                                    </div>
-                                    <div className="flex items-center text-lg font-bold text-accent mt-4">
-                                        <IndianRupee className="w-5 h-5 mr-1" />
-                                        <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
-                                    </div>
-                                    <Button className="w-full mt-4" onClick={() => handleBookNow(hotel)}>
-                                        <CreditCard className="mr-2 h-4 w-4" />
-                                        Book Now
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        ))
-                    ) : (
-                        <p className="p-10 text-muted-foreground">No hotels found for the selected location.</p>
-                    )}
-                </div>
-                <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+                            </div>
+                            <p className="text-sm text-muted-foreground flex items-center gap-1 mb-4">
+                                <MapPin className="w-3 h-3" /> {hotel.location}
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {hotel.facilities.map(f => (
+                                    <span key={f} className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{f}</span>
+                                ))}
+                            </div>
+                            <div className="flex items-center justify-between mt-auto">
+                                <div className="text-lg font-bold text-primary">
+                                    ₹{hotel.price}<span className="text-xs font-normal text-muted-foreground">/night</span>
+                                </div>
+                                <Button size="sm" onClick={() => handleBookNow(hotel)}>Book Now</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
         </section>
       )}
 
       {activeTab === 'bus' && (
-          <section className="space-y-4">
-              <h2 className="text-2xl font-bold">Available Buses</h2>
-              <div className="grid grid-cols-1 gap-4">
+          <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Available Bus Routes</h2>
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-none">{displayedBuses.length} Buses Found</Badge>
+              </div>
+              <div className="grid grid-cols-1 gap-6">
                   {displayedBuses.length > 0 ? (
                       displayedBuses.map((bus, idx) => (
-                          <Card key={idx} className="hover:shadow-md transition-shadow">
-                              <CardContent className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                  <div className="space-y-1">
-                                      <h3 className="text-xl font-bold">{bus.name}</h3>
-                                      <p className="text-sm text-muted-foreground">{bus.type}</p>
-                                      <div className="flex items-center gap-4 mt-2">
-                                          <div className="flex items-center gap-1 text-sm font-medium">
-                                              <MapPin className="h-4 w-4 text-primary" />
-                                              {bus.from} → {bus.to}
+                          <Card key={idx} className="border-none shadow-md hover:shadow-lg transition-all overflow-hidden border-l-4 border-l-primary">
+                              <CardContent className="p-0">
+                                  <div className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                      <div className="flex-grow space-y-4">
+                                          <div className="flex items-center justify-between md:justify-start gap-4">
+                                              <h3 className="text-xl font-black text-foreground">{bus.name}</h3>
+                                              <Badge variant="outline" className="text-[10px] font-mono tracking-tighter uppercase">{bus.busNumber}</Badge>
                                           </div>
-                                          <div className="flex items-center gap-1 text-sm font-medium">
-                                              <Clock className="h-4 w-4 text-primary" />
-                                              {bus.time}
+                                          
+                                          <div className="flex items-center gap-8 py-2 relative">
+                                              <div className="flex flex-col">
+                                                  <span className="text-2xl font-bold">{bus.departure}</span>
+                                                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{bus.from}</span>
+                                              </div>
+                                              
+                                              <div className="flex flex-col items-center flex-grow max-w-[120px]">
+                                                  <span className="text-[10px] text-muted-foreground mb-1">{bus.duration}</span>
+                                                  <div className="w-full h-[1px] bg-muted-foreground/30 relative flex justify-center items-center">
+                                                      <div className="w-1.5 h-1.5 rounded-full bg-primary absolute left-0"></div>
+                                                      <Bus className="h-3 w-3 text-primary bg-background p-0.5" />
+                                                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground absolute right-0"></div>
+                                                  </div>
+                                                  <span className="text-[10px] text-muted-foreground mt-1">Direct</span>
+                                              </div>
+
+                                              <div className="flex flex-col text-right">
+                                                  <span className="text-2xl font-bold">{bus.arrival}</span>
+                                                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{bus.to}</span>
+                                              </div>
+                                          </div>
+
+                                          <div className="flex flex-wrap gap-2 pt-2">
+                                              <Badge variant="secondary" className="text-[10px] font-normal">{bus.type}</Badge>
+                                              {bus.amenities.map(a => (
+                                                  <span key={a} className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded italic">
+                                                      <ShieldCheck className="h-3 w-3 text-green-600" /> {a}
+                                                  </span>
+                                              ))}
                                           </div>
                                       </div>
-                                  </div>
-                                  <div className="flex items-center gap-4 text-sm bg-primary/10 px-3 py-1 rounded-full text-primary font-semibold">
-                                      <Star className="h-4 w-4 fill-primary" />
-                                      {bus.rating}
-                                  </div>
-                                  <div className="flex flex-col items-end gap-2 w-full md:w-auto">
-                                      <div className="text-2xl font-bold text-accent flex items-center">
-                                          <IndianRupee className="h-5 w-5" />
-                                          {bus.price}
+
+                                      <div className="w-full md:w-px h-px md:h-24 bg-border"></div>
+
+                                      <div className="flex flex-col items-end gap-3 w-full md:w-auto min-w-[150px]">
+                                          <div className="flex flex-col items-end">
+                                              <span className="text-xs text-muted-foreground">Fare Starts From</span>
+                                              <div className="text-3xl font-black text-primary flex items-center">
+                                                  <IndianRupee className="h-6 w-6" />
+                                                  {bus.price}
+                                              </div>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                              <div className="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">
+                                                  <Star className="h-3 w-3 fill-green-600" />
+                                                  {bus.rating}
+                                              </div>
+                                              <span className="text-xs text-destructive font-bold">{bus.seats} Seats Left</span>
+                                          </div>
+                                          <Button className="w-full font-bold shadow-lg shadow-primary/20" onClick={() => handleBookNow(bus)}>Book Ticket</Button>
                                       </div>
-                                      <p className="text-xs text-muted-foreground">{bus.seats} seats left</p>
-                                      <Button className="w-full md:w-auto" onClick={() => handleBookNow(bus)}>Book Ticket</Button>
+                                  </div>
+                                  <div className="bg-muted/30 px-6 py-2 flex items-center gap-4 text-[10px] text-muted-foreground">
+                                      <span className="flex items-center gap-1"><Info className="h-3 w-3" /> Live Tracking Available</span>
+                                      <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-green-600" /> Insured Trip</span>
                                   </div>
                               </CardContent>
                           </Card>
                       ))
                   ) : (
-                      <p className="p-10 text-center text-muted-foreground">No buses found for this route.</p>
+                      <div className="text-center py-20 bg-muted/20 rounded-xl border-2 border-dashed border-muted">
+                          <Bus className="h-12 w-12 mx-auto text-muted-foreground opacity-30 mb-4" />
+                          <h3 className="text-xl font-bold text-muted-foreground">No Buses Found</h3>
+                          <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2">Humne koi buses nahi payi is route par. Kripya cities check karein.</p>
+                          <Button variant="link" onClick={() => setDisplayedBuses(buses)}>Show All Routes</Button>
+                      </div>
                   )}
               </div>
           </section>
@@ -466,11 +461,26 @@ export default function SearchCardPage() {
 
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Confirm Booking for {selectedItem.name}</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                {activeTab === 'bus' ? <Bus className="text-primary" /> : <Hotel className="text-primary" />}
+                Confirm {activeTab === 'bus' ? 'Bus Ticket' : 'Booking'}
+              </DialogTitle>
+              <DialogDescription>
+                {activeTab === 'bus' 
+                    ? `Booking seat on ${selectedItem.name} (${selectedItem.busNumber}) from ${selectedItem.from} to ${selectedItem.to}.` 
+                    : `Confirming your stay at ${selectedItem.name}, ${selectedItem.location}.`
+                }
+              </DialogDescription>
             </DialogHeader>
-            <BookingForm tripName={`${selectedItem.name} (${activeTab === 'bus' ? `${selectedItem.from} to ${selectedItem.to}` : selectedItem.location})`} />
+            <BookingForm 
+                tripName={activeTab === 'bus' 
+                    ? `${selectedItem.name} - ${selectedItem.busNumber} (${selectedItem.from} to ${selectedItem.to})` 
+                    : `${selectedItem.name} (${selectedItem.location})`
+                } 
+                bookingType={activeTab}
+            />
           </DialogContent>
         </Dialog>
       )}
