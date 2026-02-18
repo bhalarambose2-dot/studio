@@ -2,7 +2,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { toast } from '@/hooks/use-toast';
 
@@ -39,7 +39,8 @@ export function useUserProfile(userId: string | undefined) {
       if (!userDocRef) return;
 
       try {
-        await updateDoc(userDocRef, data);
+        // Use setDoc with merge: true instead of updateDoc to handle non-existent docs
+        await setDoc(userDocRef, data, { merge: true });
         toast({
           title: 'Success',
           description: 'Profile updated successfully!',

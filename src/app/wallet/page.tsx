@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -7,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2, Smartphone } from "lucide-react";
+import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2, Smartphone, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +22,7 @@ export default function WalletPage() {
 
   const balance = userProfile?.walletBalance || 0;
   const savedCards = userProfile?.savedCards || [];
+  const upiId = "8769930595-2@ybl";
 
   const handleUPIPayment = () => {
     const amount = parseFloat(addAmount);
@@ -34,17 +36,32 @@ export default function WalletPage() {
     }
 
     // This deep link will attempt to open UPI apps on a mobile device
-    const vpa = "8769930595-2@ybl";
     const name = "BR Trip";
-    const upiLink = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
 
     window.location.href = upiLink;
     
     toast({
       title: 'UPI Payment Initiated',
-      description: 'Opening your UPI app...',
+      description: 'Opening your UPI app... (Simulating Success in 5s)',
     });
+
+    // SIMULATION: In a prototype, we manually update the balance since we don't have a real payment gateway callback.
+    setTimeout(async () => {
+      const currentBalance = userProfile?.walletBalance || 0;
+      await updateUserProfile({ walletBalance: currentBalance + amount });
+      toast({
+        title: 'Payment Confirmed',
+        description: `₹${amount} has been added to your wallet.`,
+      });
+      setAddAmount('');
+    }, 5000);
   };
+
+  const copyUPI = () => {
+    navigator.clipboard.writeText(upiId);
+    toast({ title: "Copied!", description: "UPI ID copied to clipboard." });
+  }
 
   const handleAddCard = async () => {
     if (newCard.number.length < 16) {
@@ -80,9 +97,9 @@ export default function WalletPage() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="flex flex-col h-full border-primary/20 bg-primary/5">
+            <Card className="flex flex-col h-full border-primary/20 bg-primary/5 shadow-xl">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Wallet className="text-primary" /> My Balance</CardTitle>
+                    <CardTitle className="flex items-center gap-2 text-primary"><Wallet /> My Balance</CardTitle>
                     <CardDescription>Available funds for your next booking.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow flex flex-col justify-center py-10">
@@ -103,18 +120,22 @@ export default function WalletPage() {
                                 placeholder="Enter amount (e.g. 1000)" 
                                 value={addAmount}
                                 onChange={(e) => setAddAmount(e.target.value)}
+                                className="h-12 text-lg"
                             />
                         </div>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-3">
                             <Button onClick={handleUPIPayment} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount}>
                                 <Smartphone className="mr-2 h-5 w-5" /> Pay via UPI (Mobile)
+                            </Button>
+                            <Button variant="outline" className="w-full h-12 border-dashed" onClick={copyUPI}>
+                                <Copy className="mr-2 h-4 w-4" /> Copy UPI ID: {upiId}
                             </Button>
                         </div>
                     </div>
                 </CardFooter>
             </Card>
 
-            <Card className="flex flex-col h-full">
+            <Card className="flex flex-col h-full shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="flex items-center gap-2"><CreditCard className="text-primary" /> Saved Cards</CardTitle>
