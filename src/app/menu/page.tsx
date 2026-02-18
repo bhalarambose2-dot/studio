@@ -1,9 +1,8 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2, Loader2, LogOut, LayoutDashboard } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -28,7 +27,7 @@ export default function MenuPage() {
   if (isUserLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -48,17 +47,11 @@ export default function MenuPage() {
         </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <Link href="/profile">
-          <Card className="text-center p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm">
-              <User className="mx-auto h-8 w-8 text-primary mb-2" />
-              <p className="font-semibold text-sm">मेरा खाता</p>
-          </Card>
-        </Link>
-        <Link href="/owner-dashboard">
-          <Card className="text-center p-6 bg-accent/5 border-accent/20 hover:bg-accent/10 transition-colors cursor-pointer shadow-sm">
-              <LayoutDashboard className="mx-auto h-8 w-8 text-accent mb-2" />
-              <p className="font-semibold text-sm">बस मालिक (Owner)</p>
+          <Card className="text-center p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm flex items-center justify-center gap-4">
+              <User className="h-8 w-8 text-primary" />
+              <p className="font-semibold text-sm">मेरा खाता (My Account)</p>
           </Card>
         </Link>
       </div>
