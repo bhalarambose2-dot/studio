@@ -1,176 +1,26 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    /**
-     * BR TRIP SECURITY MODEL
-     *
-     * Core Philosophy:
-     * This ruleset implements a strict user-ownership model combined with a public-access catalog.
-     * All personal travel data (bookings, itineraries) is private and secured via path-based 
-     * authorization. Public travel information (destinations, flights, hotels) is globally readable.
-     *
-     * Data Structure:
-     * - /users/{userId}: Private user profiles and nested personal data.
-     * - /destinations: Public catalog of locations and activities.
-     * - /flights & /hotels: Publicly searchable flight and hotel options.
-     *
-     * Key Security Decisions:
-     * - Authorization Independence: User IDs are denormalized onto subcollection documents
-     *   to allow for fast, local authorization checks without using expensive get() calls.
-     * - No User Discovery: Listing the top-level /users collection is strictly forbidden.
-     * - Immutability: Critical relationship fields (like userId) are made immutable after 
-     *   creation to prevent unauthorized data re-assignment.
-     * - Catalog Integrity: Catalog data (Destinations, Flights, Hotels) is currently read-only
-     *   via the API, as the schema lacks ownership fields for client-side management.
-     */
-
-    // --- HELPER FUNCTIONS ---
-
-    /** Checks if the request is from an authenticated user. */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /** Checks if the authenticated user's UID matches the provided userId. */
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    /** Checks ownership and ensures the document exists for update/delete operations. */
-    function isExistingOwner(userId) {
-      return resource != null && isOwner(userId);
-    }
-
-    /** 
-     * Validates that the internal data field 'userId' matches the URL path 
-     * and the authenticated user's identity. 
-     */
-    function hasValidOwnership(userId) {
-      return request.resource.data.userId == userId && request.auth.uid == userId;
-    }
-
-    /** Enforces that the 'userId' field remains unchanged during updates. */
-    function isUserIdImmutable() {
-      return request.resource.data.userId == resource.data.userId;
-    }
-
-    // --- COLLECTION RULES ---
-
-    /**
-     * @description Rules for individual user profiles. Users can only access their own profile.
-     * @path /users/{userId}
-     * @allow get: if isOwner(userId); (User reading their own profile)
-     * @deny list: if true; (No one can list the user directory)
-     * @principle Restricts access to a user's own data tree and enforces identity consistency.
-     */
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
-
-      /**
-       * @description Rules for flight bookings. Secured by user-ownership.
-       * @path /users/{userId}/flightBookings/{flightBookingId}
-       * @allow create: auth.uid matches {userId} and data.userId matches {userId}.
-       * @deny update: if trying to change the userId field.
-       * @principle Denormalized userId allows direct authorization without parent lookups.
-       */
-      match /flightBookings/{flightBookingId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && hasValidOwnership(userId);
-        allow update: if isExistingOwner(userId) && isUserIdImmutable();
-        allow delete: if isExistingOwner(userId);
-      }
-
-      /**
-       * @description Rules for hotel bookings. Secured by user-ownership.
-       * @path /users/{userId}/hotelBookings/{hotelBookingId}
-       * @allow list: if isOwner(userId);
-       * @principle Path-based ownership for user-specific private data.
-       */
-      match /hotelBookings/{hotelBookingId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && hasValidOwnership(userId);
-        allow update: if isExistingOwner(userId) && isUserIdImmutable();
-        allow delete: if isExistingOwner(userId);
-      }
-
-      /**
-       * @description Rules for personalized trip itineraries.
-       * @path /users/{userId}/itineraries/{itineraryId}
-       * @allow get: if isOwner(userId);
-       * @principle Ensures private itineraries remain private to the creator.
-       */
-      match /itineraries/{itineraryId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && hasValidOwnership(userId);
-        allow update: if isExistingOwner(userId) && isUserIdImmutable();
-        allow delete: if isExistingOwner(userId);
-
-        /**
-         * @description Rules for individual items within an itinerary.
-         * @path /users/{userId}/itineraries/{itineraryId}/itineraryItems/{itineraryItemId}
-         * @allow list: if isOwner(userId);
-         * @principle Uses denormalized userId for authorization at the deepest nesting level.
-         */
-        match /itineraryItems/{itineraryItemId} {
-          allow get, list: if isOwner(userId);
-          allow create: if isOwner(userId) && hasValidOwnership(userId);
-          allow update: if isExistingOwner(userId) && isUserIdImmutable();
-          allow delete: if isExistingOwner(userId);
-        }
-      }
+      allow get, write: if isOwner(userId);
     }
 
-    /**
-     * @description Public destination guide catalog.
-     * @path /destinations/{destinationId}
-     * @allow get, list: if true; (Publicly readable)
-     * @deny create, update, delete: No ownership field defined in schema.
-     * @principle Public catalog data with server-side write restrictions.
-     */
-    match /destinations/{destinationId} {
-      allow get, list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Destination' entity is missing an 'ownerId' or 'authorId' field.
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-
-      /**
-       * @description Activities associated with a specific destination.
-       * @path /destinations/{destinationId}/activities/{activityId}
-       * @allow get, list: if true;
-       */
-      match /activities/{activityId} {
-        allow get, list: if true;
-        // CRITICAL: Cannot implement owner-only writes. The 'Activity' entity is missing an 'ownerId' or 'authorId' field.
-        allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      }
+    match /busBookings/{bookingId} {
+      // Travelers can create bookings
+      allow create: if isSignedIn();
+      // Travelers can read their own bookings
+      // Owners can read bookings for their buses (simplified for prototype)
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || resource.data.ownerId == request.auth.uid);
+      allow list: if isSignedIn();
     }
-
-    /**
-     * @description Public flight options catalog.
-     * @path /flights/{flightId}
-     * @allow get, list: if true;
-     * @principle Provides open access to flight search results.
-     */
-    match /flights/{flightId} {
-      allow get, list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Flight' entity is missing an 'ownerId' or 'authorId' field.
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
-
-    /**
-     * @description Public hotel properties catalog.
-     * @path /hotels/{hotelId}
-     * @allow get, list: if true;
-     * @principle Provides open access to hotel search results.
-     */
-    match /hotels/{hotelId} {
-      allow get, list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Hotel' entity is missing an 'ownerId' or 'authorId' field.
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    
+    // Default fallback
+    match /{path=**} {
+      allow read, write: if isSignedIn();
     }
   }
 }

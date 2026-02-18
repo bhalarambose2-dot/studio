@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -12,7 +13,7 @@ import { useState } from 'react';
 import { Checkbox } from './ui/checkbox';
 import Link from 'next/link';
 import { useFirebase } from '@/firebase';
-import { addDoc, collection, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
@@ -29,9 +30,10 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 interface BookingFormProps {
     tripName: string;
     bookingType?: string;
+    itemDetails?: any; // To pass price, bus number, etc.
 }
 
-export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProps) {
+export function BookingForm({ tripName, bookingType = 'hotel', itemDetails }: BookingFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const { firestore, user } = useFirebase();
@@ -49,18 +51,14 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
 
   const onSubmit = async (values: BookingFormValues) => {
     if (!user) {
-        toast({
-            title: 'Authentication Error',
-            description: 'You must be logged in to book.',
-            variant: 'destructive',
-        });
+        toast({ title: 'Authentication Error', description: 'You must be logged in to book.', variant: 'destructive' });
         return;
     }
 
     setIsLoading(true);
     
-    // Assign a mock seat number for bus bookings
     const seatNumber = bookingType === 'bus' ? `S-${Math.floor(Math.random() * 40) + 1}` : null;
+    const amount = itemDetails?.price ? parseFloat(itemDetails.price) * values.travelers : 0;
     
     const bookingDetails = { 
         userId: user.uid,
@@ -71,32 +69,38 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
         travelers: values.travelers,
         bookingType: bookingType,
         seatNumber: seatNumber,
+        busNumber: itemDetails?.busNumber || 'N/A',
+        busName: itemDetails?.name || tripName,
+        amount: amount,
+        ownerId: 'MOCK_OWNER_ID', // In a real app, this comes from the Bus record
         status: 'Confirmed',
         bookingDate: serverTimestamp(),
     };
     
     try {
-        const collectionName = bookingType === 'bus' ? 'busBookings' : 'flightBookings';
-        const bookingsColRef = collection(firestore, 'users', user.uid, collectionName);
-        await addDoc(bookingsColRef, bookingDetails);
+        // Save to user's private list
+        const userBookingRef = collection(firestore, 'users', user.uid, bookingType === 'bus' ? 'busBookings' : 'flightBookings');
+        await addDoc(userBookingRef, bookingDetails);
+
+        // Save to global busBookings for the Owner to see
+        if (bookingType === 'bus') {
+          const globalBookingRef = collection(firestore, 'busBookings');
+          await addDoc(globalBookingRef, bookingDetails);
+        }
         
         toast({
             title: bookingType === 'bus' ? 'Bus Ticket Confirmed!' : 'Booking Confirmed!',
             description: (
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 text-sm">
                 <p>Successfully booked for {values.travelers} traveler(s).</p>
                 {seatNumber && <p className="font-bold text-green-600">Seat Number: {seatNumber}</p>}
+                <p className="font-medium">Amount Paid: ₹{amount}</p>
               </div>
             ),
         });
 
     } catch (error: any) {
-        console.error("Booking Error: ", error);
-        toast({
-            title: 'Booking Failed',
-            description: 'Something went wrong. Please try again.',
-            variant: 'destructive',
-        });
+        toast({ title: 'Booking Failed', description: 'Something went wrong.', variant: 'destructive' });
     } finally {
         setIsLoading(false);
     }
@@ -108,6 +112,7 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
         <div className="bg-primary/5 p-3 rounded-lg border border-primary/20 mb-4">
             <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1">Trip Details</p>
             <p className="text-sm font-semibold">{tripName}</p>
+            {itemDetails?.price && <p className="text-xs text-muted-foreground mt-1">Price: ₹{itemDetails.price} / per head</p>}
         </div>
 
         <FormField
@@ -116,9 +121,7 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Passenger Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter full name" {...field} />
-              </FormControl>
+              <FormControl><Input placeholder="Enter full name" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -130,9 +133,7 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="email@example.com" {...field} />
-                  </FormControl>
+                  <FormControl><Input placeholder="email@example.com" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -143,9 +144,7 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="+91 00000 00000" {...field} />
-                  </FormControl>
+                  <FormControl><Input placeholder="+91 00000 00000" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -158,9 +157,7 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Travelers</FormLabel>
-              <FormControl>
-                <Input type="number" min="1" {...field} />
-              </FormControl>
+              <FormControl><Input type="number" min="1" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -172,17 +169,11 @@ export function BookingForm({ tripName, bookingType = 'hotel' }: BookingFormProp
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3 shadow-sm">
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel className="text-xs">
-                  I agree to the{' '}
-                  <Link href="/terms" className="text-primary hover:underline">
-                    Terms & Conditions
-                  </Link>
+                  I agree to the <Link href="/terms" className="text-primary hover:underline">Terms & Conditions</Link>
                 </FormLabel>
                 <FormMessage />
               </div>

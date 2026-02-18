@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2, Loader2, LogOut } from "lucide-react";
+import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2, Loader2, LogOut, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -54,10 +55,12 @@ export default function MenuPage() {
               <p className="font-semibold text-sm">मेरा खाता</p>
           </Card>
         </Link>
-        <Card className="text-center p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm">
-            <Bell className="mx-auto h-8 w-8 text-primary mb-2" />
-            <p className="font-semibold text-sm">सूचनाएं</p>
-        </Card>
+        <Link href="/owner-dashboard">
+          <Card className="text-center p-6 bg-accent/5 border-accent/20 hover:bg-accent/10 transition-colors cursor-pointer shadow-sm">
+              <LayoutDashboard className="mx-auto h-8 w-8 text-accent mb-2" />
+              <p className="font-semibold text-sm">बस मालिक (Owner)</p>
+          </Card>
+        </Link>
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden">
@@ -146,16 +149,6 @@ export default function MenuPage() {
           लॉग आउट (Log Out)
         </Button>
       </div>
-
-      <div className="text-center text-xs text-muted-foreground space-y-4 pt-4 pb-8">
-        <div className="flex justify-center gap-4">
-            <Link href="#" className="text-primary hover:underline font-medium">रेट करें</Link>
-            <span className="opacity-30">•</span>
-            <Link href="/terms" className="text-primary hover:underline font-medium">प्राइवेसी पॉलिसी</Link>
-        </div>
-        <p className="opacity-60 uppercase tracking-widest text-[10px]">एप्लिकेशन प्रारूप 10.5.1</p>
-      </div>
-
     </div>
   );
 }
