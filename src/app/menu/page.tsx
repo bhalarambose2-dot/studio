@@ -1,25 +1,39 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2 } from "lucide-react";
-import Image from "next/image";
+import { ChevronRight, User, Bell, Briefcase, Gift, Award, Users, Languages, Globe, IndianRupee, Building2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useFirebase } from "@/firebase";
+import { useUserProfile } from "@/lib/firebase/use-user-profile";
 
 export default function MenuPage() {
+  const { user, isUserLoading } = useFirebase();
+  const { userProfile, isLoading: isProfileLoading } = useUserProfile(user?.uid);
+
+  const displayName = userProfile?.fullName || user?.displayName || 'Traveler';
+  const displayEmail = user?.email || 'Not signed in';
+
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto space-y-6 pb-20">
       <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-lg">
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-16 w-16 border-4 border-primary-foreground/50 shadow-inner">
-            <AvatarImage src="https://picsum.photos/seed/user/100/100" alt="User avatar" data-ai-hint="user avatar" />
-            <AvatarFallback>B</AvatarFallback>
+            <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user/100/100"} alt="User avatar" data-ai-hint="user avatar" />
+            <AvatarFallback className="text-primary bg-white">{displayName[0]}</AvatarFallback>
           </Avatar>
-          <div>
-            <CardTitle className="text-xl">नमस्कार Bhala</CardTitle>
-            <CardDescription className="text-primary-foreground/80">bhalarambose2@gmail.com</CardDescription>
+          <div className="overflow-hidden">
+            <CardTitle className="text-xl truncate">नमस्कार {displayName}</CardTitle>
+            <CardDescription className="text-primary-foreground/80 truncate">{displayEmail}</CardDescription>
           </div>
         </CardHeader>
       </Card>
