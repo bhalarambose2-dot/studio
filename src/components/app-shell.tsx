@@ -1,8 +1,9 @@
+
 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Home,
   LayoutGrid,
@@ -20,18 +21,24 @@ import {
   Settings,
   Package,
   Hotel,
-  LayoutDashboard,
+  Bus,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   // Don't show nav on the root auth page
   if (pathname === '/') {
     return <main>{children}</main>;
   }
+
+  // Determine active state for search tabs
+  const currentTab = searchParams.get('tab');
+  const isHotelActive = pathname === '/search-page' && (!currentTab || currentTab === 'hotel');
+  const isBusActive = pathname === '/search-page' && currentTab === 'bus';
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
@@ -80,24 +87,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span>Home</span>
           </Link>
            <Link
-            href="/search-page"
+            href="/search-page?tab=hotel"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
-              pathname === '/search-page' && 'text-primary'
+              isHotelActive && 'text-primary'
             )}
           >
             <Hotel className="h-5 w-5" />
             <span>Hotel</span>
           </Link>
           <Link
-            href="/owner-dashboard"
+            href="/search-page?tab=bus"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
-              pathname === '/owner-dashboard' && 'text-primary'
+              isBusActive && 'text-primary'
             )}
           >
-            <LayoutDashboard className="h-5 w-5" />
-            <span>Bus Malik</span>
+            <Bus className="h-5 w-5" />
+            <span>Bus</span>
           </Link>
           <Link
             href="/search"
