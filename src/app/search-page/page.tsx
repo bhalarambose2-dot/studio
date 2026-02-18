@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Plane, Search, Car, Train, CreditCard, IndianRupee, Star } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -31,7 +30,7 @@ const hotels = [
         "price": "1200",
         "rating": 4.3,
         "facilities": ["Wi-Fi", "Breakfast", "Lake View Rooms"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop",
         "hint": "udaipur hotel",
         "rooms_available": 10,
         "description": "Enjoy stunning views of the lake from our comfortable rooms."
@@ -42,7 +41,7 @@ const hotels = [
         "price": "1800",
         "rating": 4.5,
         "facilities": ["Camel Safari", "Cultural Show", "Dinner"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1932&auto=format&fit=crop",
         "hint": "jaisalmer desert",
         "rooms_available": 8,
         "description": "Experience the magic of the desert with our safari camps."
@@ -53,7 +52,7 @@ const hotels = [
         "price": "2500",
         "rating": 4.4,
         "facilities": ["Royal Rooms", "Restaurant", "Free Parking"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
         "hint": "jaipur haveli",
         "rooms_available": 6,
         "description": "Live like royalty in this beautifully restored heritage haveli."
@@ -64,7 +63,7 @@ const hotels = [
         "price": "900",
         "rating": 4,
         "facilities": ["Budget Stay", "Rooftop View", "Wi-Fi"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
         "hint": "jodhpur guesthouse",
         "rooms_available": 12,
         "description": "Affordable comfort in the heart of the Blue City."
@@ -75,7 +74,7 @@ const hotels = [
         "price": "2000",
         "rating": 4.2,
         "facilities": ["Hill View", "Garden", "Restaurant"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
         "hint": "mount abu resort",
         "rooms_available": 5,
         "description": "Relax and rejuvenate amidst the serene hills of Mount Abu."
@@ -86,7 +85,7 @@ const hotels = [
         "price": "1500",
         "rating": 4.1,
         "facilities": ["Basic Stay", "Hot Water", "Near Temple"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop",
         "hint": "kedarnath guesthouse",
         "rooms_available": 7,
         "description": "Simple and clean accommodation close to the holy temple."
@@ -97,7 +96,7 @@ const hotels = [
         "price": "1000",
         "rating": 3.9,
         "facilities": ["Budget Rooms", "Restaurant", "Taxi Service"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1517840901100-8179e982ad91?q=80&w=2070&auto=format&fit=crop",
         "hint": "katra lodge",
         "rooms_available": 9,
         "description": "Conveniently located for pilgrims visiting Vaishno Devi."
@@ -108,7 +107,7 @@ const hotels = [
         "price": "3500",
         "rating": 4.6,
         "facilities": ["Sea View", "Swimming Pool", "Restaurant"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=2074&auto=format&fit=crop",
         "hint": "mumbai hotel",
         "rooms_available": 15,
         "description": "Luxurious stay with breathtaking views of the Arabian Sea."
@@ -119,7 +118,7 @@ const hotels = [
         "price": "2200",
         "rating": 4.2,
         "facilities": ["AC Rooms", "Free Wi-Fi", "Restaurant"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1551882547-ff43c61f3c33?q=80&w=2070&auto=format&fit=crop",
         "hint": "delhi inn",
         "rooms_available": 11,
         "description": "A comfortable and modern hotel in the bustling capital city."
@@ -130,7 +129,7 @@ const hotels = [
         "price": "2800",
         "rating": 4.4,
         "facilities": ["Business Rooms", "Gym", "Wi-Fi"],
-        "image": "https://placehold.co/600x400.png",
+        "image": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1932&auto=format&fit=crop",
         "hint": "bangalore hotel",
         "rooms_available": 10,
         "description": "Ideal for business travelers with state-of-the-art facilities."
@@ -143,7 +142,6 @@ export default function SearchCardPage() {
   const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
   const [selectedStay, setSelectedStay] = useState<typeof hotels[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [trainDate, setTrainDate] = useState<Date | undefined>();
   const [hotelLocation, setHotelLocation] = useState('');
   const [displayedHotels, setDisplayedHotels] = useState(hotels);
 
@@ -169,10 +167,9 @@ export default function SearchCardPage() {
     <div className="flex flex-col gap-8">
       <Card>
         <Tabs defaultValue="hotel">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="hotel"><Hotel className="mr-2"/>Hotel</TabsTrigger>
             <TabsTrigger value="car"><Car className="mr-2"/>Car</TabsTrigger>
-            <TabsTrigger value="train"><Train className="mr-2"/>Train & Bus</TabsTrigger>
           </TabsList>
           <TabsContent value="hotel">
             <CardContent className="p-4 md:p-6 space-y-4">
@@ -302,43 +299,6 @@ export default function SearchCardPage() {
               </div>
                <div>
                 <Button className="w-full"><Search className="mr-2" /> Search Cars</Button>
-              </div>
-            </CardContent>
-          </TabsContent>
-          <TabsContent value="train">
-            <CardContent className="p-4 md:p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="from-location">From</Label>
-                  <Input id="from-location" placeholder="e.g., Jaipur" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="to-location">To</Label>
-                  <Input id="to-location" placeholder="e.g., Jodhpur" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="train-date">Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !trainDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {trainDate ? format(trainDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar mode="single" selected={trainDate} onSelect={setTrainDate} initialFocus />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div>
-                <Button className="w-full"><Search className="mr-2" /> Search Trains & Buses</Button>
               </div>
             </CardContent>
           </TabsContent>

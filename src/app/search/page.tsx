@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, CreditCard, IndianRupee, MapPin, Hotel, Plane, Car, Utensils, Package, Home, Train, HandCoins, Gift, Shield, Calendar as CalendarIcon } from 'lucide-react';
+import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map } from 'lucide-react';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
@@ -19,8 +19,8 @@ import { format } from 'date-fns';
 const guides = [
   { name: 'Shimla, Himachal Pradesh', description: 'The Queen of Hills, perfect for a budget-friendly mountain escape.', image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1974&auto=format&fit=crop', hint: 'shimla mountains', price: '12,500' },
   { name: 'Manali, Himachal Pradesh', description: 'Popular adventure hub known for its stunning valleys and snow-capped peaks.', image: 'https://images.unsplash.com/photo-1593134257782-e89567b7684d?q=80&w=1965&auto=format&fit=crop', hint: 'manali valley', price: '15,000' },
-  { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1673807095861-04b24a39b0db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqYWlwdXIlMjBwYWxhY2V8ZW58MHx8fHwxNzU1MDU4Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
-  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1698574996391-73f103113f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHxVdHJha2hhbmQlMjB8ZW58MHx8fHwxNzU1MDU4NDM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
+  { name: 'Jaipur, Rajasthan', description: 'The Pink City, known for its stunning forts and palaces.', image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxKYWlwdXIlMjB8ZW58MHx8fHwxNzU1MDU2MTg4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaipur palace', price: '20,000' },
+  { name: 'Kedarnath, Uttarakhand', description: 'A sacred Hindu temple nestled in the Himalayas, a major pilgrimage site.', image: 'https://images.unsplash.com/photo-1649147313351-c86537fda0eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxLZWRhcm5hdGglMjB8ZW58MHx8fHwxNzU1MDU2NDI4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'himalayan temple', price: '45,000' },
   { name: 'Goa, India', description: 'Famous for its beaches, nightlife, and Portuguese-influenced architecture.', image: 'https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxHb2F8ZW58MHx8fHwxNzU1MDU2MzAyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'goa beach', price: '30,000' },
   { name: 'Kerala, India', description: "Known as 'God's Own Country', famous for its backwaters, lush greenery, and serene beaches.", image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZXJhbGElMjBiYWNrd2F0ZXJzfGVufDB8fHx8MTc1NTExODc0MXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'kerala backwaters', price: '35,000' },
   { name: 'Jaisalmer, Rajasthan', description: 'The Golden City, known for its massive fort and camel safaris in the Thar Desert.', image: 'https://images.unsplash.com/photo-1713349881676-594b95a5742b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8SmFpc2FsbWVyJTIwfGVufDB8fHx8MTc1NTA2MDQ5NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaisalmer fort', price: '2,500 par parshan' },
@@ -36,9 +36,7 @@ const guides = [
 ];
 
 const services = [
-    { name: 'Flights', icon: Plane, href: '#' },
     { name: 'Hotels', icon: Hotel, href: '/search-page' },
-    { name: 'Train & Bus', icon: Train, href: '#' },
     { name: 'Holiday Packages', icon: Package, href: '/destination-guides' },
     { name: 'Airport Cabs', icon: Car, href: '#' },
     { name: 'Homestays', icon: Home, href: '#' },
@@ -139,16 +137,16 @@ export default function SearchPage() {
         <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/10">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Plane className="text-primary"/>
+                    <Map className="text-primary"/>
                     Plan Your Customized Trip
                 </CardTitle>
-                <CardDescription>Find the best flights and plan your next adventure across India.</CardDescription>
+                <CardDescription>Plan your next adventure across India.</CardDescription>
             </CardHeader>
             <CardContent className="p-4 md:p-6">
               <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div className="space-y-2 lg:col-span-2">
                   <Label htmlFor="destination">Destination</Label>
-                  <Input id="destination" placeholder="e.g., Paris, France" />
+                  <Input id="destination" placeholder="e.g., Jaipur" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="trip-dates">Dates</Label>
