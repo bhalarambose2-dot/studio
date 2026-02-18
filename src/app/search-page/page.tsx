@@ -1,5 +1,6 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -89,65 +90,88 @@ const hotels = [
         "hint": "kedarnath guesthouse",
         "rooms_available": 7,
         "description": "Simple and clean accommodation close to the holy temple."
+    }
+];
+
+const buses = [
+    {
+        "name": "Raj Travels",
+        "from": "Jaipur",
+        "to": "Delhi",
+        "time": "10:30 PM",
+        "price": "850",
+        "type": "AC Sleeper (2+1)",
+        "rating": 4.5,
+        "seats": 12
     },
     {
-        "name": "Vaishno Devi Lodge",
-        "location": "Katra",
-        "price": "1000",
-        "rating": 3.9,
-        "facilities": ["Budget Rooms", "Restaurant", "Taxi Service"],
-        "image": "https://images.unsplash.com/photo-1517840901100-8179e982ad91?q=80&w=2070&auto=format&fit=crop",
-        "hint": "katra lodge",
-        "rooms_available": 9,
-        "description": "Conveniently located for pilgrims visiting Vaishno Devi."
-    },
-    {
-        "name": "Mumbai Beach Hotel",
-        "location": "Mumbai",
-        "price": "3500",
-        "rating": 4.6,
-        "facilities": ["Sea View", "Swimming Pool", "Restaurant"],
-        "image": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=2074&auto=format&fit=crop",
-        "hint": "mumbai hotel",
-        "rooms_available": 15,
-        "description": "Luxurious stay with breathtaking views of the Arabian Sea."
-    },
-    {
-        "name": "Delhi City Inn",
-        "location": "Delhi",
-        "price": "2200",
+        "name": "Gujarat Travels",
+        "from": "Udaipur",
+        "to": "Ahmedabad",
+        "time": "09:00 PM",
+        "price": "700",
+        "type": "Non-AC Sleeper",
         "rating": 4.2,
-        "facilities": ["AC Rooms", "Free Wi-Fi", "Restaurant"],
-        "image": "https://images.unsplash.com/photo-1551882547-ff43c61f3c33?q=80&w=2070&auto=format&fit=crop",
-        "hint": "delhi inn",
-        "rooms_available": 11,
-        "description": "A comfortable and modern hotel in the bustling capital city."
+        "seats": 24
     },
     {
-        "name": "Bangalore Tech Park Hotel",
-        "location": "Bangalore",
-        "price": "2800",
+        "name": "Neeta Bus",
+        "from": "Mumbai",
+        "to": "Pune",
+        "time": "07:00 AM",
+        "price": "450",
+        "type": "AC Seater",
+        "rating": 4.7,
+        "seats": 5
+    },
+    {
+        "name": "Shrinath Travels",
+        "from": "Delhi",
+        "to": "Agra",
+        "time": "06:30 AM",
+        "price": "550",
+        "type": "AC Seater",
+        "rating": 4.1,
+        "seats": 18
+    },
+    {
+        "name": "VRL Travels",
+        "from": "Bangalore",
+        "to": "Goa",
+        "time": "08:45 PM",
+        "price": "1200",
+        "type": "Multi-Axle AC Sleeper",
         "rating": 4.4,
-        "facilities": ["Business Rooms", "Gym", "Wi-Fi"],
-        "image": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1932&auto=format&fit=crop",
-        "hint": "bangalore hotel",
-        "rooms_available": 10,
-        "description": "Ideal for business travelers with state-of-the-art facilities."
+        "seats": 10
     }
 ];
 
 export default function SearchCardPage() {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'hotel';
+  
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
+  const [busDate, setBusDate] = useState<Date | undefined>();
   const [carPickUpDate, setCarPickUpDate] = useState<Date | undefined>();
   const [carDropOffDate, setCarDropOffDate] = useState<Date | undefined>();
-  const [selectedStay, setSelectedStay] = useState<typeof hotels[0] | null>(null);
+  
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
   const [hotelLocation, setHotelLocation] = useState('');
   const [displayedHotels, setDisplayedHotels] = useState(hotels);
 
+  const [busFrom, setBusFrom] = useState('');
+  const [busTo, setBusTo] = useState('');
+  const [displayedBuses, setDisplayedBuses] = useState(buses);
 
-  const handleBookNow = (stay: typeof hotels[0]) => {
-    setSelectedStay(stay);
+  useEffect(() => {
+    setActiveTab(searchParams.get('tab') || 'hotel');
+  }, [searchParams]);
+
+  const handleBookNow = (item: any) => {
+    setSelectedItem(item);
     setIsDialogOpen(true);
   }
 
@@ -162,15 +186,28 @@ export default function SearchCardPage() {
     setDisplayedHotels(filteredHotels);
   };
 
+  const handleBusSearch = () => {
+    if (!busFrom && !busTo) {
+        setDisplayedBuses(buses);
+        return;
+    }
+    const filteredBuses = buses.filter(bus => 
+        (busFrom ? bus.from.toLowerCase().includes(busFrom.toLowerCase()) : true) &&
+        (busTo ? bus.to.toLowerCase().includes(busTo.toLowerCase()) : true)
+    );
+    setDisplayedBuses(filteredBuses);
+  };
 
   return (
     <div className="flex flex-col gap-8">
       <Card>
-        <Tabs defaultValue="hotel">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="hotel"><Hotel className="mr-2"/>Hotel</TabsTrigger>
-            <TabsTrigger value="car"><Car className="mr-2"/>Car</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="hotel"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
+            <TabsTrigger value="bus"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
+            <TabsTrigger value="car"><Car className="mr-2 h-4 w-4"/>Car</TabsTrigger>
           </TabsList>
+          
           <TabsContent value="hotel">
             <CardContent className="p-4 md:p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -223,27 +260,57 @@ export default function SearchCardPage() {
                   </Popover>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="guests">Guests</Label>
-                <Select defaultValue="2">
-                  <SelectTrigger id="guests">
-                    <SelectValue placeholder="Select number of guests" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 Guest</SelectItem>
-                    <SelectItem value="2">2 Guests</SelectItem>
-                    <SelectItem value="3">3 Guests</SelectItem>
-                    <SelectItem value="4">4 Guests</SelectItem>
-                    <SelectItem value="5">5+ Guests</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Button className="w-full" onClick={handleHotelSearch}><Search className="mr-2" /> Search Hotels</Button>
-              </div>
+              <Button className="w-full" onClick={handleHotelSearch}><Search className="mr-2 h-4 w-4" /> Search Hotels</Button>
             </CardContent>
           </TabsContent>
-           <TabsContent value="car">
+
+          <TabsContent value="bus">
+            <CardContent className="p-4 md:p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="bus-from">From</Label>
+                  <Input 
+                    id="bus-from" 
+                    placeholder="Starting City" 
+                    value={busFrom}
+                    onChange={(e) => setBusFrom(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bus-to">To</Label>
+                  <Input 
+                    id="bus-to" 
+                    placeholder="Destination City" 
+                    value={busTo}
+                    onChange={(e) => setBusTo(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !busDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {busDate ? format(busDate, "PPP") : <span>Journey Date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar mode="single" selected={busDate} onSelect={setBusDate} initialFocus />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <Button className="w-full" onClick={handleBusSearch}><Search className="mr-2 h-4 w-4" /> Search Buses</Button>
+            </CardContent>
+          </TabsContent>
+          
+          <TabsContent value="car">
             <CardContent className="p-4 md:p-6 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div className="space-y-2">
@@ -297,73 +364,113 @@ export default function SearchCardPage() {
                     </Popover>
                 </div>
               </div>
-               <div>
-                <Button className="w-full"><Search className="mr-2" /> Search Cars</Button>
-              </div>
+              <Button className="w-full"><Search className="mr-2 h-4 w-4" /> Search Cars</Button>
             </CardContent>
           </TabsContent>
         </Tabs>
       </Card>
       
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Major Hotels in India</h2>
-        <ScrollArea className="w-full whitespace-nowrap rounded-lg">
-            <div className="flex w-max space-x-4 pb-4">
-                {displayedHotels.length > 0 ? (
-                    displayedHotels.map((hotel) => (
-                        <Card key={hotel.name} className="w-[300px] overflow-hidden group">
-                            <div className="relative h-40">
-                                <Image
-                                    src={hotel.image}
-                                    alt={`Image of ${hotel.name}`}
-                                    data-ai-hint={hotel.hint}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                            <CardContent className="p-4">
-                                <h3 className="font-semibold text-lg">{hotel.name}</h3>
-                                <p className="text-sm text-muted-foreground">{hotel.location}</p>
-                                <div className="flex items-center text-sm mt-1">
-                                    <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
-                                    <span className="font-semibold">{hotel.rating}</span>
-                                    <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
+      {activeTab === 'hotel' && (
+        <section>
+            <h2 className="text-2xl font-bold mb-4">Major Hotels in India</h2>
+            <ScrollArea className="w-full whitespace-nowrap rounded-lg">
+                <div className="flex w-max space-x-4 pb-4">
+                    {displayedHotels.length > 0 ? (
+                        displayedHotels.map((hotel) => (
+                            <Card key={hotel.name} className="w-[300px] overflow-hidden group">
+                                <div className="relative h-40">
+                                    <Image
+                                        src={hotel.image}
+                                        alt={`Image of ${hotel.name}`}
+                                        data-ai-hint={hotel.hint}
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
-                                <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
-                                    {hotel.facilities.map(f => (
-                                        <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
-                                    ))}
-                                </div>
-                                {hotel.price && (
-                                <div className="flex items-center text-lg font-bold text-accent mt-4">
-                                    <IndianRupee className="w-5 h-5 mr-1" />
-                                    <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
-                                </div>
-                                )}
-                                <div className="mt-4 flex flex-col gap-2">
-                                    <Button className="w-full" onClick={() => handleBookNow(hotel)}>
+                                <CardContent className="p-4">
+                                    <h3 className="font-semibold text-lg">{hotel.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{hotel.location}</p>
+                                    <div className="flex items-center text-sm mt-1">
+                                        <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
+                                        <span className="font-semibold">{hotel.rating}</span>
+                                        <span className="text-muted-foreground ml-1">({hotel.rooms_available} rooms)</span>
+                                    </div>
+                                    <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
+                                        {hotel.facilities.map(f => (
+                                            <span key={f} className="flex items-center text-xs bg-muted px-2 py-1 rounded-full">{f}</span>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center text-lg font-bold text-accent mt-4">
+                                        <IndianRupee className="w-5 h-5 mr-1" />
+                                        <span>{hotel.price} <span className="text-sm font-normal text-muted-foreground">/ night</span></span>
+                                    </div>
+                                    <Button className="w-full mt-4" onClick={() => handleBookNow(hotel)}>
                                         <CreditCard className="mr-2 h-4 w-4" />
                                         Book Now
                                     </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
-                ) : (
-                    <p className="text-muted-foreground">No hotels found for the selected location.</p>
-                )}
-            </div>
-            <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-      </section>
+                                </CardContent>
+                            </Card>
+                        ))
+                    ) : (
+                        <p className="p-10 text-muted-foreground">No hotels found for the selected location.</p>
+                    )}
+                </div>
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+        </section>
+      )}
 
-      {selectedStay && (
+      {activeTab === 'bus' && (
+          <section className="space-y-4">
+              <h2 className="text-2xl font-bold">Available Buses</h2>
+              <div className="grid grid-cols-1 gap-4">
+                  {displayedBuses.length > 0 ? (
+                      displayedBuses.map((bus, idx) => (
+                          <Card key={idx} className="hover:shadow-md transition-shadow">
+                              <CardContent className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                  <div className="space-y-1">
+                                      <h3 className="text-xl font-bold">{bus.name}</h3>
+                                      <p className="text-sm text-muted-foreground">{bus.type}</p>
+                                      <div className="flex items-center gap-4 mt-2">
+                                          <div className="flex items-center gap-1 text-sm font-medium">
+                                              <MapPin className="h-4 w-4 text-primary" />
+                                              {bus.from} → {bus.to}
+                                          </div>
+                                          <div className="flex items-center gap-1 text-sm font-medium">
+                                              <Clock className="h-4 w-4 text-primary" />
+                                              {bus.time}
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div className="flex items-center gap-4 text-sm bg-primary/10 px-3 py-1 rounded-full text-primary font-semibold">
+                                      <Star className="h-4 w-4 fill-primary" />
+                                      {bus.rating}
+                                  </div>
+                                  <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                                      <div className="text-2xl font-bold text-accent flex items-center">
+                                          <IndianRupee className="h-5 w-5" />
+                                          {bus.price}
+                                      </div>
+                                      <p className="text-xs text-muted-foreground">{bus.seats} seats left</p>
+                                      <Button className="w-full md:w-auto" onClick={() => handleBookNow(bus)}>Book Ticket</Button>
+                                  </div>
+                              </CardContent>
+                          </Card>
+                      ))
+                  ) : (
+                      <p className="p-10 text-center text-muted-foreground">No buses found for this route.</p>
+                  )}
+              </div>
+          </section>
+      )}
+
+      {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Book Your Stay at {selectedStay.name}</DialogTitle>
+              <DialogTitle>Confirm Booking for {selectedItem.name}</DialogTitle>
             </DialogHeader>
-            <BookingForm tripName={selectedStay.name} />
+            <BookingForm tripName={`${selectedItem.name} (${activeTab === 'bus' ? `${selectedItem.from} to ${selectedItem.to}` : selectedItem.location})`} />
           </DialogContent>
         </Dialog>
       )}
