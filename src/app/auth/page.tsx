@@ -1,20 +1,3 @@
-{
-  "hosting": {
-    "public": "out", // Or ".next" depending on your Next.js configuration
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html" // Or your custom rewrite for Next.js routing
-      }
-    ]
-  }
-}
-
 'use client';
 
 import { Button } from "@/components/ui/button";

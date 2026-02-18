@@ -1,8 +1,6 @@
-
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,9 +13,9 @@ import { LogIn, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useFirebase } from '@/firebase';
+import { useFirebase, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -41,7 +39,14 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { auth, firestore } = useFirebase();
+  const { auth, firestore, user, isUserLoading } = useFirebase();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push('/search');
+    }
+  }, [user, isUserLoading, router]);
 
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -53,54 +58,62 @@ export default function AuthPage() {
     defaultValues: { fullName: '', email: '', password: '', confirmPassword: '' },
   });
 
-  const handleSignIn = async (values: SignInFormValues) => {
+  const handleSignIn = (values: SignInFormValues) => {
     setIsLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({
-        title: 'Signed In Successfully',
-        description: `Welcome back!`,
+    signInWithEmailAndPassword(auth, values.email, values.password)
+      .then(() => {
+        toast({
+          title: 'Signed In Successfully',
+          description: `Welcome back!`,
+        });
+      })
+      .catch((error: any) => {
+        setIsLoading(false);
+        toast({
+          title: 'Sign In Failed',
+          description: error.message || 'Invalid credentials. Please try again.',
+          variant: 'destructive',
+        });
       });
-      router.push('/search');
-    } catch (error: any) {
-      console.error('Sign In Error:', error);
-      toast({
-        title: 'Sign In Failed',
-        description: error.message || 'An unexpected error occurred.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
   };
 
-  const handleSignUp = async (values: SignUpFormValues) => {
+  const handleSignUp = (values: SignUpFormValues) => {
     setIsLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      
-      // Create a user profile in Firestore
-      await setDoc(doc(firestore, "users", user.uid), {
-        fullName: values.fullName,
-        email: values.email,
-      });
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        
+        // Split full name for backend entity compliance
+        const names = values.fullName.split(' ');
+        const firstName = names[0] || '';
+        const lastName = names.slice(1).join(' ') || '';
 
-      toast({
-        title: 'Account Created',
-        description: 'Your account has been created successfully.',
+        // Create a user profile in Firestore (Non-Blocking)
+        const userDocRef = doc(firestore, "users", user.uid);
+        setDocumentNonBlocking(userDocRef, {
+          id: user.uid,
+          firstName,
+          lastName,
+          email: values.email,
+          preferredCurrency: 'INR',
+          languagePreference: 'hi',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }, { merge: true });
+
+        toast({
+          title: 'Account Created',
+          description: 'Your account has been created successfully.',
+        });
+      })
+      .catch((error: any) => {
+        setIsLoading(false);
+        toast({
+          title: 'Sign Up Failed',
+          description: error.message || 'An unexpected error occurred.',
+          variant: 'destructive',
+        });
       });
-      router.push('/search');
-    } catch (error: any) {
-      console.error('Sign Up Error:', error);
-      toast({
-        title: 'Sign Up Failed',
-        description: error.message || 'An unexpected error occurred.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -115,7 +128,7 @@ export default function AuthPage() {
         <div className="absolute inset-0 bg-black/50 -z-10" />
       <Card className="w-full max-w-md bg-transparent border-white/20 text-white">
         <CardHeader className="text-center">
-          <CardTitle>Welcome to BR-Trip</CardTitle>
+          <CardTitle>Welcome to BR Trip</CardTitle>
           <CardDescription className="text-white/80">Sign in or create an account to plan your next adventure</CardDescription>
         </CardHeader>
         <CardContent>
