@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -15,7 +16,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -27,36 +28,47 @@ import { Badge } from '@/components/ui/badge';
 const hotels = [
     {
         "name": "Hotel Lake View",
-        "location": "Udaipur",
+        "location": "Udaipur, Rajasthan",
         "price": "1200",
         "rating": 4.3,
         "facilities": ["Wi-Fi", "Breakfast", "Lake View Rooms"],
         "image": "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop",
         "hint": "udaipur hotel",
         "rooms_available": 10,
-        "description": "Enjoy stunning views of the lake from our comfortable rooms."
+        "description": "Enjoy stunning views of the lake from our comfortable rooms in the City of Lakes."
     },
     {
         "name": "Desert Safari Camp",
-        "location": "Jaisalmer",
+        "location": "Jaisalmer, Rajasthan",
         "price": "1800",
         "rating": 4.5,
         "facilities": ["Camel Safari", "Cultural Show", "Dinner"],
         "image": "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1932&auto=format&fit=crop",
         "hint": "jaisalmer desert",
         "rooms_available": 8,
-        "description": "Experience the magic of the desert with our safari camps."
+        "description": "Experience the magic of the Thar desert with our premium safari camps."
     },
     {
         "name": "Heritage Haveli",
-        "location": "Jaipur",
+        "location": "Jaipur, Rajasthan",
         "price": "2500",
         "rating": 4.4,
         "facilities": ["Royal Rooms", "Restaurant", "Free Parking"],
         "image": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
         "hint": "jaipur haveli",
         "rooms_available": 6,
-        "description": "Live like royalty in this beautifully restored heritage haveli."
+        "description": "Live like royalty in this beautifully restored heritage haveli in the Pink City."
+    },
+    {
+        "name": "Blue City Boutique",
+        "location": "Jodhpur, Rajasthan",
+        "price": "1500",
+        "rating": 4.6,
+        "facilities": ["Fort View", "Rooftop Cafe", "Guided Tours"],
+        "image": "https://images.unsplash.com/photo-1721973733816-1791a072295a?q=80&w=1080&auto=format&fit=crop",
+        "hint": "jodhpur boutique",
+        "rooms_available": 5,
+        "description": "Beautiful rooms with a stunning view of Mehrangarh Fort."
     }
 ];
 
@@ -76,6 +88,20 @@ const buses = [
         "amenities": ["Water Bottle", "Blanket", "Charging Point"]
     },
     {
+        "name": "Marwar Express",
+        "busNumber": "RJ-19-AX-7788",
+        "from": "Jodhpur",
+        "to": "Udaipur",
+        "departure": "08:00 AM",
+        "arrival": "02:00 PM",
+        "duration": "6h 00m",
+        "price": "550",
+        "type": "AC Seater",
+        "rating": 4.4,
+        "seats": 15,
+        "amenities": ["Pushback Seats", "CCTV"]
+    },
+    {
         "name": "Gujarat Travels",
         "busNumber": "GJ-01-AX-9988",
         "from": "Udaipur",
@@ -88,20 +114,6 @@ const buses = [
         "rating": 4.2,
         "seats": 24,
         "amenities": ["Emergency Exit", "Reading Light"]
-    },
-    {
-        "name": "Neeta Bus",
-        "busNumber": "MH-04-BT-1122",
-        "from": "Mumbai",
-        "to": "Pune",
-        "departure": "07:00 AM",
-        "arrival": "10:30 AM",
-        "duration": "3h 30m",
-        "price": "450",
-        "type": "AC Seater",
-        "rating": 4.7,
-        "seats": 5,
-        "amenities": ["Leg Rest", "CCTV", "Movies"]
     }
 ];
 
@@ -151,7 +163,6 @@ export default function SearchCardPage() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
   const [busDate, setBusDate] = useState<Date | undefined>();
-  const [bikeDate, setBikeDate] = useState<Date | undefined>();
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -181,7 +192,8 @@ export default function SearchCardPage() {
         return;
     }
     const filteredHotels = hotels.filter(hotel => 
-        hotel.location.toLowerCase().includes(hotelLocation.toLowerCase())
+        hotel.location.toLowerCase().includes(hotelLocation.toLowerCase()) ||
+        hotel.name.toLowerCase().includes(hotelLocation.toLowerCase())
     );
     setDisplayedHotels(filteredHotels);
   };
@@ -227,9 +239,9 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rajasthan Location</Label>
                   <Input 
-                    placeholder="Enter city or hotel name" 
+                    placeholder="e.g., Udaipur, Jaipur" 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
                     className="h-14 rounded-2xl border-muted"
@@ -273,7 +285,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleHotelSearch}>
-                <Search className="mr-2 h-6 w-6" /> SEARCH HOTELS
+                <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN HOTELS
               </Button>
             </CardContent>
           </TabsContent>
@@ -313,7 +325,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBusSearch}>
-                <Search className="mr-2 h-6 w-6" /> SEARCH BUSES
+                <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN BUSES
               </Button>
             </CardContent>
           </TabsContent>
@@ -327,7 +339,7 @@ export default function SearchCardPage() {
                     </div>
                     <div>
                         <h3 className="text-2xl font-black italic tracking-tighter">RAPIDO STYLE RIDE</h3>
-                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Available in Jodhpur</p>
+                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Available in Jodhpur (Expanding Soon in Rajasthan)</p>
                     </div>
                 </div>
                 <Badge className="bg-green-500 text-white border-none font-black italic">ACTIVE NOW</Badge>
@@ -354,7 +366,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBikeSearch}>
-                <Zap className="mr-2 h-6 w-6" /> FIND RIDE NOW
+                <Zap className="mr-2 h-6 w-6" /> FIND RIDE IN JODHPUR
               </Button>
             </CardContent>
           </TabsContent>
@@ -363,7 +375,7 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (Rajasthan)</Label>
                   <Input placeholder="e.g., Jaipur Airport" className="h-14 rounded-2xl" />
                 </div>
                 <div className="space-y-2">
@@ -372,7 +384,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                <Search className="mr-2 h-6 w-6" /> SEARCH CABS
+                <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN CABS
               </Button>
             </CardContent>
           </TabsContent>
@@ -382,7 +394,7 @@ export default function SearchCardPage() {
       {activeTab === 'hotel' && (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter">TOP HOTELS</h2>
+                <h2 className="text-2xl font-black italic tracking-tighter">RAJASTHAN HOTELS</h2>
                 <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedHotels.length} Results</Badge>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -399,7 +411,7 @@ export default function SearchCardPage() {
                         </div>
                         <CardContent className="p-6">
                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-black text-xl italic">{hotel.name}</h3>
+                                <h3 className="font-black text-xl italic uppercase">{hotel.name}</h3>
                                 <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded-lg text-xs font-black">
                                     {hotel.rating} <Star className="w-3 h-3 ml-1 fill-green-700" />
                                 </div>
@@ -428,7 +440,7 @@ export default function SearchCardPage() {
       {activeTab === 'bus' && (
           <section className="space-y-6">
               <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-black italic tracking-tighter uppercase">Available Bus Routes</h2>
+                  <h2 className="text-2xl font-black italic tracking-tighter uppercase">Rajasthan Bus Routes</h2>
                   <Badge className="bg-primary text-white border-none font-black italic">{displayedBuses.length} Buses Found</Badge>
               </div>
               <div className="grid grid-cols-1 gap-8">
@@ -566,7 +578,7 @@ export default function SearchCardPage() {
             </div>
             <div className="bg-primary/5 p-8 rounded-[3rem] border-2 border-dashed border-primary/20 text-center space-y-4">
                 <h3 className="text-2xl font-black italic tracking-tighter">BIKE CHALAYEIN AUR KAMAYEIN (PARTNER WITH US)</h3>
-                <p className="text-sm text-muted-foreground font-medium max-w-2xl mx-auto">Agar aapke paas bike hai aur aap Jodhpur mein extra kamai karna chahte hain, toh aaj hi humare saath judiye. "Sahi Nivesh" se apni bike ko taxi banayein.</p>
+                <p className="text-sm text-muted-foreground font-medium max-w-2xl mx-auto">Agar aapke paas bike hai aur aap Rajasthan mein extra kamai karna chahte hain, toh aaj hi humare saath judiye. "Sahi Nivesh" se apni bike ko taxi banayein.</p>
                 <Link href="/partnership">
                   <Button variant="outline" className="mt-4 border-primary text-primary font-black italic uppercase h-12 rounded-xl hover:bg-primary hover:text-white transition-all">BECOME A PARTNER</Button>
                 </Link>
