@@ -19,7 +19,7 @@ import {
   Zap,
   Ticket,
   MapPin,
-  Plane
+  Bike
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -79,17 +79,18 @@ export default function SearchPage() {
         <div className="absolute bottom-[-100px] left-4 right-4 z-20">
           <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
             <CardContent className="p-4 md:p-6 bg-white">
-              <div className="grid grid-cols-3 gap-3 md:gap-6 mb-8">
+              <div className="grid grid-cols-4 gap-3 md:gap-4 mb-8">
                 {[
                   { name: 'Hotels', icon: Hotel, color: 'text-orange-500', bg: 'bg-orange-50', href: '/search-page?tab=hotel' },
                   { name: 'Trains', icon: Train, color: 'text-gray-600', bg: 'bg-gray-50', href: '#' },
                   { name: 'Bus', icon: Bus, color: 'text-orange-600', bg: 'bg-orange-50', href: '/search-page?tab=bus' },
+                  { name: 'Bike', icon: Bike, color: 'text-blue-600', bg: 'bg-blue-50', href: '/search-page?tab=bike' },
                 ].map((service) => (
                   <Link href={service.href} key={service.name} className="flex flex-col items-center gap-2 group">
-                    <div className={cn("h-16 w-16 md:h-20 md:w-20 rounded-3xl flex items-center justify-center transition-all group-hover:scale-105 group-active:scale-95 shadow-inner", service.bg)}>
-                      <service.icon className={cn("h-8 w-8 md:h-10 md:w-10", service.color)} />
+                    <div className={cn("h-14 w-14 md:h-20 md:w-20 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all group-hover:scale-105 group-active:scale-95 shadow-inner", service.bg)}>
+                      <service.icon className={cn("h-7 w-7 md:h-10 md:w-10", service.color)} />
                     </div>
-                    <span className="text-[11px] font-black uppercase tracking-tight text-slate-700">{service.name}</span>
+                    <span className="text-[10px] md:text-[11px] font-black uppercase tracking-tight text-slate-700">{service.name}</span>
                   </Link>
                 ))}
               </div>
@@ -100,13 +101,13 @@ export default function SearchPage() {
                   { name: 'Hostels', icon: Bed },
                   { name: 'Holiday Packages', icon: Umbrella },
                   { name: 'Cabs', icon: Car },
-                  { name: 'Travel Insurance', icon: ShieldCheck },
+                  { name: 'Insurance', icon: ShieldCheck },
                 ].map((sub) => (
                   <Link href="#" key={sub.name} className="flex flex-col items-center gap-2 group">
-                    <div className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center transition-all group-hover:bg-primary/5">
-                      <sub.icon className="h-5 w-5 md:h-6 md:w-6 text-slate-600 group-hover:text-primary" />
+                    <div className="h-10 w-10 md:h-14 md:w-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center transition-all group-hover:bg-primary/5">
+                      <sub.icon className="h-4 w-4 md:h-6 md:w-6 text-slate-600 group-hover:text-primary" />
                     </div>
-                    <span className="text-[9px] font-bold text-center leading-tight text-slate-500">{sub.name}</span>
+                    <span className="text-[8px] md:text-[9px] font-bold text-center leading-tight text-slate-500">{sub.name}</span>
                   </Link>
                 ))}
               </div>
@@ -138,10 +139,6 @@ export default function SearchPage() {
             </CardContent>
           </Card>
         </Link>
-        <div className="flex justify-center gap-1.5 mt-4">
-          <div className="h-1 w-6 bg-primary rounded-full" />
-          <div className="h-1 w-3 bg-slate-200 rounded-full" />
-        </div>
       </section>
 
       {/* Rajasthan Special Section */}
