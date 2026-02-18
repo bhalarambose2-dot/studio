@@ -16,10 +16,10 @@ import {
   Car, 
   ShieldCheck, 
   Users, 
-  ChevronLeft,
   Star,
   Zap,
-  Ticket
+  Ticket,
+  MapPin
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -29,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 export default function SearchPage() {
   const { user } = useFirebase();
@@ -44,7 +45,7 @@ export default function SearchPage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 -mt-8 -mx-4 md:-mx-8">
       {/* Top Header Section */}
-      <section className="bg-primary pt-12 pb-20 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
+      <section className="bg-primary pt-12 pb-24 px-4 rounded-b-[3rem] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
         
         <header className="flex items-center justify-between mb-8 relative z-10">
@@ -70,9 +71,6 @@ export default function SearchPage() {
             <Button variant="ghost" size="icon" className="text-white bg-white/10 rounded-full h-10 w-10 relative">
               <Bell className="h-5 w-5" />
               <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-primary" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-white bg-white/10 rounded-full h-10 w-10">
-              <Users className="h-5 w-5" />
             </Button>
           </div>
         </header>
@@ -119,7 +117,7 @@ export default function SearchPage() {
       </section>
 
       {/* Spacer for floating grid */}
-      <div className="h-24" />
+      <div className="h-28" />
 
       {/* Hero Offer Banner */}
       <section className="px-4 mt-8">
@@ -147,18 +145,41 @@ export default function SearchPage() {
         </div>
       </section>
 
+      {/* Rajasthan Special Section */}
+      <section className="mt-12 px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-black italic tracking-tighter uppercase">Rajasthan Specials</h2>
+          <Link href="/destination-guides" className="text-primary text-xs font-black uppercase">View All</Link>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Link href="/search-page?tab=bike" className="relative h-40 rounded-[2rem] overflow-hidden group">
+            <Image src="https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=1080" alt="Bike Taxi" fill className="object-cover transition-transform group-hover:scale-110" data-ai-hint="bike ride" />
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 text-center">
+              <Zap className="h-8 w-8 text-yellow-400 mb-1" />
+              <span className="text-white font-black italic uppercase text-sm">Bike Taxi</span>
+              <span className="text-white/80 text-[10px] font-bold">JODHPUR</span>
+            </div>
+          </Link>
+          <Link href="/destination-guides" className="relative h-40 rounded-[2rem] overflow-hidden group">
+            <Image src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1080" alt="Hotels" fill className="object-cover transition-transform group-hover:scale-110" data-ai-hint="udaipur" />
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 text-center">
+              <Hotel className="h-8 w-8 text-orange-400 mb-1" />
+              <span className="text-white font-black italic uppercase text-sm">Top Hotels</span>
+              <span className="text-white/80 text-[10px] font-bold">RAJASTHAN</span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       {/* Offers Section */}
       <section className="mt-12 space-y-6">
         <div className="px-4 flex items-center justify-between">
           <h2 className="text-2xl font-black italic tracking-tighter">Offers For You</h2>
-          <Link href="/destination-guides" className="text-secondary text-sm font-black uppercase tracking-widest flex items-center gap-1 hover:underline">
-            View All <ChevronRight className="h-4 w-4 bg-secondary text-white rounded-full p-0.5" />
-          </Link>
         </div>
 
         <ScrollArea className="w-full px-4">
           <div className="flex gap-3 pb-4">
-            {['All', 'Bank Offers', 'Flights', 'Hotels', 'Cabs', 'Bus'].map((tab) => (
+            {['All', 'Flights', 'Hotels', 'Bus'].map((tab) => (
               <Button 
                 key={tab} 
                 onClick={() => setActiveOfferTab(tab)}
@@ -176,7 +197,7 @@ export default function SearchPage() {
         </ScrollArea>
 
         <ScrollArea className="w-full px-4">
-          <div className="flex gap-6 pb-8">
+          <div className="flex gap-6 pb-20">
             {offers.map((offer, idx) => (
               <Card key={idx} className="min-w-[300px] border-none shadow-lg rounded-[2rem] overflow-hidden bg-white group hover:shadow-2xl transition-all">
                 <div className="relative h-44 w-full">
@@ -202,26 +223,6 @@ export default function SearchPage() {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      </section>
-
-      {/* Birthday Banner */}
-      <section className="px-4 mb-20">
-          <Card className="bg-white border-2 border-dashed border-primary/20 rounded-[2rem] shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Star className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-black italic">Let us celebrate with you!</p>
-                        <p className="text-[11px] text-secondary font-bold hover:underline cursor-pointer">Add birthday to your Profile</p>
-                    </div>
-                </div>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-slate-50">
-                    <ChevronRight className="h-5 w-5 text-slate-400" />
-                </Button>
-            </CardContent>
-          </Card>
       </section>
     </div>
   );

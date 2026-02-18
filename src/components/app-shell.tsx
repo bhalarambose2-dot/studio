@@ -9,9 +9,6 @@ import {
   Gift,
   Handshake,
   Menu,
-  Wallet,
-  Coins,
-  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,16 +24,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <main className="relative min-h-screen bg-white">{children}</main>;
   }
 
+  // Auth pages don't get the shell
   if (pathname === '/') {
     return <main className="relative min-h-screen overflow-hidden">{children}</main>;
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-slate-50 relative overflow-hidden">
+    <div className="flex min-h-screen w-full flex-col bg-white relative overflow-hidden">
+      {/* Background Lighting Blobs */}
       <div className="bg-lighting-blob bg-lighting-blob-primary" />
       <div className="bg-lighting-blob bg-lighting-blob-accent" />
       
-      <main className="flex-1 overflow-y-auto pb-24">
+      <main className="flex-1 overflow-y-auto pb-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         {children}
       </main>
 
