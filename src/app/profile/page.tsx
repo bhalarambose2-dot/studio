@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useUser } from "@/firebase";
 import { useUserProfile } from "@/lib/firebase/use-user-profile";
 import { useEffect, useState } from "react";
+import { Camera } from "lucide-react";
 
 export default function ProfilePage() {
     const { user } = useUser();
@@ -27,16 +27,22 @@ export default function ProfilePage() {
     };
 
     if (!user || !userProfile) {
-        return <div>Loading...</div>;
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
     }
 
     return (
         <div className="flex justify-center items-center flex-1">
             <div className="flex flex-col items-center space-y-4 p-8 max-w-md w-full">
-                <Avatar className="h-24 w-24">
-                    <AvatarImage src={user.photoURL ?? "https://placehold.co/100x100.png"} alt="User avatar" data-ai-hint="user avatar" />
-                    <AvatarFallback>{userProfile.fullName?.[0] ?? user.email?.[0]}</AvatarFallback>
-                </Avatar>
+                <div className="relative group">
+                    <Avatar className="h-24 w-24">
+                        <AvatarImage src={user.photoURL ?? "https://picsum.photos/seed/user/100/100"} alt="User avatar" data-ai-hint="user avatar" />
+                        <AvatarFallback>{userProfile.fullName?.[0] ?? user.email?.[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full cursor-pointer hover:bg-primary/90 transition-colors">
+                        <Camera className="h-4 w-4" />
+                        <span className="sr-only">Add photo</span>
+                    </div>
+                </div>
                 <div className="text-center">
                     <h2 className="text-2xl font-bold">{userProfile.fullName}</h2>
                     <p className="text-muted-foreground">{user.email}</p>
