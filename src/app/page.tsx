@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -47,13 +46,24 @@ export default function AuthPage() {
   useEffect(() => {
     const checkRedirect = async () => {
         if (!isUserLoading && user) {
-            const userDoc = await getDoc(doc(firestore, "users", user.uid));
-            const userData = userDoc.data();
-            if (userData?.role === 'admin') {
-                router.push('/admin');
-            } else if (userData?.role === 'staff') {
-                router.push('/staff');
-            } else {
+            try {
+                const userDoc = await getDoc(doc(firestore, "users", user.uid));
+                const userData = userDoc.data();
+                
+                if (!userData) {
+                    router.push('/search');
+                    return;
+                }
+
+                if (userData.role === 'admin') {
+                    router.push('/admin');
+                } else if (userData.role === 'staff') {
+                    router.push('/staff');
+                } else {
+                    router.push('/search');
+                }
+            } catch (error) {
+                console.error("Redirection error:", error);
                 router.push('/search');
             }
         }
@@ -71,63 +81,69 @@ export default function AuthPage() {
     defaultValues: { fullName: '', email: '', role: 'traveler', password: '', confirmPassword: '' },
   });
 
-  const handleSignIn = (values: SignInFormValues) => {
+  const handleSignIn = async (values: SignInFormValues) => {
     setIsLoading(true);
-    signInWithEmailAndPassword(auth, values.email, values.password)
-      .then(() => {
-        toast({
-          title: 'Signed In Successfully',
-          description: `Welcome back!`,
-        });
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-        toast({
-          title: 'Sign In Failed',
-          description: error.message || 'Invalid credentials. Please try again.',
-          variant: 'destructive',
-        });
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: 'Signed In Successfully',
+        description: `Welcome back!`,
       });
+    } catch (error: any) {
+      setIsLoading(false);
+      toast({
+        title: 'Sign In Failed',
+        description: error.message || 'Invalid credentials. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
-  const handleSignUp = (values: SignUpFormValues) => {
+  const handleSignUp = async (values: SignUpFormValues) => {
     setIsLoading(true);
-    createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        
-        const names = values.fullName.split(' ');
-        const firstName = names[0] || '';
-        const lastName = names.slice(1).join(' ') || '';
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      
+      const names = values.fullName.split(' ');
+      const firstName = names[0] || '';
+      const lastName = names.slice(1).join(' ') || '';
 
-        const userDocRef = doc(firestore, "users", user.uid);
-        setDocumentNonBlocking(userDocRef, {
-          id: user.uid,
-          firstName,
-          lastName,
-          fullName: values.fullName,
-          email: values.email,
-          role: values.role,
-          walletBalance: 0,
-          kycStatus: 'none',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }, { merge: true });
+      const userDocRef = doc(firestore, "users", user.uid);
+      setDocumentNonBlocking(userDocRef, {
+        id: user.uid,
+        firstName,
+        lastName,
+        fullName: values.fullName,
+        email: values.email,
+        role: values.role,
+        walletBalance: 0,
+        kycStatus: 'none',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }, { merge: true });
 
-        toast({
-          title: 'Account Created',
-          description: `Account created as ${values.role}.`,
-        });
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-        toast({
-          title: 'Sign Up Failed',
-          description: error.message || 'An unexpected error occurred.',
-          variant: 'destructive',
-        });
+      toast({
+        title: 'Account Created',
+        description: `Account created as ${values.role}.`,
       });
+    } catch (error: any) {
+      setIsLoading(false);
+      toast({
+        title: 'Sign Up Failed',
+        description: error.message || 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    }
   };
+
+  if (isUserLoading) {
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+    );
+  }
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full">
@@ -160,7 +176,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50" />
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -173,7 +189,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50" />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -196,7 +212,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
+                          <Input placeholder="John Doe" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -209,7 +225,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -223,7 +239,7 @@ export default function AuthPage() {
                         <FormLabel>Register As</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="bg-white/10 border-white/20">
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white">
                               <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
                           </FormControl>
@@ -244,7 +260,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -257,7 +273,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
