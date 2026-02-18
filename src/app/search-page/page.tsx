@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -365,6 +366,51 @@ export default function SearchCardPage() {
                   </Button>
                 </div>
               </div>
+
+              {/* Live Map Status Section */}
+              <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white relative h-64 md:h-80 group">
+                  <Image 
+                    src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop"
+                    alt="Jodhpur Live Map"
+                    data-ai-hint="jodhpur map"
+                    fill
+                    className="object-cover brightness-75 group-hover:scale-105 transition-transform duration-1000"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  
+                  {/* Simulated Live Biker Icons */}
+                  <div className="absolute top-1/4 left-1/3 animate-bounce">
+                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
+                        <Bike className="h-3 w-3 text-white" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-1/3 right-1/4 animate-pulse">
+                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
+                        <Bike className="h-3 w-3 text-white" />
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 right-1/2 animate-bounce delay-700">
+                    <div className="bg-primary p-1.5 rounded-full shadow-[0_0_15px_rgba(var(--primary),1)] border-2 border-white">
+                        <Bike className="h-3 w-3 text-white" />
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+                    <div>
+                        <h4 className="text-white font-black italic tracking-tighter text-xl">LIVE MAP STATUS</h4>
+                        <div className="flex items-center gap-2 text-[10px] text-white/80 font-bold uppercase tracking-widest">
+                            <span className="h-2 w-2 rounded-full bg-green-500 animate-ping" />
+                            8 Bikers Near You (Jodhpur)
+                        </div>
+                    </div>
+                    <Link href={`https://www.google.com/maps/search/Jodhpur+Traffic/@26.2389,73.0243,13z`} target="_blank">
+                        <Button variant="secondary" size="sm" className="font-black italic uppercase text-[10px] h-10 rounded-xl">
+                            <Map className="mr-2 h-4 w-4" /> Full Map
+                        </Button>
+                    </Link>
+                  </div>
+              </Card>
+
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBikeSearch}>
                 <Zap className="mr-2 h-6 w-6" /> FIND RIDE IN JODHPUR
               </Button>

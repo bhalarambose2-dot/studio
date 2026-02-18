@@ -98,6 +98,11 @@ export default function SearchPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] font-black italic px-2 py-1 rounded-lg shadow-lg">RAJASTHAN SPECIAL</div>
+                  {guide.name.includes('Jodhpur') && (
+                    <div className="absolute top-4 right-4 bg-green-500 text-white text-[8px] font-black uppercase px-2 py-1 rounded-full animate-pulse flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" /> Live Status
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="p-6 flex-grow flex flex-col">
@@ -112,6 +117,12 @@ export default function SearchPage() {
                     <MapPin className="w-3 h-3 mr-1" />
                     <span>View Map</span>
                   </Link>
+                  {guide.name.includes('Jodhpur') && (
+                    <Link href="/search-page?tab=bike" className="flex items-center text-[10px] text-green-600 font-black uppercase tracking-widest hover:underline">
+                        <Zap className="w-3 h-3 mr-1" />
+                        <span>Live Taxi</span>
+                    </Link>
+                  )}
                 </div>
               </CardContent>
               <div className="p-4 pt-0">
@@ -135,11 +146,11 @@ export default function SearchPage() {
             <CardContent className="p-10 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="space-y-2">
                 <Badge className="bg-white text-primary border-none font-black italic mb-2">JODHPUR SPECIAL</Badge>
-                <h2 className="text-4xl font-black italic tracking-tighter">BIKE TAXI AVAILABLE NOW!</h2>
-                <p className="font-medium opacity-90 max-w-md">Rapido ki tarah asani se bike ride book karein Blue City mein. Jodhpur ki galliyon mein "Sahi Safar" shuru karein.</p>
+                <h2 className="text-4xl font-black italic tracking-tighter">BIKE TAXI & LIVE MAP STATUS!</h2>
+                <p className="font-medium opacity-90 max-w-md">Rapido ki tarah asani se bike ride book karein Blue City mein. Jodhpur ki galliyon mein live status aur "Sahi Safar" shuru karein.</p>
               </div>
               <Button size="lg" variant="secondary" className="font-black italic uppercase tracking-widest h-14 px-8 rounded-2xl shadow-xl">
-                BOOK RIDE NOW
+                VIEW LIVE STATUS
               </Button>
             </CardContent>
           </Card>
