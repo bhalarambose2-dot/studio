@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -107,34 +107,40 @@ const buses = [
 
 const bikes = [
     {
-        "name": "Royal Enfield Bullet 350",
+        "name": "Standard Ride (Bike Taxi)",
         "location": "Jodhpur",
-        "price": "1200",
+        "price": "15",
+        "priceUnit": "/km",
         "rating": 4.9,
         "image": "https://images.unsplash.com/photo-1558981403-c5f91cbba527?q=80&w=2070&auto=format&fit=crop",
-        "hint": "bullet bike",
-        "type": "Cruiser",
-        "description": "Jodhpur ki galliyon ke liye asli Bullet ka maza."
+        "hint": "bike ride",
+        "type": "Rapido Style",
+        "isTaxi": true,
+        "description": "Sahi Nivesh ke saath sahi safar. Jodhpur city mein asani se ride book karein."
     },
     {
-        "name": "Honda Activa 6G",
+        "name": "Premium Ride (Royal Enfield)",
         "location": "Jodhpur",
-        "price": "500",
-        "rating": 4.6,
-        "image": "https://images.unsplash.com/photo-1620939511593-3cd71350645f?q=80&w=1974&auto=format&fit=crop",
-        "hint": "activa scooter",
-        "type": "Scooter",
-        "description": "Easy commuting for Blue City exploration."
-    },
-    {
-        "name": "KTM Duke 390",
-        "location": "Jodhpur",
-        "price": "1500",
-        "rating": 4.8,
+        "price": "30",
+        "priceUnit": "/km",
+        "rating": 5.0,
         "image": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2070&auto=format&fit=crop",
-        "hint": "ktm duke",
-        "type": "Sports",
-        "description": "High performance for long rides around Rajasthan."
+        "hint": "bullet ride",
+        "type": "Premium Taxi",
+        "isTaxi": true,
+        "description": "Blue City ki galliyon mein Bullet ride ka maza."
+    },
+    {
+        "name": "Quick Activa Ride",
+        "location": "Jodhpur",
+        "price": "10",
+        "priceUnit": "/km",
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1620939511593-3cd71350645f?q=80&w=1974&auto=format&fit=crop",
+        "hint": "scooter ride",
+        "type": "Economy Taxi",
+        "isTaxi": true,
+        "description": "Short distance ke liye fast aur sasti bike taxi."
     }
 ];
 
@@ -205,37 +211,38 @@ export default function SearchCardPage() {
 
   return (
     <div className="flex flex-col gap-8 pb-20">
-      <Card className="border-none shadow-lg">
+      <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 h-14 bg-muted/50 p-1">
-            <TabsTrigger value="hotel" className="text-[10px] sm:text-xs"><Hotel className="mr-1 h-3 w-3"/>Hotel</TabsTrigger>
-            <TabsTrigger value="bus" className="text-[10px] sm:text-xs"><Bus className="mr-1 h-3 w-3"/>Bus</TabsTrigger>
-            <TabsTrigger value="bike" className="text-[10px] sm:text-xs"><Bike className="mr-1 h-3 w-3"/>Bike</TabsTrigger>
-            <TabsTrigger value="car" className="text-[10px] sm:text-xs"><Car className="mr-1 h-3 w-3"/>Car</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 h-16 bg-muted/30 p-1">
+            <TabsTrigger value="hotel" className="text-xs font-black italic uppercase"><Hotel className="mr-2 h-4 w-4"/>Hotel</TabsTrigger>
+            <TabsTrigger value="bus" className="text-xs font-black italic uppercase"><Bus className="mr-2 h-4 w-4"/>Bus</TabsTrigger>
+            <TabsTrigger value="bike" className="text-xs font-black italic uppercase relative">
+                <Bike className="mr-2 h-4 w-4"/>Bike Taxi
+                <Badge className="absolute -top-1 -right-1 bg-primary text-white text-[8px] h-4 px-1 border-none animate-pulse">LIVE</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="car" className="text-xs font-black italic uppercase"><Car className="mr-2 h-4 w-4"/>Cab</TabsTrigger>
           </TabsList>
           
           <TabsContent value="hotel">
-            <CardContent className="p-4 md:p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardContent className="p-6 md:p-10 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="hotel-location">Destination</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination</Label>
                   <Input 
-                    id="hotel-location" 
                     placeholder="Enter city or hotel name" 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
-                    className="h-11"
+                    className="h-14 rounded-2xl border-muted"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="hotel-dates">Dates</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Check-in / Out</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
-                        id="hotel-dates"
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal h-11",
+                          "w-full justify-start text-left font-normal h-14 rounded-2xl",
                           !hotelDates.from && "text-muted-foreground"
                         )}
                       >
@@ -243,14 +250,13 @@ export default function SearchCardPage() {
                         {hotelDates.from ? (
                           hotelDates.to ? (
                             <>
-                              {format(hotelDates.from, "LLL dd, y")} -{" "}
-                              {format(hotelDates.to, "LLL dd, y")}
+                              {format(hotelDates.from, "LLL dd")} - {format(hotelDates.to, "LLL dd")}
                             </>
                           ) : (
                             format(hotelDates.from, "LLL dd, y")
                           )
                         ) : (
-                          <span>Pick check-in/out dates</span>
+                          <span>Pick Dates</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -258,7 +264,6 @@ export default function SearchCardPage() {
                       <Calendar
                         initialFocus
                         mode="range"
-                        defaultMonth={hotelDates.from}
                         selected={hotelDates}
                         onSelect={(range) => setHotelDates({ from: range?.from, to: range?.to })}
                         numberOfMonths={2}
@@ -267,116 +272,107 @@ export default function SearchCardPage() {
                   </Popover>
                 </div>
               </div>
-              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleHotelSearch}>
-                <Search className="mr-2 h-5 w-5" /> Search Hotels
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleHotelSearch}>
+                <Search className="mr-2 h-6 w-6" /> SEARCH HOTELS
               </Button>
             </CardContent>
           </TabsContent>
 
           <TabsContent value="bus">
-            <CardContent className="p-4 md:p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="p-6 md:p-10 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="bus-from">From City</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From City</Label>
                   <Input 
-                    id="bus-from" 
                     placeholder="Starting From" 
                     value={busFrom}
                     onChange={(e) => setBusFrom(e.target.value)}
-                    className="h-11"
+                    className="h-14 rounded-2xl"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="bus-to">To City</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To City</Label>
                   <Input 
-                    id="bus-to" 
                     placeholder="Going To" 
                     value={busTo}
                     onChange={(e) => setBusTo(e.target.value)}
-                    className="h-11"
+                    className="h-14 rounded-2xl"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Travel Date</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal h-11",
-                          !busDate && "text-muted-foreground"
-                        )}
-                      >
+                      <Button variant="outline" className="w-full h-14 rounded-2xl justify-start">
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {busDate ? format(busDate, "PPP") : <span>Select Date</span>}
+                        {busDate ? format(busDate, "PPP") : "Select Date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar mode="single" selected={busDate} onSelect={setBusDate} initialFocus />
-                    </PopoverContent>
+                    <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={busDate} onSelect={setBusDate} /></PopoverContent>
                   </Popover>
                 </div>
               </div>
-              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleBusSearch}>
-                <Search className="mr-2 h-5 w-5" /> Search Buses
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBusSearch}>
+                <Search className="mr-2 h-6 w-6" /> SEARCH BUSES
               </Button>
             </CardContent>
           </TabsContent>
 
           <TabsContent value="bike">
-            <CardContent className="p-4 md:p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardContent className="p-6 md:p-10 space-y-6">
+              <div className="bg-primary/5 p-6 rounded-[2rem] border-2 border-dashed border-primary/20 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="bg-primary p-3 rounded-2xl shadow-lg">
+                        <Zap className="text-white h-8 w-8" />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-black italic tracking-tighter">RAPIDO STYLE RIDE</h3>
+                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Available in Jodhpur</p>
+                    </div>
+                </div>
+                <Badge className="bg-green-500 text-white border-none font-black italic">ACTIVE NOW</Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="bike-location">Location (Jodhpur Special)</Label>
-                  <Input 
-                    id="bike-location" 
-                    placeholder="E.g. Jodhpur" 
-                    value={bikeLocation}
-                    onChange={(e) => setBikeLocation(e.target.value)}
-                    className="h-11"
-                  />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup Location</Label>
+                  <div className="relative">
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
+                    <Input 
+                        placeholder="Current Location in Jodhpur" 
+                        value={bikeLocation}
+                        onChange={(e) => setBikeLocation(e.target.value)}
+                        className="h-14 pl-12 rounded-2xl border-primary/20 bg-primary/5 font-bold"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Rental Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal h-11",
-                          !bikeDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {bikeDate ? format(bikeDate, "PPP") : <span>Select Date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar mode="single" selected={bikeDate} onSelect={setBikeDate} initialFocus />
-                    </PopoverContent>
-                  </Popover>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Ride Time</Label>
+                  <Button variant="outline" className="w-full h-14 rounded-2xl justify-start font-bold">
+                    <Clock className="mr-2 h-4 w-4" /> Immediate (Within 5 mins)
+                  </Button>
                 </div>
               </div>
-              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20" onClick={handleBikeSearch}>
-                <Search className="mr-2 h-5 w-5" /> Find Bikes
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBikeSearch}>
+                <Zap className="mr-2 h-6 w-6" /> FIND RIDE NOW
               </Button>
             </CardContent>
           </TabsContent>
           
           <TabsContent value="car">
-            <CardContent className="p-4 md:p-6 space-y-4">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardContent className="p-6 md:p-10 space-y-4">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                  <Label htmlFor="pickup-location">Pick-up Location</Label>
-                  <Input id="pickup-location" placeholder="e.g., Jaipur Airport" className="h-11" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup</Label>
+                  <Input placeholder="e.g., Jaipur Airport" className="h-14 rounded-2xl" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dropoff-location">Drop-off Location</Label>
-                  <Input id="dropoff-location" placeholder="e.g., Hotel Name" className="h-11" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
+                  <Input placeholder="e.g., Hotel Name" className="h-14 rounded-2xl" />
                 </div>
               </div>
-              <Button className="w-full h-11 text-lg font-semibold shadow-lg shadow-primary/20">
-                <Search className="mr-2 h-5 w-5" /> Search Cabs
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
+                <Search className="mr-2 h-6 w-6" /> SEARCH CABS
               </Button>
             </CardContent>
           </TabsContent>
@@ -384,14 +380,14 @@ export default function SearchCardPage() {
       </Card>
       
       {activeTab === 'hotel' && (
-        <section>
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Top Hotels</h2>
-                <Badge variant="outline">{displayedHotels.length} Results</Badge>
+        <section className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black italic tracking-tighter">TOP HOTELS</h2>
+                <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedHotels.length} Results</Badge>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {displayedHotels.map((hotel) => (
-                    <Card key={hotel.name} className="overflow-hidden group border-none shadow-md hover:shadow-xl transition-all">
+                    <Card key={hotel.name} className="overflow-hidden group border-none shadow-xl hover:shadow-2xl transition-all rounded-[2rem] bg-white">
                         <div className="relative h-48">
                             <Image
                                 src={hotel.image}
@@ -401,26 +397,26 @@ export default function SearchCardPage() {
                                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                         </div>
-                        <CardContent className="p-4">
+                        <CardContent className="p-6">
                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-bold text-lg">{hotel.name}</h3>
-                                <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">
+                                <h3 className="font-black text-xl italic">{hotel.name}</h3>
+                                <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded-lg text-xs font-black">
                                     {hotel.rating} <Star className="w-3 h-3 ml-1 fill-green-700" />
                                 </div>
                             </div>
-                            <p className="text-sm text-muted-foreground flex items-center gap-1 mb-4">
+                            <p className="text-sm text-muted-foreground flex items-center gap-1 mb-4 font-medium uppercase tracking-widest text-[10px]">
                                 <MapPin className="w-3 h-3" /> {hotel.location}
                             </p>
-                            <div className="flex flex-wrap gap-2 mb-4">
+                            <div className="flex flex-wrap gap-2 mb-6">
                                 {hotel.facilities.map(f => (
-                                    <span key={f} className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{f}</span>
+                                    <span key={f} className="text-[10px] bg-muted px-3 py-1 rounded-full text-muted-foreground font-bold uppercase tracking-tighter">{f}</span>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-between mt-auto">
-                                <div className="text-lg font-bold text-primary">
-                                    ₹{hotel.price}<span className="text-xs font-normal text-muted-foreground">/night</span>
+                            <div className="flex items-center justify-between mt-auto border-t pt-4">
+                                <div className="text-2xl font-black text-primary italic">
+                                    ₹{hotel.price}<span className="text-[10px] font-medium text-muted-foreground not-italic">/night</span>
                                 </div>
-                                <Button size="sm" onClick={() => handleBookNow(hotel)}>Book Now</Button>
+                                <Button className="rounded-xl font-bold italic px-6" onClick={() => handleBookNow(hotel)}>BOOK NOW</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -432,86 +428,86 @@ export default function SearchCardPage() {
       {activeTab === 'bus' && (
           <section className="space-y-6">
               <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">Available Bus Routes</h2>
-                  <Badge variant="secondary" className="bg-primary/10 text-primary border-none">{displayedBuses.length} Buses Found</Badge>
+                  <h2 className="text-2xl font-black italic tracking-tighter uppercase">Available Bus Routes</h2>
+                  <Badge className="bg-primary text-white border-none font-black italic">{displayedBuses.length} Buses Found</Badge>
               </div>
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-8">
                   {displayedBuses.length > 0 ? (
                       displayedBuses.map((bus, idx) => (
-                          <Card key={idx} className="border-none shadow-md hover:shadow-lg transition-all overflow-hidden border-l-4 border-l-primary">
+                          <Card key={idx} className="border-none shadow-xl hover:shadow-2xl transition-all overflow-hidden rounded-[2.5rem] bg-white border-l-8 border-l-primary">
                               <CardContent className="p-0">
-                                  <div className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                      <div className="flex-grow space-y-4">
+                                  <div className="p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                                      <div className="flex-grow space-y-6">
                                           <div className="flex items-center justify-between md:justify-start gap-4">
-                                              <h3 className="text-xl font-black text-foreground">{bus.name}</h3>
-                                              <Badge variant="outline" className="text-[10px] font-mono tracking-tighter uppercase">{bus.busNumber}</Badge>
+                                              <h3 className="text-2xl font-black italic tracking-tighter text-foreground">{bus.name}</h3>
+                                              <Badge variant="outline" className="text-[10px] font-black tracking-widest uppercase border-primary/20 text-primary">{bus.busNumber}</Badge>
                                           </div>
                                           
-                                          <div className="flex items-center gap-8 py-2 relative">
+                                          <div className="flex items-center gap-12 py-2 relative">
                                               <div className="flex flex-col">
-                                                  <span className="text-2xl font-bold">{bus.departure}</span>
-                                                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{bus.from}</span>
+                                                  <span className="text-3xl font-black italic">{bus.departure}</span>
+                                                  <span className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{bus.from}</span>
                                               </div>
                                               
-                                              <div className="flex flex-col items-center flex-grow max-w-[120px]">
-                                                  <span className="text-[10px] text-muted-foreground mb-1">{bus.duration}</span>
-                                                  <div className="w-full h-[1px] bg-muted-foreground/30 relative flex justify-center items-center">
-                                                      <div className="w-1.5 h-1.5 rounded-full bg-primary absolute left-0"></div>
-                                                      <Bus className="h-3 w-3 text-primary bg-background p-0.5" />
-                                                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground absolute right-0"></div>
+                                              <div className="flex flex-col items-center flex-grow max-w-[150px]">
+                                                  <span className="text-[10px] font-black text-primary mb-2 italic">{bus.duration}</span>
+                                                  <div className="w-full h-[2px] bg-primary/20 relative flex justify-center items-center">
+                                                      <div className="w-2.5 h-2.5 rounded-full bg-primary absolute left-0 shadow-lg shadow-primary/40"></div>
+                                                      <Bus className="h-5 w-5 text-primary bg-white p-1 rounded-full border border-primary/20 z-10" />
+                                                      <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30 absolute right-0"></div>
                                                   </div>
-                                                  <span className="text-[10px] text-muted-foreground mt-1">Direct</span>
+                                                  <span className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-widest">Express Trip</span>
                                               </div>
 
                                               <div className="flex flex-col text-right">
-                                                  <span className="text-2xl font-bold">{bus.arrival}</span>
-                                                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{bus.to}</span>
+                                                  <span className="text-3xl font-black italic">{bus.arrival}</span>
+                                                  <span className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{bus.to}</span>
                                               </div>
                                           </div>
 
                                           <div className="flex flex-wrap gap-2 pt-2">
-                                              <Badge variant="secondary" className="text-[10px] font-normal">{bus.type}</Badge>
+                                              <Badge className="bg-muted text-foreground border-none text-[10px] font-black uppercase">{bus.type}</Badge>
                                               {bus.amenities.map(a => (
-                                                  <span key={a} className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded italic">
+                                                  <span key={a} className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/50 px-3 py-1 rounded-full italic font-medium">
                                                       <ShieldCheck className="h-3 w-3 text-green-600" /> {a}
                                                   </span>
                                               ))}
                                           </div>
                                       </div>
 
-                                      <div className="w-full md:w-px h-px md:h-24 bg-border"></div>
+                                      <div className="w-full md:w-px h-px md:h-32 bg-border"></div>
 
-                                      <div className="flex flex-col items-end gap-3 w-full md:w-auto min-w-[150px]">
+                                      <div className="flex flex-col items-end gap-4 w-full md:w-auto min-w-[180px]">
                                           <div className="flex flex-col items-end">
-                                              <span className="text-xs text-muted-foreground">Fare Starts From</span>
-                                              <div className="text-3xl font-black text-primary flex items-center">
-                                                  <IndianRupee className="h-6 w-6" />
+                                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Fare Starts From</span>
+                                              <div className="text-4xl font-black text-primary italic flex items-center">
+                                                  <IndianRupee className="h-8 w-8" />
                                                   {bus.price}
                                               </div>
                                           </div>
                                           <div className="flex items-center gap-2">
-                                              <div className="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">
-                                                  <Star className="h-3 w-3 fill-green-600" />
+                                              <div className="flex items-center gap-1 text-xs font-black text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                                                  <Star className="h-3 w-3 fill-green-700" />
                                                   {bus.rating}
                                               </div>
-                                              <span className="text-xs text-destructive font-bold">{bus.seats} Seats Left</span>
+                                              <span className="text-[10px] text-destructive font-black uppercase tracking-tighter">{bus.seats} Seats Left</span>
                                           </div>
-                                          <Button className="w-full font-bold shadow-lg shadow-primary/20" onClick={() => handleBookNow(bus)}>Book Ticket</Button>
+                                          <Button className="w-full h-12 font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-xl" onClick={() => handleBookNow(bus)}>BOOK TICKET</Button>
                                       </div>
                                   </div>
-                                  <div className="bg-muted/30 px-6 py-2 flex items-center gap-4 text-[10px] text-muted-foreground">
-                                      <span className="flex items-center gap-1"><Info className="h-3 w-3" /> Live Tracking Available</span>
-                                      <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-green-600" /> Insured Trip</span>
+                                  <div className="bg-muted/30 px-8 py-3 flex items-center gap-6 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                      <span className="flex items-center gap-2"><Info className="h-3.5 w-3.5 text-primary" /> Live Tracking</span>
+                                      <span className="flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-green-600" /> Sahi Nivesh Insured</span>
                                   </div>
                               </CardContent>
                           </Card>
                       ))
                   ) : (
-                      <div className="text-center py-20 bg-muted/20 rounded-xl border-2 border-dashed border-muted">
-                          <Bus className="h-12 w-12 mx-auto text-muted-foreground opacity-30 mb-4" />
-                          <h3 className="text-xl font-bold text-muted-foreground">No Buses Found</h3>
-                          <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2">Humne koi buses nahi payi is route par. Kripya cities check karein.</p>
-                          <Button variant="link" onClick={() => setDisplayedBuses(buses)}>Show All Routes</Button>
+                      <div className="text-center py-24 bg-muted/10 rounded-[3rem] border-4 border-dashed border-muted/30">
+                          <Bus className="h-20 w-20 mx-auto text-muted-foreground opacity-20 mb-6" />
+                          <h3 className="text-2xl font-black italic tracking-tighter text-muted-foreground">No Buses Found</h3>
+                          <p className="text-sm text-muted-foreground font-medium max-w-xs mx-auto mt-2">Humne koi buses nahi payi is route par. Kripya cities check karein.</p>
+                          <Button variant="link" className="mt-4 font-black italic uppercase" onClick={() => setDisplayedBuses(buses)}>Show All Routes</Button>
                       </div>
                   )}
               </div>
@@ -519,61 +515,78 @@ export default function SearchCardPage() {
       )}
 
       {activeTab === 'bike' && (
-        <section>
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Bike Rentals in {bikeLocation}</h2>
-                <Badge variant="outline" className="bg-primary text-white border-none">Available Now</Badge>
+        <section className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black italic tracking-tighter text-primary">BIKE TAXI IN {bikeLocation}</h2>
+                <Badge className="bg-primary text-white border-none font-black italic animate-bounce">RAPIDO STYLE</Badge>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {displayedBikes.map((bike) => (
-                    <Card key={bike.name} className="overflow-hidden group border-none shadow-md hover:shadow-xl transition-all">
-                        <div className="relative h-48">
+                    <Card key={bike.name} className="overflow-hidden group border-none shadow-xl hover:shadow-2xl transition-all rounded-[2.5rem] bg-white relative">
+                        {bike.isTaxi && (
+                          <div className="absolute top-4 left-4 z-20">
+                            <Badge className="bg-primary text-white border-none font-black italic px-3 py-1 shadow-lg">TAXI RIDE</Badge>
+                          </div>
+                        )}
+                        <div className="relative h-56">
                             <Image
                                 src={bike.image}
                                 alt={bike.name}
                                 data-ai-hint={bike.hint}
                                 fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="object-cover group-hover:scale-110 transition-transform duration-700"
                             />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-4 left-6 text-white">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Jodhpur City</p>
+                                <h3 className="font-black text-2xl italic tracking-tighter">{bike.name}</h3>
+                            </div>
                         </div>
-                        <CardContent className="p-4">
-                            <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-bold text-lg">{bike.name}</h3>
-                                <div className="flex items-center bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">
-                                    {bike.rating} <Star className="w-3 h-3 ml-1 fill-green-700" />
+                        <CardContent className="p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <Badge variant="secondary" className="text-[10px] font-black uppercase italic tracking-widest bg-primary/10 text-primary border-none">{bike.type}</Badge>
+                                <div className="flex items-center text-primary font-black">
+                                    <Star className="w-4 h-4 mr-1 fill-primary" />
+                                    {bike.rating}
                                 </div>
                             </div>
-                            <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                                <MapPin className="w-3 h-3" /> {bike.location}
-                            </p>
-                             <Badge variant="secondary" className="mb-4 text-[10px] uppercase font-bold">{bike.type}</Badge>
-                            <p className="text-xs text-muted-foreground italic mb-4 line-clamp-2">{bike.description}</p>
-                            <div className="flex items-center justify-between mt-auto">
-                                <div className="text-lg font-bold text-primary">
-                                    ₹{bike.price}<span className="text-xs font-normal text-muted-foreground">/day</span>
+                            <p className="text-xs text-muted-foreground italic mb-6 line-clamp-2 font-medium">{bike.description}</p>
+                            <div className="flex items-center justify-between mt-auto border-t pt-4">
+                                <div className="text-3xl font-black text-primary italic">
+                                    ₹{bike.price}<span className="text-[10px] font-medium text-muted-foreground not-italic">{bike.priceUnit || '/day'}</span>
                                 </div>
-                                <Button size="sm" onClick={() => handleBookNow(bike)}>Book Bike</Button>
+                                <Button className="h-12 rounded-xl font-black italic uppercase px-6 shadow-lg shadow-primary/20" onClick={() => handleBookNow(bike)}>
+                                  <Zap className="mr-2 h-4 w-4" />
+                                  BOOK RIDE
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
                 ))}
+            </div>
+            <div className="bg-primary/5 p-8 rounded-[3rem] border-2 border-dashed border-primary/20 text-center space-y-4">
+                <h3 className="text-2xl font-black italic tracking-tighter">BIKE CHALAYEIN AUR KAMAYEIN (PARTNER WITH US)</h3>
+                <p className="text-sm text-muted-foreground font-medium max-w-2xl mx-auto">Agar aapke paas bike hai aur aap Jodhpur mein extra kamai karna chahte hain, toh aaj hi humare saath judiye. "Sahi Nivesh" se apni bike ko taxi banayein.</p>
+                <Link href="/partnership">
+                  <Button variant="outline" className="mt-4 border-primary text-primary font-black italic uppercase h-12 rounded-xl hover:bg-primary hover:text-white transition-all">BECOME A PARTNER</Button>
+                </Link>
             </div>
         </section>
       )}
 
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                {activeTab === 'bus' ? <Bus className="text-primary" /> : activeTab === 'bike' ? <Bike className="text-primary" /> : <Hotel className="text-primary" />}
-                Confirm {activeTab === 'bus' ? 'Bus Ticket' : activeTab === 'bike' ? 'Bike Rental' : 'Booking'}
+              <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter">
+                {activeTab === 'bus' ? <Bus className="text-primary h-8 w-8" /> : activeTab === 'bike' ? <Zap className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
+                CONFIRM {activeTab === 'bus' ? 'BUS TICKET' : activeTab === 'bike' ? 'BIKE RIDE' : 'BOOKING'}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="font-medium text-muted-foreground">
                 {activeTab === 'bus' 
                     ? `Booking seat on ${selectedItem.name} (${selectedItem.busNumber}) from ${selectedItem.from} to ${selectedItem.to}.` 
                     : activeTab === 'bike'
-                    ? `Booking ${selectedItem.name} in ${selectedItem.location}.`
+                    ? `Confirming ${selectedItem.name} for your immediate ride in Jodhpur.`
                     : `Confirming your stay at ${selectedItem.name}, ${selectedItem.location}.`
                 }
               </DialogDescription>
@@ -582,7 +595,7 @@ export default function SearchCardPage() {
                 tripName={activeTab === 'bus' 
                     ? `${selectedItem.name} - ${selectedItem.busNumber} (${selectedItem.from} to ${selectedItem.to})` 
                     : activeTab === 'bike'
-                    ? `${selectedItem.name} (Bike Rental Jodhpur)`
+                    ? `${selectedItem.name} (Bike Taxi Jodhpur)`
                     : `${selectedItem.name} (${selectedItem.location})`
                 } 
                 bookingType={activeTab}

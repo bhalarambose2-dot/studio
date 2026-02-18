@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map, Bus, Bike } from 'lucide-react';
+import { Search, CreditCard, IndianRupee, MapPin, Hotel, Car, Utensils, Package, Home, HandCoins, Gift, Shield, Calendar as CalendarIcon, Map, Bus, Bike, Zap } from 'lucide-react';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 
 const guides = [
   { name: 'Shimla, Himachal Pradesh', description: 'The Queen of Hills, perfect for a budget-friendly mountain escape.', image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=1974&auto=format&fit=crop', hint: 'shimla mountains', price: '12,500' },
@@ -25,34 +26,25 @@ const guides = [
   { name: 'Kerala, India', description: "Known as 'God's Own Country', famous for its backwaters, lush greenery, and serene beaches.", image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxrZXJhbGElMjBiYWNrd2F0ZXJzfGVufDB8fHx8MTc1NTExODc0MXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'kerala backwaters', price: '35,000' },
   { name: 'Jaisalmer, Rajasthan', description: 'The Golden City, known for its massive fort and camel safaris in the Thar Desert.', image: 'https://images.unsplash.com/photo-1713349881676-594b95a5742b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8SmFpc2FsbWVyJTIwfGVufDB8fHx8MTc1NTA2MDQ5NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jaisalmer fort', price: '2,500 par parshan' },
   { name: 'Jodhpur, Rajasthan', description: 'The Blue City, famous for the Mehrangarh Fort and its blue-painted houses.', image: 'https://images.unsplash.com/photo-1721973733816-1791a072295a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOXx8Sm9kaHB1ciUyMHxlbnwwfHx8fDE3NTUwNjA3ODd8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'jodhpur fort', price: '26,000' },
-  { name: 'Rishikesh, Uttarakhand', description: 'The Yoga Capital of the World, known for its ashrams and adventure sports.', image: 'https://images.unsplash.com/photo-1650341259809-9314b0de9268?q=80&w=2070&auto=format&fit=crop', hint: 'rishikesh bridge', price: '18,000' },
-  { name: 'Nainital, Uttarakhand', description: 'A charming Himalayan lake town with a boutique market and scenic views.', image: 'https://images.unsplash.com/photo-1601622256416-d7f757f99eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxOYWluaXRhbCUyMHxlbnwwfHx8fDE3NTUwNjE0ODF8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'nainital lake', price: '22,000' },
-  { name: 'Mumbai, Maharashtra', description: 'The bustling financial capital, famous for Bollywood, street food, and colonial architecture.', image: 'https://images.unsplash.com/photo-1660145416818-b9a2b1a1f193?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxNdW1iYWklMjB8ZW58MHx8fHwxNzU1MDYxNzUzfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'mumbai skyline', price: '32,000' },
-  { name: 'Varanasi, Uttar Pradesh', description: 'The spiritual capital of India, known for its sacred ghats and Ganga Aarti.', image: 'https://images.unsplash.com/photo-1561359313-0639aad49ca6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxWYXJhbmFzaSUyMHxlbnwwfHx8fDE3NTUwNTk5ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'varanasi ghats', price: '25,000' },
-  { name: 'Agra, Uttar Pradesh', description: 'Home to the iconic Taj Mahal, a symbol of eternal love.', image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0YWolMjBtYWhhbHxlbnwwfHx8fDE3NTUwNjE4MjB8MA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'taj mahal', price: '24,000' },
-  { name: 'Vrindavan, Uttar Pradesh', description: 'A holy town famous for its temples, including the stunning Prem Mandir.', image: 'https://images.unsplash.com/photo-1707938233687-47e61e5ad7c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxQcmVtJTIwbWFuZGlyJTIwfGVufDB8fHx8MTc1NTA2MjI3NXww&ixlib=rb-4.1.0&q=80&w=1080', hint: 'vrindavan temple', price: '20,000' },
-  { name: 'Khajuraho, Madhya Pradesh', description: 'A UNESCO World Heritage site, famous for its stunning temples adorned with intricate and erotic sculptures.', image: 'https://images.unsplash.com/photo-1606298855672-3efb63017be8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxLaGFqdXJhaG8lMjB8ZW58MHx8fHwxNzU1MDYyNzIyfDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'khajuraho temple', price: '27,000' },
-  { name: 'Ujjain, Madhya Pradesh', description: 'An ancient and sacred city on the Kshipra River, home to the Mahakaleshwar Jyotirlinga.', image: 'https://images.unsplash.com/photo-1658730487395-dcc99f5d997c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxVamphaW4lMjB8ZW58MHx8fHwxNzU1MDYyNjM4fDA&ixlib=rb-4.1.0&q=80&w=1080', hint: 'ujjain temple', price: '23,000' },
 ];
 
 const services = [
     { name: 'Hotels', icon: Hotel, href: '/search-page' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus' },
-    { name: 'Bike Rental', icon: Bike, href: '/search-page?tab=bike' },
+    { name: 'Bike Taxi', icon: Bike, href: '/search-page?tab=bike', isNew: true },
     { name: 'Holiday Packages', icon: Package, href: '/destination-guides' },
     { name: 'Airport Cabs', icon: Car, href: '#' },
-    { name: 'Homestays', icon: Home, href: '#' },
-    { name: 'Outstation Cabs', icon: Car, href: '#' },
-    { name: 'Foreign Currency', icon: HandCoins, href: '#' },
     { name: 'Gift Cards', icon: Gift, href: '/gift-card' },
-    { name: 'Travel Insurance', icon: Shield, href: '#' },
 ];
 
-const ServiceCard = ({ icon: Icon, name, href }: { icon: React.ElementType, name: string, href: string }) => (
+const ServiceCard = ({ icon: Icon, name, href, isNew }: { icon: React.ElementType, name: string, href: string, isNew?: boolean }) => (
     <Link href={href}>
-        <Card className="flex flex-col items-center justify-center p-4 text-center hover:bg-muted transition-colors h-full border-primary/20 shadow-sm hover:shadow-md">
-            <Icon className="w-8 h-8 text-primary mb-2" />
-            <p className="text-sm font-medium">{name}</p>
+        <Card className="flex flex-col items-center justify-center p-4 text-center hover:bg-muted transition-colors h-full border-primary/20 shadow-sm hover:shadow-md relative overflow-hidden group">
+            {isNew && (
+              <Badge className="absolute top-2 right-2 bg-primary text-white border-none text-[8px] px-1 py-0 h-4 uppercase animate-pulse">New</Badge>
+            )}
+            <Icon className="w-8 h-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold uppercase tracking-tighter italic">{name}</p>
         </Card>
     </Link>
 );
@@ -70,28 +62,48 @@ export default function SearchPage() {
     setIsDialogOpen(true);
   }
 
-  const handleSearchClick = () => {
-    router.push('/search-page');
-  };
-
   return (
     <div className="flex flex-col gap-8 md:gap-12 pb-10">
       {/* Explore Services section moved to the top */}
       <section className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-center mb-6">Explore Services</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <h2 className="text-2xl font-black italic tracking-tighter text-center mb-6 flex items-center justify-center gap-2">
+          <Zap className="text-primary h-6 w-6" />
+          EXPLORE SERVICES
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
             {services.map((service) => (
-                <ServiceCard key={service.name} icon={service.icon} name={service.name} href={service.href} />
+                <ServiceCard key={service.name} icon={service.icon} name={service.name} href={service.href} isNew={service.isNew} />
             ))}
         </div>
       </section>
 
+      {/* Jodhpur Bike Taxi Banner */}
       <section className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-2">Popular New Trips</h2>
-        <p className="text-center text-muted-foreground mb-8">Best prices for your next big adventure.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Link href="/search-page?tab=bike">
+          <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-2xl overflow-hidden relative group cursor-pointer">
+            <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-20 group-hover:opacity-30 transition-opacity">
+              <Bike className="w-full h-full -rotate-12 translate-x-10 scale-150" />
+            </div>
+            <CardContent className="p-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-2">
+                <Badge className="bg-white text-primary border-none font-black italic mb-2">JODHPUR SPECIAL</Badge>
+                <h2 className="text-4xl font-black italic tracking-tighter">BIKE TAXI AVAILABLE NOW!</h2>
+                <p className="font-medium opacity-90">Rapido ki tarah asani se bike ride book karein Blue City mein.</p>
+              </div>
+              <Button size="lg" variant="secondary" className="font-black italic uppercase tracking-widest h-14 px-8 rounded-2xl shadow-xl">
+                BOOK RIDE NOW
+              </Button>
+            </CardContent>
+          </Card>
+        </Link>
+      </section>
+
+      <section className="container mx-auto px-4">
+        <h2 className="text-3xl font-black italic tracking-tighter text-center mb-2">POPULAR NEW TRIPS</h2>
+        <p className="text-center text-muted-foreground font-medium uppercase text-xs tracking-widest mb-8">Best prices for your next big adventure.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {guides.map((guide) => (
-            <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col border-none shadow-lg">
+            <Card key={guide.name} className="overflow-hidden group hover:shadow-xl transition-shadow duration-300 flex flex-col border-none shadow-lg bg-white rounded-[2rem]">
               <CardHeader className="p-0">
                 <div className="relative h-56 w-full">
                   <Image
@@ -107,16 +119,16 @@ export default function SearchPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-6 flex-grow flex flex-col">
-                <h2 className="text-xl font-semibold mb-2">{guide.name}</h2>
-                <p className="text-muted-foreground flex-grow text-sm">{guide.description}</p>
+                <h2 className="text-xl font-black italic tracking-tight mb-2">{guide.name}</h2>
+                <p className="text-muted-foreground flex-grow text-xs font-medium leading-relaxed">{guide.description}</p>
                 {guide.price && (
-                  <div className="flex items-center text-lg font-bold text-accent mt-4">
-                    <IndianRupee className="w-5 h-5 mr-2" />
+                  <div className="flex items-center text-xl font-black text-primary mt-4">
+                    <IndianRupee className="w-5 h-5 mr-1" />
                     <span>{guide.price}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between mt-4">
-                  <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-xs text-primary font-semibold hover:underline">
+                  <Link href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(guide.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-[10px] text-primary font-black uppercase tracking-widest hover:underline">
                     <MapPin className="w-3 h-3 mr-1" />
                     <span>View on Map</span>
                   </Link>
@@ -124,7 +136,7 @@ export default function SearchPage() {
               </CardContent>
               {guide.price && (
                 <div className="p-4 pt-0">
-                   <Button className="w-full shadow-primary/20 shadow-lg" onClick={() => handleBookNow(guide)}>
+                   <Button className="w-full shadow-primary/20 shadow-lg font-black italic uppercase rounded-xl" onClick={() => handleBookNow(guide)}>
                     <CreditCard className="mr-2 h-4 w-4" />
                     Book Now
                   </Button>
@@ -136,29 +148,29 @@ export default function SearchPage() {
       </section>
       
       <section className="container mx-auto px-4 relative z-10">
-        <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/10">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+        <Card className="w-full max-w-4xl mx-auto shadow-2xl border-primary/10 rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="bg-muted/30">
+                <CardTitle className="flex items-center gap-2 font-black italic">
                     <Map className="text-primary"/>
-                    Plan Your Customized Trip
+                    PLAN YOUR CUSTOMIZED TRIP
                 </CardTitle>
-                <CardDescription>Plan your next adventure across India.</CardDescription>
+                <CardDescription className="font-medium">Sahi Nivesh se Sahi Safar tak.</CardDescription>
             </CardHeader>
-            <CardContent className="p-4 md:p-6">
+            <CardContent className="p-4 md:p-8">
               <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div className="space-y-2 lg:col-span-2">
-                  <Label htmlFor="destination">Destination</Label>
-                  <Input id="destination" placeholder="e.g., Jaipur" />
+                  <Label htmlFor="destination" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Destination</Label>
+                  <Input id="destination" placeholder="e.g., Jaipur" className="h-12 rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="trip-dates">Dates</Label>
+                  <Label htmlFor="trip-dates" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Dates</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         id="trip-dates"
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-full justify-start text-left font-normal h-12 rounded-xl",
                           !tripDates.from && "text-muted-foreground"
                         )}
                       >
@@ -190,10 +202,10 @@ export default function SearchPage() {
                   </Popover>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="interests">Activities / Interests</Label>
-                  <Input id="interests" placeholder="e.g., Museums, Hiking" />
+                  <Label htmlFor="interests" className="text-[10px] font-black uppercase text-muted-foreground ml-1">Activities</Label>
+                  <Input id="interests" placeholder="e.g., Hiking" className="h-12 rounded-xl" />
                 </div>
-                <Button type="submit" className="w-full h-10 lg:col-span-4 mt-2"><Search className="mr-2" /> Search Now</Button>
+                <Button type="submit" className="w-full h-12 lg:col-span-4 mt-4 font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-xl"><Search className="mr-2" /> Search Now</Button>
               </form>
             </CardContent>
         </Card>
@@ -201,9 +213,9 @@ export default function SearchPage() {
 
       {selectedGuide && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] rounded-[2rem]">
             <DialogHeader>
-              <DialogTitle>Book Your Trip to {selectedGuide.name}</DialogTitle>
+              <DialogTitle className="font-black italic text-2xl">Book Trip to {selectedGuide.name}</DialogTitle>
             </DialogHeader>
             <BookingForm tripName={selectedGuide.name} />
           </DialogContent>
