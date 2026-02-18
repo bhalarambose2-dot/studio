@@ -5,29 +5,17 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
-      "description": "Represents a user. Roles can be 'traveler' or 'bus_owner'.",
+      "description": "Represents a user. Roles can be 'traveler', 'admin', 'staff', or 'bus_owner'.",
       "properties": {
         "id": { "type": "string" },
-        "firstName": { "type": "string" },
-        "lastName": { "type": "string" },
+        "fullName": { "type": "string" },
         "email": { "type": "string", "format": "email" },
-        "role": { "type": "string", "enum": ["traveler", "bus_owner"] },
+        "role": { "type": "string", "enum": ["traveler", "admin", "staff", "bus_owner"] },
         "walletBalance": { "type": "number" },
+        "kycStatus": { "type": "string", "enum": ["none", "pending", "verified"] },
         "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["id", "firstName", "lastName", "email", "role"]
-    },
-    "Bus": {
-      "title": "Bus",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "ownerId": { "type": "string" },
-        "busNumber": { "type": "string" },
-        "name": { "type": "string" },
-        "route": { "type": "string" },
-        "price": { "type": "number" }
-      }
+      "required": ["id", "fullName", "email", "role"]
     },
     "BusBooking": {
       "title": "BusBooking",
@@ -35,19 +23,34 @@
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
-        "busId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
         "busNumber": { "type": "string" },
         "busName": { "type": "string" },
-        "ownerId": { "type": "string" },
-        "customerName": { "type": "string" },
         "seatNumber": { "type": "string" },
         "amount": { "type": "number" },
+        "txnId": { "type": "string" },
+        "status": { "type": "string" },
         "bookingDate": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "type": "object",
+      "description": "Wallet and booking financial records.",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["credit", "debit"] },
+        "amount": { "type": "number" },
+        "reference": { "type": "string" },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
       }
     }
   },
   "auth": {
-    "providers": ["password", "anonymous"]
+    "providers": ["password"]
   },
   "firestore": {
     "structure": [
@@ -60,11 +63,19 @@
         }
       },
       {
+        "path": "/users/{userId}/transactions/{txnId}",
+        "definition": {
+          "entityName": "Transaction",
+          "schema": { "$ref": "#/backend/entities/Transaction" },
+          "description": "User wallet transaction history."
+        }
+      },
+      {
         "path": "/busBookings/{bookingId}",
         "definition": {
           "entityName": "BusBooking",
           "schema": { "$ref": "#/backend/entities/BusBooking" },
-          "description": "Global bus bookings accessible by owners."
+          "description": "Global bus bookings records."
         }
       }
     ]
