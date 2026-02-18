@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -8,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2 } from "lucide-react";
+import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2, Smartphone } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
 
@@ -50,6 +49,31 @@ export default function WalletPage() {
       });
     }
     setIsProcessing(false);
+  };
+
+  const handleUPIPayment = () => {
+    const amount = parseFloat(addAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: 'Invalid Amount',
+        description: 'Please enter a valid amount for UPI payment.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // This deep link will attempt to open UPI apps on a mobile device
+    // Replace 'yourname@upi' with your actual VPA
+    const vpa = "bhalarambose2@okicici";
+    const name = "BR Trip";
+    const upiLink = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+
+    window.location.href = upiLink;
+    
+    toast({
+      title: 'UPI Payment Initiated',
+      description: 'Opening your UPI app...',
+    });
   };
 
   const handleAddCard = async () => {
@@ -100,9 +124,9 @@ export default function WalletPage() {
                     </div>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
-                    <div className="w-full space-y-2">
-                        <Label htmlFor="amount">Add Money to Wallet</Label>
-                        <div className="flex gap-2">
+                    <div className="w-full space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="amount">Amount to Add</Label>
                             <Input 
                                 id="amount" 
                                 type="number" 
@@ -110,8 +134,13 @@ export default function WalletPage() {
                                 value={addAmount}
                                 onChange={(e) => setAddAmount(e.target.value)}
                             />
-                            <Button onClick={handleAddMoney} disabled={isProcessing || !addAmount}>
-                                {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : 'Add'}
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Button onClick={handleAddMoney} className="w-full" disabled={isProcessing || !addAmount}>
+                                {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : <><CreditCard className="mr-2 h-4 w-4" /> Add via Card</>}
+                            </Button>
+                            <Button onClick={handleUPIPayment} variant="secondary" className="w-full" disabled={!addAmount}>
+                                <Smartphone className="mr-2 h-4 w-4" /> Pay via UPI (Mobile)
                             </Button>
                         </div>
                     </div>
