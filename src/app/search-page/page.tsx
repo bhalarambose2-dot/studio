@@ -19,7 +19,7 @@ import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, 
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -480,6 +480,7 @@ export default function SearchCardPage() {
                     : `${selectedItem.name} (${selectedItem.location})`
                 } 
                 bookingType={activeTab}
+                itemDetails={selectedItem}
             />
           </DialogContent>
         </Dialog>
