@@ -15,7 +15,6 @@ export default function WalletPage() {
   const { user } = useUser();
   const { userProfile, updateUserProfile, isLoading: isProfileLoading } = useUserProfile(user?.uid);
   const [addAmount, setAddAmount] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCard, setNewCard] = useState({ number: '', expiry: '', type: 'Visa' });
   const { toast } = useToast();
@@ -35,7 +34,7 @@ export default function WalletPage() {
     }
 
     // This deep link will attempt to open UPI apps on a mobile device
-    const vpa = "bhalarambose2@okicici";
+    const vpa = "8769930595-2@ybl";
     const name = "BR Trip";
     const upiLink = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
 
@@ -70,7 +69,7 @@ export default function WalletPage() {
   };
 
   if (isProfileLoading) {
-    return <div className="flex items-center justify-center min-h-[400px]"><Loader2 className="animate-spin" /></div>;
+    return <div className="flex items-center justify-center min-h-[400px]"><Loader2 className="animate-spin text-primary" /></div>;
   }
 
   return (
