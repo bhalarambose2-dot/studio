@@ -23,34 +23,6 @@ export default function WalletPage() {
   const balance = userProfile?.walletBalance || 0;
   const savedCards = userProfile?.savedCards || [];
 
-  const handleAddMoney = async () => {
-    const amount = parseFloat(addAmount);
-    if (isNaN(amount) || amount <= 0) {
-      toast({
-        title: 'Invalid Amount',
-        description: 'Please enter a valid amount to add.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-    // Simulate payment gateway delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    if (user) {
-      await updateUserProfile({
-        walletBalance: balance + amount
-      });
-      setAddAmount('');
-      toast({
-        title: 'Money Added',
-        description: `Successfully added ₹${amount} to your wallet.`,
-      });
-    }
-    setIsProcessing(false);
-  };
-
   const handleUPIPayment = () => {
     const amount = parseFloat(addAmount);
     if (isNaN(amount) || amount <= 0) {
@@ -63,7 +35,6 @@ export default function WalletPage() {
     }
 
     // This deep link will attempt to open UPI apps on a mobile device
-    // Replace 'yourname@upi' with your actual VPA
     const vpa = "bhalarambose2@okicici";
     const name = "BR Trip";
     const upiLink = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
@@ -136,11 +107,8 @@ export default function WalletPage() {
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Button onClick={handleAddMoney} className="w-full" disabled={isProcessing || !addAmount}>
-                                {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : <><CreditCard className="mr-2 h-4 w-4" /> Add via Card</>}
-                            </Button>
-                            <Button onClick={handleUPIPayment} variant="secondary" className="w-full" disabled={!addAmount}>
-                                <Smartphone className="mr-2 h-4 w-4" /> Pay via UPI (Mobile)
+                            <Button onClick={handleUPIPayment} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount}>
+                                <Smartphone className="mr-2 h-5 w-5" /> Pay via UPI (Mobile)
                             </Button>
                         </div>
                     </div>
