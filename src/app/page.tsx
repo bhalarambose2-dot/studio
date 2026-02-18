@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2, Bus } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Bus, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -141,40 +141,30 @@ export default function AuthPage() {
 
   if (isUserLoading) {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="flex items-center justify-center min-h-screen bg-white">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
         </div>
     );
   }
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-black">
-       <Image
-          src="https://images.unsplash.com/photo-1488866022504-f2584929ca5f?q=80&w=2062&auto=format&fit=crop"
-          alt="Starry night sky"
-          data-ai-hint="starry night"
-          fill
-          className="object-cover -z-20 opacity-70"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 -z-10" />
+    <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50">
+       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] animate-pulse delay-700" />
         
-        {/* Animated Glow Backdrops */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] -z-10 animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[120px] -z-10 animate-pulse delay-1000" />
-
-      <Card className="w-full max-w-md bg-white/5 backdrop-blur-2xl border-white/10 text-white shadow-[0_0_50px_rgba(0,0,0,0.5)] border-t-white/20">
-        <CardHeader className="text-center pb-2">
-          <div className="mx-auto bg-primary/20 p-3 rounded-2xl w-fit mb-4 border border-white/10 shadow-lg">
-            <Briefcase className="h-8 w-8 text-primary" />
+      <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl border-white shadow-2xl relative z-10 rounded-[2.5rem] overflow-hidden">
+        <CardHeader className="text-center pb-2 pt-10">
+          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4 shadow-inner">
+            <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">BR TRIP</CardTitle>
-          <CardDescription className="text-white/60 font-medium uppercase tracking-[0.2em] text-[10px] mt-1">Sahi Nivesh • Sahi Safar</CardDescription>
+          <CardTitle className="text-4xl font-black italic tracking-tighter text-foreground">BR TRIP</CardTitle>
+          <CardDescription className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-1">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/5 p-1 rounded-xl mb-6">
-              <TabsTrigger value="signin" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all font-bold">Sign In</TabsTrigger>
-              <TabsTrigger value="signup" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all font-bold">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-slate-100/50 p-1 rounded-2xl mb-8">
+              <TabsTrigger value="signin" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-xs">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-xs">Sign Up</TabsTrigger>
             </TabsList>
             <TabsContent value="signin" className="space-y-4">
               <Form {...signInForm}>
@@ -184,9 +174,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Email</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl" />
+                          <Input placeholder="you@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 rounded-2xl font-medium" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -197,15 +187,15 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl" />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 rounded-2xl font-medium" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-black italic shadow-2xl shadow-primary/30 rounded-2xl uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <LogIn className="mr-2 h-6 w-6" />}
                     Sign In
                   </Button>
@@ -220,9 +210,9 @@ export default function AuthPage() {
                     name="fullName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Full Name</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl"/>
+                          <Input placeholder="John Doe" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -233,9 +223,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Email</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl"/>
+                          <Input placeholder="you@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -246,14 +236,14 @@ export default function AuthPage() {
                     name="role"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Register As</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Register As</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="bg-white/5 border-white/10 focus:border-primary/50 text-white h-12 rounded-xl">
+                            <SelectTrigger className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium">
                               <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-neutral-900 border-white/10 text-white">
+                          <SelectContent className="rounded-2xl">
                             <SelectItem value="traveler">Traveler / Customer</SelectItem>
                             <SelectItem value="bus_owner">Bus Malik / Owner</SelectItem>
                             <SelectItem value="admin">Platform Admin</SelectItem>
@@ -269,9 +259,9 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -282,15 +272,15 @@ export default function AuthPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs uppercase font-black text-white/50 tracking-widest">Confirm Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/5 border-white/10 focus:border-primary/50 placeholder:text-white/20 text-white h-12 rounded-xl"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-black italic shadow-2xl shadow-primary/30 rounded-2xl uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 mt-4">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest mt-6">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Sign Up
                   </Button>
@@ -303,5 +293,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
-import { Briefcase } from 'lucide-react';
