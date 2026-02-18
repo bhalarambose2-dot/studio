@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Building2, Handshake, Loader2, Star, ShieldCheck, TrendingUp } from "lucide-react";
+import { Building2, Handshake, Loader2, Star, ShieldCheck, TrendingUp, MessageCircle } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -116,9 +116,12 @@ export default function PartnershipPage() {
           </ul>
 
           <div className="bg-muted p-6 rounded-2xl border-2 border-dashed">
-            <p className="text-xs font-black uppercase text-muted-foreground mb-2">Direct Help Line</p>
-            <p className="text-2xl font-bold text-primary italic">8306930595</p>
-            <p className="text-xs text-muted-foreground mt-1">Call us for immediate support</p>
+            <p className="text-xs font-black uppercase text-muted-foreground mb-2">WhatsApp Help Line</p>
+            <a href="https://wa.me/918306930595" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-2xl font-bold text-primary italic hover:underline">
+              <MessageCircle className="h-6 w-6" />
+              8306930595
+            </a>
+            <p className="text-xs text-muted-foreground mt-1">Message us for immediate support</p>
           </div>
         </div>
 

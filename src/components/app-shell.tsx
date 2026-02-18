@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -11,7 +10,7 @@ import {
   Wand2,
   User,
   Briefcase,
-  Phone,
+  MessageCircle,
   Menu,
   Languages,
   Gift,
@@ -68,9 +67,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
         </div>
         <div className="ml-auto flex items-center gap-2">
-           <a href="tel:8306930595">
+           <a href="https://wa.me/918306930595" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" size="sm" className="h-9 font-bold border-primary/20 hover:bg-primary/10">
-                <Phone className="mr-2 h-4 w-4 text-primary" />
+                <MessageCircle className="mr-2 h-4 w-4 text-primary" />
                 Help
               </Button>
             </a>
