@@ -1,9 +1,8 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -39,7 +38,7 @@ export default function MenuPage() {
       <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-lg">
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-16 w-16 border-4 border-primary-foreground/50 shadow-inner">
-            <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user/100/100"} alt="User avatar" data-ai-hint="user avatar" />
+            <AvatarImage src={user?.photoURL || `https://picsum.photos/seed/${user?.uid}/100/100`} alt="User avatar" data-ai-hint="user avatar" />
             <AvatarFallback className="text-primary bg-white">{displayName[0]}</AvatarFallback>
           </Avatar>
           <div className="overflow-hidden flex flex-col gap-1">
@@ -47,7 +46,7 @@ export default function MenuPage() {
             <CardDescription className="text-primary-foreground/80 truncate">{displayEmail}</CardDescription>
             {userProfile?.role && (
                 <Badge className="bg-white/20 border-none text-[10px] w-fit uppercase font-bold tracking-widest">
-                    {userProfile.role}
+                    {userProfile.role.replace('_', ' ')}
                 </Badge>
             )}
           </div>
@@ -79,6 +78,18 @@ export default function MenuPage() {
             </Link>
         )}
 
+        {userProfile?.role === 'bus_owner' && (
+             <Link href="/owner-dashboard">
+                <Card className="p-6 bg-primary text-white hover:bg-primary/90 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Bus className="h-8 w-8" />
+                        <p className="font-black uppercase tracking-tight">Owner Dashboard</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5" />
+                </Card>
+            </Link>
+        )}
+
         <Link href="/profile">
           <Card className="p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -92,7 +103,7 @@ export default function MenuPage() {
 
       <Card className="border-none shadow-sm overflow-hidden">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold">मेरी ट्रिप्स</CardTitle>
+          <CardTitle className="text-lg font-bold">Trip Management</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Link href="/manage-bookings">
@@ -109,9 +120,18 @@ export default function MenuPage() {
       
       <Card className="border-none shadow-sm overflow-hidden">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold">Rewards</CardTitle>
+          <CardTitle className="text-lg font-bold">Bussiness & Rewards</CardTitle>
         </CardHeader>
         <CardContent className="p-0 divide-y">
+          <Link href="/partnership">
+            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
+                <div className="flex items-center gap-4">
+                    <Handshake className="h-5 w-5 text-primary"/>
+                    <p className="text-sm font-medium">पार्टनरशिप (Partnership)</p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </Link>
            <Link href="/gift-card">
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-4">
@@ -139,7 +159,7 @@ export default function MenuPage() {
       <div className="px-4 pt-4">
         <Button 
           variant="destructive" 
-          className="w-full flex items-center justify-center gap-2 h-14 font-bold text-lg rounded-2xl" 
+          className="w-full flex items-center justify-center gap-2 h-14 font-bold text-lg rounded-2xl shadow-lg shadow-destructive/10" 
           onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />

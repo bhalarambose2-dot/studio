@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2 } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Bus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -26,7 +26,7 @@ const signInSchema = z.object({
 const signUpSchema = z.object({
   fullName: z.string().min(2, 'Full name is required.'),
   email: z.string().email('Invalid email address.'),
-  role: z.enum(['traveler', 'admin', 'staff']),
+  role: z.enum(['traveler', 'admin', 'staff', 'bus_owner']),
   password: z.string().min(8, 'Password must be at least 8 characters.'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -59,6 +59,8 @@ export default function AuthPage() {
                     router.push('/admin');
                 } else if (userData.role === 'staff') {
                     router.push('/staff');
+                } else if (userData.role === 'bus_owner') {
+                    router.push('/owner-dashboard');
                 } else {
                     router.push('/search');
                 }
@@ -155,9 +157,9 @@ export default function AuthPage() {
           className="object-cover -z-10"
         />
         <div className="absolute inset-0 bg-black/50 -z-10" />
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 text-white">
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 text-white shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-black italic">BR TRIP</CardTitle>
+          <CardTitle className="text-3xl font-black italic tracking-tighter">BR TRIP</CardTitle>
           <CardDescription className="text-white/80 font-medium">Plan your next adventure across India</CardDescription>
         </CardHeader>
         <CardContent>
@@ -176,7 +178,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white" />
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -189,14 +191,14 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white" />
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold">
-                    {isLoading ? <Loader2 className="mr-2 animate-spin" /> : <LogIn className="mr-2" />}
+                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold shadow-xl shadow-primary/20">
+                    {isLoading ? <Loader2 className="mr-2 animate-spin h-5 w-5" /> : <LogIn className="mr-2 h-5 w-5" />}
                     Sign In
                   </Button>
                 </form>
@@ -212,7 +214,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
+                          <Input placeholder="John Doe" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -225,7 +227,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
+                          <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -239,12 +241,13 @@ export default function AuthPage() {
                         <FormLabel>Register As</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                            <SelectTrigger className="bg-white/10 border-white/20 text-white h-11">
                               <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="traveler">Traveler / Customer</SelectItem>
+                            <SelectItem value="bus_owner">Bus Malik / Owner</SelectItem>
                             <SelectItem value="admin">Platform Admin</SelectItem>
                             <SelectItem value="staff">Working Boy / Staff</SelectItem>
                           </SelectContent>
@@ -260,7 +263,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -273,14 +276,14 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50 text-white h-11"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold">
-                    {isLoading ? <Loader2 className="mr-2 animate-spin" /> : <UserPlus className="mr-2" />}
+                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold shadow-xl shadow-primary/20">
+                    {isLoading ? <Loader2 className="mr-2 animate-spin h-5 w-5" /> : <UserPlus className="mr-2 h-5 w-5" />}
                     Sign Up
                   </Button>
                 </form>
