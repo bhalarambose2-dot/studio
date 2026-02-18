@@ -1,11 +1,10 @@
-
 'use client';
 
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { collection, query, orderBy } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Bus, Users, IndianRupee, Calendar, TrendingUp } from "lucide-react";
+import { Loader2, Bus, Users, IndianRupee, Calendar, TrendingUp, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function OwnerDashboardPage() {
