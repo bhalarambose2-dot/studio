@@ -10,13 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LogIn, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useFirebase, setDocumentNonBlocking } from '@/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -26,6 +27,7 @@ const signInSchema = z.object({
 const signUpSchema = z.object({
   fullName: z.string().min(2, 'Full name is required.'),
   email: z.string().email('Invalid email address.'),
+  role: z.enum(['traveler', 'admin', 'staff']),
   password: z.string().min(8, 'Password must be at least 8 characters.'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -42,12 +44,22 @@ export default function AuthPage() {
   const router = useRouter();
   const { auth, firestore, user, isUserLoading } = useFirebase();
 
-  // Redirect if already logged in
   useEffect(() => {
-    if (!isUserLoading && user) {
-      router.push('/search');
-    }
-  }, [user, isUserLoading, router]);
+    const checkRedirect = async () => {
+        if (!isUserLoading && user) {
+            const userDoc = await getDoc(doc(firestore, "users", user.uid));
+            const userData = userDoc.data();
+            if (userData?.role === 'admin') {
+                router.push('/admin');
+            } else if (userData?.role === 'staff') {
+                router.push('/staff');
+            } else {
+                router.push('/search');
+            }
+        }
+    };
+    checkRedirect();
+  }, [user, isUserLoading, router, firestore]);
 
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -56,7 +68,7 @@ export default function AuthPage() {
 
   const signUpForm = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { fullName: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { fullName: '', email: '', role: 'traveler', password: '', confirmPassword: '' },
   });
 
   const handleSignIn = (values: SignInFormValues) => {
@@ -84,12 +96,10 @@ export default function AuthPage() {
       .then((userCredential) => {
         const user = userCredential.user;
         
-        // Split full name for backend entity compliance
         const names = values.fullName.split(' ');
         const firstName = names[0] || '';
         const lastName = names.slice(1).join(' ') || '';
 
-        // Create a user profile in Firestore (Non-Blocking)
         const userDocRef = doc(firestore, "users", user.uid);
         setDocumentNonBlocking(userDocRef, {
           id: user.uid,
@@ -97,8 +107,7 @@ export default function AuthPage() {
           lastName,
           fullName: values.fullName,
           email: values.email,
-          preferredCurrency: 'INR',
-          languagePreference: 'hi',
+          role: values.role,
           walletBalance: 0,
           kycStatus: 'none',
           createdAt: new Date().toISOString(),
@@ -107,7 +116,7 @@ export default function AuthPage() {
 
         toast({
           title: 'Account Created',
-          description: 'Your account has been created successfully.',
+          description: `Account created as ${values.role}.`,
         });
       })
       .catch((error: any) => {
@@ -130,10 +139,10 @@ export default function AuthPage() {
           className="object-cover -z-10"
         />
         <div className="absolute inset-0 bg-black/50 -z-10" />
-      <Card className="w-full max-w-md bg-transparent border-white/20 text-white">
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 text-white">
         <CardHeader className="text-center">
-          <CardTitle>Welcome to BR Trip</CardTitle>
-          <CardDescription className="text-white/80">Sign in or create an account to plan your next adventure</CardDescription>
+          <CardTitle className="text-3xl font-black italic">BR TRIP</CardTitle>
+          <CardDescription className="text-white/80 font-medium">Plan your next adventure across India</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
@@ -170,7 +179,7 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full">
+                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold">
                     {isLoading ? <Loader2 className="mr-2 animate-spin" /> : <LogIn className="mr-2" />}
                     Sign In
                   </Button>
@@ -179,7 +188,7 @@ export default function AuthPage() {
             </TabsContent>
             <TabsContent value="signup" className="pt-6">
               <Form {...signUpForm}>
-                <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-6">
+                <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
                   <FormField
                     control={signUpForm.control}
                     name="fullName"
@@ -202,6 +211,28 @@ export default function AuthPage() {
                         <FormControl>
                           <Input placeholder="you@example.com" {...field} className="bg-white/10 border-white/20 placeholder:text-white/50"/>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={signUpForm.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Register As</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-white/10 border-white/20">
+                              <SelectValue placeholder="Select Role" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="traveler">Traveler / Customer</SelectItem>
+                            <SelectItem value="admin">Platform Admin</SelectItem>
+                            <SelectItem value="staff">Working Boy / Staff</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -232,7 +263,7 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full">
+                  <Button type="submit" disabled={isLoading} className="w-full h-12 text-lg font-bold">
                     {isLoading ? <Loader2 className="mr-2 animate-spin" /> : <UserPlus className="mr-2" />}
                     Sign Up
                   </Button>

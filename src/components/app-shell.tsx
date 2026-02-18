@@ -22,23 +22,30 @@ import {
   Package,
   Hotel,
   Bus,
+  ShieldAlert,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
+import { useFirebase } from '@/firebase';
+import { useUserProfile } from '@/lib/firebase/use-user-profile';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { user } = useFirebase();
+  const { userProfile } = useUserProfile(user?.uid);
 
-  // Don't show nav on the root auth page
   if (pathname === '/') {
     return <main>{children}</main>;
   }
 
-  // Determine active state for search tabs
   const currentTab = searchParams.get('tab');
   const isHotelActive = pathname === '/search-page' && (!currentTab || currentTab === 'hotel');
   const isBusActive = pathname === '/search-page' && currentTab === 'bus';
+
+  const isAdmin = userProfile?.role === 'admin';
+  const isStaff = userProfile?.role === 'staff';
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
@@ -48,8 +55,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href="/search"
                 className="flex items-center gap-2 text-lg font-semibold md:text-base"
             >
-                <Briefcase className="h-6 w-6 text-primary" />
-                <span className='font-bold tracking-tight'>BR Trip</span>
+                <div className="bg-primary p-1.5 rounded-lg shadow-lg shadow-primary/20">
+                  <Briefcase className="h-5 w-5 text-white" />
+                </div>
+                <span className='font-black tracking-tighter italic text-xl'>BR TRIP</span>
             </Link>
              <Link href="/wallet">
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -60,9 +69,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <div className="ml-auto flex items-center gap-2">
            <a href="tel:8306930595">
-              <Button variant="outline" size="sm" className="h-9 font-medium">
-                <Phone className="mr-2 h-4 w-4" />
-                Contact Us
+              <Button variant="outline" size="sm" className="h-9 font-bold border-primary/20 hover:bg-primary/10">
+                <Phone className="mr-2 h-4 w-4 text-primary" />
+                Help
               </Button>
             </a>
         </div>
@@ -75,7 +84,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md">
-        <nav className="grid h-16 grid-cols-6 items-center justify-items-center gap-1 px-2 text-[10px] font-medium leading-tight">
+        <nav className="grid h-16 grid-cols-6 items-center justify-items-center gap-1 px-2 text-[10px] font-black uppercase tracking-tighter leading-tight">
           <Link
             href="/search"
             className={cn(
@@ -86,16 +95,42 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Home className="h-5 w-5" />
             <span>Home</span>
           </Link>
-           <Link
-            href="/search-page?tab=hotel"
-            className={cn(
-              'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
-              isHotelActive && 'text-primary'
-            )}
-          >
-            <Hotel className="h-5 w-5" />
-            <span>Hotel</span>
-          </Link>
+          
+          {isAdmin ? (
+            <Link
+                href="/admin"
+                className={cn(
+                'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95 font-black text-red-500',
+                pathname === '/admin' && 'text-red-600'
+                )}
+            >
+                <ShieldAlert className="h-5 w-5" />
+                <span>Admin</span>
+            </Link>
+          ) : isStaff ? (
+            <Link
+                href="/staff"
+                className={cn(
+                'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95 font-black text-accent',
+                pathname === '/staff' && 'text-accent'
+                )}
+            >
+                <ClipboardList className="h-5 w-5" />
+                <span>Duty</span>
+            </Link>
+          ) : (
+            <Link
+                href="/search-page?tab=hotel"
+                className={cn(
+                'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
+                isHotelActive && 'text-primary'
+                )}
+            >
+                <Hotel className="h-5 w-5" />
+                <span>Hotel</span>
+            </Link>
+          )}
+
           <Link
             href="/search-page?tab=bus"
             className={cn(
@@ -124,17 +159,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Package className="h-5 w-5" />
-            <span>Packages</span>
+            <span>Deals</span>
           </Link>
           <Link
             href="/menu"
             className={cn(
               'flex flex-col items-center gap-1 text-muted-foreground transition-all hover:text-primary active:scale-95',
-              (pathname === '/menu' || pathname === '/language' || pathname === '/gift-card' || pathname === '/refer-and-earn' || pathname === '/terms' || pathname === '/settings' || pathname === '/partnership' || pathname === '/profile') && 'text-primary'
+              (pathname === '/menu' || pathname === '/profile' || pathname === '/admin' || pathname === '/staff') && 'text-primary'
             )}
           >
             <Menu className="h-5 w-5" />
-            <span>More</span>
+            <span>Menu</span>
           </Link>
         </nav>
       </footer>

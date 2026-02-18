@@ -14,6 +14,7 @@ export interface SavedCard {
 
 export interface UserProfile {
   fullName: string;
+  role: 'traveler' | 'admin' | 'staff';
   kycStatus?: 'none' | 'pending' | 'verified';
   kycDocumentType?: string;
   walletBalance?: number;
@@ -39,7 +40,6 @@ export function useUserProfile(userId: string | undefined) {
       if (!userDocRef) return;
 
       try {
-        // Use setDoc with merge: true instead of updateDoc to handle non-existent docs
         await setDoc(userDocRef, data, { merge: true });
         toast({
           title: 'Success',

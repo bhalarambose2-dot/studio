@@ -1,14 +1,16 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
 import { useUserProfile } from "@/lib/firebase/use-user-profile";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 export default function MenuPage() {
   const { auth, user, isUserLoading } = useFirebase();
@@ -40,18 +42,50 @@ export default function MenuPage() {
             <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user/100/100"} alt="User avatar" data-ai-hint="user avatar" />
             <AvatarFallback className="text-primary bg-white">{displayName[0]}</AvatarFallback>
           </Avatar>
-          <div className="overflow-hidden">
+          <div className="overflow-hidden flex flex-col gap-1">
             <CardTitle className="text-xl truncate">नमस्कार {displayName}</CardTitle>
             <CardDescription className="text-primary-foreground/80 truncate">{displayEmail}</CardDescription>
+            {userProfile?.role && (
+                <Badge className="bg-white/20 border-none text-[10px] w-fit uppercase font-bold tracking-widest">
+                    {userProfile.role}
+                </Badge>
+            )}
           </div>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-1 gap-4">
+        {userProfile?.role === 'admin' && (
+            <Link href="/admin">
+                <Card className="p-6 bg-red-500 text-white hover:bg-red-600 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <ShieldAlert className="h-8 w-8" />
+                        <p className="font-black uppercase tracking-tight">Admin Console</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5" />
+                </Card>
+            </Link>
+        )}
+
+        {userProfile?.role === 'staff' && (
+             <Link href="/staff">
+                <Card className="p-6 bg-accent text-white hover:bg-accent/90 transition-colors cursor-pointer border-none shadow-md flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <ClipboardList className="h-8 w-8" />
+                        <p className="font-black uppercase tracking-tight">Duty Dashboard (Staff)</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5" />
+                </Card>
+            </Link>
+        )}
+
         <Link href="/profile">
-          <Card className="text-center p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm flex items-center justify-center gap-4">
-              <User className="h-8 w-8 text-primary" />
-              <p className="font-semibold text-sm">मेरा खाता (My Account)</p>
+          <Card className="p-6 hover:bg-muted transition-colors cursor-pointer border-none shadow-sm flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <User className="h-8 w-8 text-primary" />
+                <p className="font-bold">मेरा खाता (My Account)</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </Card>
         </Link>
       </div>
@@ -102,43 +136,13 @@ export default function MenuPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-none shadow-sm overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold">सेटिंग</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 divide-y">
-            <Link href="/language">
-                <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
-                    <div className="flex items-center gap-4">
-                        <Languages className="h-5 w-5 text-primary"/>
-                        <div>
-                            <p className="text-sm font-medium">भाषा</p>
-                            <p className="text-xs text-muted-foreground">हिंदी</p>
-                        </div>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </div>
-            </Link>
-            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors cursor-pointer">
-                <div className="flex items-center gap-4">
-                    <Globe className="h-5 w-5 text-primary"/>
-                     <div>
-                        <p className="text-sm font-medium">देश / क्षेत्र</p>
-                        <p className="text-xs text-muted-foreground">भारत</p>
-                    </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            </div>
-        </CardContent>
-      </Card>
-
       <div className="px-4 pt-4">
         <Button 
           variant="destructive" 
-          className="w-full flex items-center justify-center gap-2" 
+          className="w-full flex items-center justify-center gap-2 h-14 font-bold text-lg rounded-2xl" 
           onClick={handleLogout}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-5 w-5" />
           लॉग आउट (Log Out)
         </Button>
       </div>
