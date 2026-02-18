@@ -3,6 +3,7 @@ import './globals.css';
 import { AppShell } from '@/components/app-shell';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'BR trip',
@@ -24,7 +25,9 @@ export default function RootLayout({
       </head>
       <body>
         <FirebaseClientProvider>
-          <AppShell>{children}</AppShell>
+          <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center font-black text-primary italic">BR TRIP...</div>}>
+            <AppShell>{children}</AppShell>
+          </Suspense>
           <Toaster />
         </FirebaseClientProvider>
       </body>

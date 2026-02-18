@@ -34,6 +34,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent hydration mismatch for early return paths
+  if (!mounted) {
+    return <main className="relative min-h-screen bg-white">{children}</main>;
+  }
 
   if (pathname === '/') {
     return <main className="relative min-h-screen overflow-hidden">{children}</main>;
