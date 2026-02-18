@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet, IndianRupee, CreditCard, Loader2, Trash2, Copy, QrCode, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { Wallet, IndianRupee, CreditCard, Loader2, QrCode, ShieldAlert, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -144,7 +144,7 @@ export default function WalletPage() {
                         <p className="text-[10px] text-muted-foreground text-center">Payment karne ke baad apna Transaction ID yahan bharein aur Verify dabayein.</p>
                         <div className="flex gap-2 w-full">
                             <Button variant="outline" className="flex-1" onClick={() => { setShowQR(false); setTxnId(''); }}>Cancel</Button>
-                            <Button className="flex-1" onClick={handleVerifyPayment}>Verify Now</Button>
+                            <Button className="flex-1" onClick={handleVerifyPayment} disabled={!txnId || txnId.length < 6}>Verify Now</Button>
                         </div>
                     </div>
                 )}
