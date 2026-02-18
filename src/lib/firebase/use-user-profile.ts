@@ -6,10 +6,18 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { toast } from '@/hooks/use-toast';
 
+export interface SavedCard {
+  cardNumber: string;
+  expiryDate: string;
+  cardType: string;
+}
+
 export interface UserProfile {
   fullName: string;
   kycStatus?: 'none' | 'pending' | 'verified';
   kycDocumentType?: string;
+  walletBalance?: number;
+  savedCards?: SavedCard[];
 }
 
 export function useUserProfile(userId: string | undefined) {
