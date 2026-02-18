@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { userProfile } = useUserProfile(user?.uid);
 
   if (pathname === '/') {
-    return <main>{children}</main>;
+    return <main className="relative min-h-screen overflow-hidden">{children}</main>;
   }
 
   const currentTab = searchParams.get('tab');
@@ -47,14 +47,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isStaff = userProfile?.role === 'staff';
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur-sm px-4 md:px-6 z-40">
+    <div className="flex min-h-screen w-full flex-col bg-background relative overflow-hidden">
+      {/* Background Lighting Blobs */}
+      <div className="bg-lighting-blob bg-lighting-blob-primary" />
+      <div className="bg-lighting-blob bg-lighting-blob-accent" />
+      
+      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6 z-40">
         <div className="flex items-center gap-2">
             <Link
                 href="/search"
                 className="flex items-center gap-2 text-lg font-semibold md:text-base"
             >
-                <div className="bg-primary p-1.5 rounded-lg shadow-lg shadow-primary/20">
+                <div className="bg-primary p-1.5 rounded-lg shadow-lg shadow-primary/30">
                   <Briefcase className="h-5 w-5 text-white" />
                 </div>
                 <span className='font-black tracking-tighter italic text-xl'>BR TRIP</span>
@@ -68,7 +72,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <div className="ml-auto flex items-center gap-2">
            <a href="https://wa.me/918306930595" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="sm" className="h-9 font-bold border-primary/20 hover:bg-primary/10">
+              <Button variant="outline" size="sm" className="h-9 font-bold border-primary/20 hover:bg-primary/10 transition-all">
                 <MessageCircle className="mr-2 h-4 w-4 text-primary" />
                 Help
               </Button>
@@ -76,13 +80,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       
-      <main className="flex-1 overflow-y-auto pb-24 bg-[#FAF9F6]">
-         <div className="p-4 md:p-8 max-w-7xl mx-auto">
+      <main className="flex-1 overflow-y-auto pb-24 bg-transparent">
+         <div className="p-4 md:p-8 max-w-7xl mx-auto relative z-10">
           {children}
         </div>
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md">
+      <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/80 backdrop-blur-xl">
         <nav className="grid h-16 grid-cols-6 items-center justify-items-center gap-1 px-2 text-[10px] font-black uppercase tracking-tighter leading-tight">
           <Link
             href="/search"
