@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2, Smartphone, Copy } from "lucide-react";
+import { Wallet, IndianRupee, Plus, CreditCard, Loader2, Trash2, Smartphone, Copy, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,6 +17,7 @@ export default function WalletPage() {
   const { userProfile, updateUserProfile, isLoading: isProfileLoading } = useUserProfile(user?.uid);
   const [addAmount, setAddAmount] = useState('');
   const [isAddingCard, setIsAddingCard] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [newCard, setNewCard] = useState({ number: '', expiry: '', type: 'Visa' });
   const { toast } = useToast();
 
@@ -35,6 +36,8 @@ export default function WalletPage() {
       return;
     }
 
+    setIsProcessingPayment(true);
+
     // This deep link will attempt to open UPI apps on a mobile device
     const name = "BR Trip";
     const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
@@ -43,18 +46,21 @@ export default function WalletPage() {
     
     toast({
       title: 'UPI Payment Initiated',
-      description: 'Opening your UPI app... (Simulating Success in 5s)',
+      description: 'Opening your UPI app... Payment verification in progress.',
     });
 
     // SIMULATION: In a prototype, we manually update the balance since we don't have a real payment gateway callback.
     setTimeout(async () => {
       const currentBalance = userProfile?.walletBalance || 0;
       await updateUserProfile({ walletBalance: currentBalance + amount });
-      toast({
-        title: 'Payment Confirmed',
-        description: `₹${amount} has been added to your wallet.`,
-      });
+      
+      setIsProcessingPayment(false);
       setAddAmount('');
+      
+      toast({
+        title: 'Payment Success',
+        description: `₹${amount} added to your app wallet!`,
+      });
     }, 5000);
   };
 
@@ -97,10 +103,17 @@ export default function WalletPage() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="flex flex-col h-full border-primary/20 bg-primary/5 shadow-xl">
+            <Card className="flex flex-col h-full border-primary/20 bg-primary/5 shadow-xl relative overflow-hidden">
+                {isProcessingPayment && (
+                    <div className="absolute inset-0 bg-white/80 dark:bg-black/80 z-20 flex flex-col items-center justify-center text-center p-6 backdrop-blur-sm">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                        <h3 className="text-xl font-bold">Verifying Payment...</h3>
+                        <p className="text-sm text-muted-foreground mt-2">Please wait while we confirm your transaction with the bank.</p>
+                    </div>
+                )}
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-primary"><Wallet /> My Balance</CardTitle>
-                    <CardDescription>Available funds for your next booking.</CardDescription>
+                    <CardDescription>Available funds in your app wallet.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow flex flex-col justify-center py-10">
                     <div className="text-center">
@@ -121,13 +134,15 @@ export default function WalletPage() {
                                 value={addAmount}
                                 onChange={(e) => setAddAmount(e.target.value)}
                                 className="h-12 text-lg"
+                                disabled={isProcessingPayment}
                             />
                         </div>
                         <div className="flex flex-col gap-3">
-                            <Button onClick={handleUPIPayment} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount}>
-                                <Smartphone className="mr-2 h-5 w-5" /> Pay via UPI (Mobile)
+                            <Button onClick={handleUPIPayment} variant="default" className="w-full h-12 shadow-lg shadow-primary/20" disabled={!addAmount || isProcessingPayment}>
+                                {isProcessingPayment ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Smartphone className="mr-2 h-5 w-5" />}
+                                {isProcessingPayment ? 'Processing...' : 'Pay via UPI'}
                             </Button>
-                            <Button variant="outline" className="w-full h-12 border-dashed" onClick={copyUPI}>
+                            <Button variant="outline" className="w-full h-12 border-dashed" onClick={copyUPI} disabled={isProcessingPayment}>
                                 <Copy className="mr-2 h-4 w-4" /> Copy UPI ID: {upiId}
                             </Button>
                         </div>
@@ -216,6 +231,16 @@ export default function WalletPage() {
                 </CardContent>
             </Card>
         </div>
+        
+        <Card className="border-accent/20 bg-accent/5">
+            <CardContent className="p-4 flex items-start gap-3">
+                <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                <div className="text-sm">
+                    <p className="font-bold text-accent">Prototype Notice</p>
+                    <p className="text-muted-foreground">This is a travel prototype. The UPI link is for testing deep links. Real money is not deducted, and the wallet balance updates after a 5-second simulated verification.</p>
+                </div>
+            </CardContent>
+        </Card>
     </div>
   );
 }

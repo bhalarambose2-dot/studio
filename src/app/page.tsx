@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -94,9 +95,12 @@ export default function AuthPage() {
           id: user.uid,
           firstName,
           lastName,
+          fullName: values.fullName,
           email: values.email,
           preferredCurrency: 'INR',
           languagePreference: 'hi',
+          walletBalance: 0,
+          kycStatus: 'none',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }, { merge: true });
