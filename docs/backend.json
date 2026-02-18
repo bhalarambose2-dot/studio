@@ -1,258 +1,596 @@
-
 {
   "entities": {
     "User": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
-      "description": "Represents a user of the BR TRIP application.",
+      "description": "Represents a user of the BR TRIP application. This entity stores core user profile information and links to their bookings and itineraries. Authentication data is managed externally.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the user entity."
+          "description": "Unique identifier for the User entity."
         },
-        "fullName": {
+        "firstName": {
           "type": "string",
-          "description": "The full name of the user."
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
         },
         "email": {
           "type": "string",
-          "description": "The email address of the user.",
+          "description": "The email address of the user, used for communication.",
           "format": "email"
+        },
+        "preferredCurrency": {
+          "type": "string",
+          "description": "The user's preferred currency for displaying prices (e.g., 'USD', 'BRL')."
+        },
+        "languagePreference": {
+          "type": "string",
+          "description": "The user's preferred language for the application interface (e.g., 'en-US', 'pt-BR')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
         }
       },
       "required": [
         "id",
-        "fullName",
-        "email"
+        "firstName",
+        "lastName",
+        "email",
+        "preferredCurrency",
+        "languagePreference",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Destination": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Destination",
+      "type": "object",
+      "description": "Represents a travel destination, containing general information for destination guides and search functionality.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Destination entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the destination (e.g., 'Paris')."
+        },
+        "country": {
+          "type": "string",
+          "description": "The country where the destination is located."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the destination, highlighting its main attractions and appeal."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to a prominent image representing the destination.",
+          "format": "uri"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Geographical latitude of the destination's primary point of interest."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Geographical longitude of the destination's primary point of interest."
+        },
+        "localCustoms": {
+          "type": "string",
+          "description": "Information about local customs and etiquette for travelers."
+        },
+        "bestTimeToVisit": {
+          "type": "string",
+          "description": "Textual description of the best times of the year to visit the destination."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "country",
+        "description"
+      ]
+    },
+    "Activity": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Activity",
+      "type": "object",
+      "description": "Represents a specific activity or attraction available at a destination, useful for destination guides and itinerary building.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Activity entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the activity or attraction."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the activity, including what it entails."
+        },
+        "destinationId": {
+          "type": "string",
+          "description": "Reference to the Destination where this activity is located. (Relationship: Destination 1:N Activity)"
+        },
+        "type": {
+          "type": "string",
+          "description": "The category of the activity (e.g., 'Sightseeing', 'Adventure', 'Food', 'Culture')."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to an image representing the activity.",
+          "format": "uri"
+        },
+        "priceRange": {
+          "type": "string",
+          "description": "Indication of the typical price range (e.g., '$', '$$', '$$$')."
+        },
+        "openingHours": {
+          "type": "string",
+          "description": "Information about the typical opening and closing hours of the activity."
+        },
+        "address": {
+          "type": "string",
+          "description": "The physical address of the activity."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Geographical latitude of the activity."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Geographical longitude of the activity."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "destinationId",
+        "type"
+      ]
+    },
+    "Flight": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Flight",
+      "type": "object",
+      "description": "Represents a specific flight option available for search and booking. This data is typically sourced from external APIs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Flight entity."
+        },
+        "flightNumber": {
+          "type": "string",
+          "description": "The unique flight number (e.g., 'AA123')."
+        },
+        "airline": {
+          "type": "string",
+          "description": "The name of the airline operating the flight."
+        },
+        "departureAirportCode": {
+          "type": "string",
+          "description": "The IATA code of the departure airport (e.g., 'JFK')."
+        },
+        "departureCity": {
+          "type": "string",
+          "description": "The city of the departure airport."
+        },
+        "departureDateTime": {
+          "type": "string",
+          "description": "The scheduled date and time of departure.",
+          "format": "date-time"
+        },
+        "arrivalAirportCode": {
+          "type": "string",
+          "description": "The IATA code of the arrival airport (e.g., 'LAX')."
+        },
+        "arrivalCity": {
+          "type": "string",
+          "description": "The city of the arrival airport."
+        },
+        "arrivalDateTime": {
+          "type": "string",
+          "description": "The scheduled date and time of arrival.",
+          "format": "date-time"
+        },
+        "durationMinutes": {
+          "type": "number",
+          "description": "The total duration of the flight in minutes."
+        },
+        "price": {
+          "type": "number",
+          "description": "The current price of the flight."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency of the flight price (e.g., 'USD')."
+        },
+        "stops": {
+          "type": "number",
+          "description": "The number of layovers or stops for the flight."
+        },
+        "aircraftType": {
+          "type": "string",
+          "description": "The type of aircraft used for the flight (e.g., 'Boeing 737')."
+        }
+      },
+      "required": [
+        "id",
+        "flightNumber",
+        "airline",
+        "departureAirportCode",
+        "departureCity",
+        "departureDateTime",
+        "arrivalAirportCode",
+        "arrivalCity",
+        "arrivalDateTime",
+        "durationMinutes",
+        "price",
+        "currency",
+        "stops"
+      ]
+    },
+    "Hotel": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Hotel",
+      "type": "object",
+      "description": "Represents a hotel property available for search and booking. This data is typically sourced from external APIs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Hotel entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the hotel."
+        },
+        "destinationId": {
+          "type": "string",
+          "description": "Reference to the Destination where this hotel is located. (Relationship: Destination 1:N Hotel)"
+        },
+        "address": {
+          "type": "string",
+          "description": "The full street address of the hotel."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the hotel is located."
+        },
+        "country": {
+          "type": "string",
+          "description": "The country where the hotel is located."
+        },
+        "starRating": {
+          "type": "number",
+          "description": "The star rating of the hotel (e.g., 3, 4, 5)."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the hotel and its offerings."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to a prominent image of the hotel.",
+          "format": "uri"
+        },
+        "amenities": {
+          "type": "array",
+          "description": "A list of amenities offered by the hotel (e.g., 'Pool', 'Free WiFi', 'Restaurant').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pricePerNight": {
+          "type": "number",
+          "description": "The average price per night for a standard room."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency of the hotel price (e.g., 'USD')."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Geographical latitude of the hotel."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Geographical longitude of the hotel."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "address",
+        "city",
+        "country",
+        "description",
+        "pricePerNight",
+        "currency"
       ]
     },
     "FlightBooking": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "FlightBooking",
       "type": "object",
-      "description": "Represents a flight booking made by a user.",
+      "description": "Records a user's confirmed or pending reservation for a flight.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the FlightBooking entity."
+        },
         "userId": {
-            "type": "string",
-            "description": "The ID of the user who made the booking."
+          "type": "string",
+          "description": "Reference to the User who made the booking. (Relationship: User 1:N FlightBooking)"
         },
-        "tripName": {
-            "type": "string",
-            "description": "The name of the trip or destination."
+        "flightId": {
+          "type": "string",
+          "description": "Reference to the Flight being booked. (Relationship: Flight 1:N FlightBooking)"
         },
-        "customerName": {
-            "type": "string",
-            "description": "Name of the customer who made the booking."
+        "bookingReference": {
+          "type": "string",
+          "description": "The external booking reference or confirmation code provided by the airline or API."
         },
-        "customerEmail": {
-            "type": "string",
-            "description": "Email of the customer.",
-            "format": "email"
+        "status": {
+          "type": "string",
+          "description": "The current status of the booking (e.g., 'Confirmed', 'Pending', 'Cancelled')."
         },
-        "customerPhone": {
-            "type": "string",
-            "description": "Phone number of the customer."
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price paid for this flight booking."
         },
-        "travelers": {
-            "type": "number",
-            "description": "Number of travelers for this booking."
+        "currency": {
+          "type": "string",
+          "description": "The currency of the total price (e.g., 'USD')."
         },
-        "bookingDate": {
-          "type": "object",
-          "description": "The Firestore Timestamp of the booking."
+        "bookedAt": {
+          "type": "string",
+          "description": "Timestamp when the flight booking was made.",
+          "format": "date-time"
+        },
+        "passengerNames": {
+          "type": "array",
+          "description": "A list of full names of all passengers included in this booking.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seatAssignments": {
+          "type": "array",
+          "description": "A list of seat numbers assigned to passengers for this flight.",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
+        "id",
         "userId",
-        "tripName",
-        "customerName",
-        "customerEmail",
-        "travelers",
-        "bookingDate"
+        "flightId",
+        "bookingReference",
+        "status",
+        "totalPrice",
+        "currency",
+        "bookedAt",
+        "passengerNames"
       ]
     },
     "HotelBooking": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "HotelBooking",
       "type": "object",
-      "description": "Represents a hotel booking made by a user.",
+      "description": "Records a user's confirmed or pending reservation for a hotel stay.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the hotel booking."
+          "description": "Unique identifier for the HotelBooking entity."
         },
         "userId": {
           "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N HotelBooking)"
+          "description": "Reference to the User who made the booking. (Relationship: User 1:N HotelBooking)"
         },
-        "hotelName": {
+        "hotelId": {
           "type": "string",
-          "description": "The name of the hotel."
+          "description": "Reference to the Hotel being booked. (Relationship: Hotel 1:N HotelBooking)"
         },
-        "city": {
+        "bookingReference": {
           "type": "string",
-          "description": "The city where the hotel is located."
+          "description": "The external booking reference or confirmation code provided by the hotel or API."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the booking (e.g., 'Confirmed', 'Pending', 'Cancelled')."
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price paid for this hotel booking."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency of the total price (e.g., 'USD')."
+        },
+        "bookedAt": {
+          "type": "string",
+          "description": "Timestamp when the hotel booking was made.",
+          "format": "date-time"
         },
         "checkInDate": {
           "type": "string",
-          "description": "The check-in date.",
-          "format": "date-time"
+          "description": "The scheduled check-in date for the hotel stay.",
+          "format": "date"
         },
         "checkOutDate": {
           "type": "string",
-          "description": "The check-out date.",
-          "format": "date-time"
+          "description": "The scheduled check-out date for the hotel stay.",
+          "format": "date"
         },
-        "numberOfGuests": {
+        "numAdults": {
           "type": "number",
-          "description": "The number of guests for this booking."
+          "description": "The number of adults included in the hotel reservation."
+        },
+        "numChildren": {
+          "type": "number",
+          "description": "The number of children included in the hotel reservation."
         },
         "roomType": {
           "type": "string",
-          "description": "The type of room booked."
-        },
-        "bookingDate": {
-          "type": "string",
-          "description": "The date and time the booking was made.",
-          "format": "date-time"
+          "description": "The type of room booked (e.g., 'Standard Queen', 'Deluxe King Suite')."
         }
       },
       "required": [
         "id",
         "userId",
-        "hotelName",
-        "city",
+        "hotelId",
+        "bookingReference",
+        "status",
+        "totalPrice",
+        "currency",
+        "bookedAt",
         "checkInDate",
         "checkOutDate",
-        "numberOfGuests"
+        "numAdults",
+        "roomType"
       ]
     },
     "Itinerary": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Itinerary",
       "type": "object",
-      "description": "Represents a personalized trip itinerary generated for a user.",
+      "description": "Represents a personalized trip itinerary generated or curated by a user, potentially with AI assistance.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the itinerary."
+          "description": "Unique identifier for the Itinerary entity."
         },
         "userId": {
           "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N Itinerary)"
+          "description": "Reference to the User who owns this itinerary. (Relationship: User 1:N Itinerary)"
         },
-        "destination": {
+        "name": {
           "type": "string",
-          "description": "The destination city or location for the itinerary."
+          "description": "A descriptive name for the itinerary (e.g., 'Romantic Paris Getaway')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or overview of the trip itinerary."
         },
         "startDate": {
           "type": "string",
           "description": "The start date of the itinerary.",
-          "format": "date-time"
+          "format": "date"
         },
         "endDate": {
           "type": "string",
           "description": "The end date of the itinerary.",
+          "format": "date"
+        },
+        "destinationIds": {
+          "type": "array",
+          "description": "References to Destinations included in this itinerary. (Relationship: Destination N:N Itinerary)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the itinerary was created.",
           "format": "date-time"
         },
-        "description": {
+        "updatedAt": {
           "type": "string",
-          "description": "A description of the itinerary, including activities and suggested travel plans."
-        },
-        "createdDate": {
-          "type": "string",
-          "description": "The date and time the itinerary was created.",
+          "description": "Timestamp when the itinerary was last updated.",
           "format": "date-time"
         }
       },
       "required": [
         "id",
         "userId",
-        "destination",
+        "name",
         "startDate",
         "endDate",
-        "description"
+        "createdAt",
+        "updatedAt"
       ]
     },
-    "DestinationGuide": {
+    "ItineraryItem": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "DestinationGuide",
+      "title": "ItineraryItem",
       "type": "object",
-      "description": "Represents a destination guide with information on attractions, activities, and local customs.",
+      "description": "Represents a single planned event or booking within a larger itinerary, providing daily breakdown.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the destination guide."
+          "description": "Unique identifier for the ItineraryItem entity."
         },
-        "destinationName": {
+        "itineraryId": {
           "type": "string",
-          "description": "The name of the destination."
+          "description": "Reference to the Itinerary this item belongs to. (Relationship: Itinerary 1:N ItineraryItem)"
         },
-        "description": {
+        "type": {
           "type": "string",
-          "description": "A detailed description of the destination, including its history, culture, and attractions."
+          "description": "The type of item within the itinerary (e.g., 'Flight', 'Hotel', 'Activity', 'Other')."
         },
-        "popularAttractions": {
-          "type": "array",
-          "description": "A list of popular attractions in the destination.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "localCustoms": {
+        "itemDate": {
           "type": "string",
-          "description": "Information on local customs and etiquette."
+          "description": "The specific date on which this item is scheduled.",
+          "format": "date"
         },
-        "bestTimeToVisit": {
+        "startTime": {
           "type": "string",
-          "description": "The best time to visit the destination."
+          "description": "The approximate start time of the item (e.g., '09:00')."
+        },
+        "endTime": {
+          "type": "string",
+          "description": "The approximate end time of the item (e.g., '17:00')."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any additional notes or details for this itinerary item."
+        },
+        "flightBookingId": {
+          "type": "string",
+          "description": "Reference to a FlightBooking if this item is a flight. (Relationship: FlightBooking 1:N ItineraryItem)"
+        },
+        "hotelBookingId": {
+          "type": "string",
+          "description": "Reference to a HotelBooking if this item is a hotel stay. (Relationship: HotelBooking 1:N ItineraryItem)"
+        },
+        "activityId": {
+          "type": "string",
+          "description": "Reference to an Activity if this item is a planned activity. (Relationship: Activity 1:N ItineraryItem)"
+        },
+        "customTitle": {
+          "type": "string",
+          "description": "A custom title for the itinerary item, especially for 'Other' types or overrides."
+        },
+        "customDescription": {
+          "type": "string",
+          "description": "A custom description for the itinerary item, especially for 'Other' types or overrides."
+        },
+        "location": {
+          "type": "string",
+          "description": "A custom location string for the itinerary item, especially for 'Other' types."
         }
       },
       "required": [
         "id",
-        "destinationName",
-        "description"
-      ]
-    },
-    "UserProfile": {
-      "title": "User Profile",
-      "description": "A user's profile information including wallet and payments.",
-      "type": "object",
-      "properties": {
-        "fullName": {
-          "description": "The user's full name.",
-          "type": "string"
-        },
-        "kycStatus": {
-          "description": "The status of the user's KYC verification.",
-          "type": "string",
-          "enum": ["none", "pending", "verified"]
-        },
-        "kycDocumentType": {
-          "description": "The type of document used for KYC.",
-          "type": "string"
-        },
-        "walletBalance": {
-          "description": "The current balance in the user's wallet.",
-          "type": "number",
-          "default": 0
-        },
-        "savedCards": {
-          "description": "A list of saved payment methods.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "cardNumber": { "type": "string" },
-              "expiryDate": { "type": "string" },
-              "cardType": { "type": "string" }
-            }
-          }
-        }
-      },
-      "required": [
-        "fullName"
+        "itineraryId",
+        "type",
+        "itemDate"
       ]
     }
   },
@@ -263,22 +601,176 @@
     ]
   },
   "firestore": {
-    "rules": "firestore.rules",
     "structure": [
       {
         "path": "/users/{userId}",
-        "schema": {
-          "$ref": "#/entities/UserProfile"
-        },
-        "description": "Stores user profiles including wallet balance and KYC status."
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores individual user profiles. Access is restricted to the owning user (`request.auth.uid` must match `{userId}`).",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user, corresponding to `request.auth.uid`."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/destinations/{destinationId}",
+        "definition": {
+          "entityName": "Destination",
+          "schema": {
+            "$ref": "#/backend/entities/Destination"
+          },
+          "description": "Stores general information about travel destinations. This data is publicly readable for all users, primarily for destination guides and search functionality.",
+          "params": [
+            {
+              "name": "destinationId",
+              "description": "The unique identifier for the destination."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/destinations/{destinationId}/activities/{activityId}",
+        "definition": {
+          "entityName": "Activity",
+          "schema": {
+            "$ref": "#/backend/entities/Activity"
+          },
+          "description": "Stores specific activities or attractions associated with a destination. This data is publicly readable, serving as part of destination guides. Inherits public readability from its parent `/destinations` collection.",
+          "params": [
+            {
+              "name": "destinationId",
+              "description": "The unique identifier of the parent destination."
+            },
+            {
+              "name": "activityId",
+              "description": "The unique identifier for the activity."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/flights/{flightId}",
+        "definition": {
+          "entityName": "Flight",
+          "schema": {
+            "$ref": "#/backend/entities/Flight"
+          },
+          "description": "Stores general flight options available for search and booking. This data is publicly readable for all users.",
+          "params": [
+            {
+              "name": "flightId",
+              "description": "The unique identifier for the flight."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/hotels/{hotelId}",
+        "definition": {
+          "entityName": "Hotel",
+          "schema": {
+            "$ref": "#/backend/entities/Hotel"
+          },
+          "description": "Stores general hotel properties available for search and booking. This data is publicly readable for all users.",
+          "params": [
+            {
+              "name": "hotelId",
+              "description": "The unique identifier for the hotel."
+            }
+          ]
+        }
       },
       {
         "path": "/users/{userId}/flightBookings/{flightBookingId}",
-        "schema": {
-          "$ref": "#/entities/FlightBooking"
-        },
-        "description": "Stores flight bookings for a user."
+        "definition": {
+          "entityName": "FlightBooking",
+          "schema": {
+            "$ref": "#/backend/entities/FlightBooking"
+          },
+          "description": "Stores a user's flight bookings. Access is restricted to the owning user (`request.auth.uid` must match `{userId}`). Includes `userId` field for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who made the booking."
+            },
+            {
+              "name": "flightBookingId",
+              "description": "The unique identifier for the flight booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/hotelBookings/{hotelBookingId}",
+        "definition": {
+          "entityName": "HotelBooking",
+          "schema": {
+            "$ref": "#/backend/entities/HotelBooking"
+          },
+          "description": "Stores a user's hotel reservations. Access is restricted to the owning user (`request.auth.uid` must match `{userId}`). Includes `userId` field for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who made the booking."
+            },
+            {
+              "name": "hotelBookingId",
+              "description": "The unique identifier for the hotel booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/itineraries/{itineraryId}",
+        "definition": {
+          "entityName": "Itinerary",
+          "schema": {
+            "$ref": "#/backend/entities/Itinerary"
+          },
+          "description": "Stores personalized trip itineraries created by a user. Access is restricted to the owning user (`request.auth.uid` must match `{userId}`). Includes `userId` field for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns this itinerary."
+            },
+            {
+              "name": "itineraryId",
+              "description": "The unique identifier for the itinerary."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/itineraries/{itineraryId}/itineraryItems/{itineraryItemId}",
+        "definition": {
+          "entityName": "ItineraryItem",
+          "schema": {
+            "$ref": "#/backend/entities/ItineraryItem"
+          },
+          "description": "Stores individual items within a user's itinerary. Access is restricted to the owner of the parent itinerary. To ensure Authorization Independence, each `ItineraryItem` document MUST include the `userId` field (denormalized from the parent itinerary) for direct rule evaluation.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns the parent itinerary."
+            },
+            {
+              "name": "itineraryId",
+              "description": "The unique identifier of the parent itinerary."
+            },
+            {
+              "name": "itineraryItemId",
+              "description": "The unique identifier for the itinerary item."
+            }
+          ]
+        }
       }
-    ]
+    ],
+    "reasoning": "The Firestore structure for BR TRIP prioritizes security, scalability, and debuggability by strictly adhering to the core design principles. \n\n**Authorization Independence (CRITICAL):** This is achieved by ensuring that authorization context is always local to the document being accessed, eliminating the need for `get()` calls in security rules. For all user-owned subcollections (e.g., `/users/{userId}/flightBookings`, `/users/{userId}/itineraries/{itineraryId}/itineraryItems`), the `userId` is explicitly embedded as a field within the document. This means a rule can simply check `request.auth.uid == resource.data.userId` without performing expensive and potentially problematic parent document lookups.\n\n**QAPs (Rules are not Filters):** This structure naturally supports efficient `list` operations (QAPs) by applying structural segregation:\n*   **Public Data:** Entities like `Destinations`, `Activities`, `Flights`, and `Hotels` are stored in top-level collections or subcollections with inherently public read access. Queries on these collections can return all documents that match a query, as there are no user-specific read restrictions. For example, `/destinations` can be listed by anyone.\n*   **User-Specific Data:** All personal data such as `FlightBookings`, `HotelBookings`, `Itineraries`, and `ItineraryItems` are nested under `/users/{userId}/`. This automatically scopes `list` operations to the authenticated user's `uid`, ensuring that `request.auth.uid` is always part of the path and the rule can enforce `resource.data.userId == request.auth.uid`. A user can only list their own bookings and itineraries, satisfying the QAP principle.\n\n**Structural Segregation:** Data with different security postures is kept in separate collections. Public information (Destinations, Activities, Flights, Hotels) resides in broadly accessible collections, while private user data (Bookings, Itineraries) is strictly nested under `/users/{userId}`. This simplifies security rules immensely as a collection's rules apply homogeneously to all its documents.\n\n**Access Modeling:** Path-based ownership (`/users/{userId}/...`) is consistently used for all user-specific data, making it immediately clear who owns the data. Denormalization of `userId` into subcollection documents reinforces this ownership at every level, enhancing robustness and debugging.\n\n**Data Clarity:** Consistent naming conventions are used (e.g., `{userId}`, `{destinationId}`). The `status` field in bookings provides explicit state modeling. The design avoids dynamic keys and relies on predictable schemas."
   }
 }
