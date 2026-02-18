@@ -1,5 +1,3 @@
-// This file is machine-generated - changes may be lost.
-
 'use server';
 
 /**
@@ -36,12 +34,21 @@ const prompt = ai.definePrompt({
   name: 'generateItineraryPrompt',
   input: {schema: GenerateItineraryInputSchema},
   output: {schema: GenerateItineraryOutputSchema},
-  prompt: `You are a travel agent specializing in creating personalized trip itineraries. Based on the user's preferences, create a detailed itinerary including activities, restaurants, and accommodations. 
+  prompt: `You are an elite Indian travel designer known for crafting "Experience of a Lifetime" trips. 
+Create a comprehensive, day-by-day itinerary for the following destination. 
+
+For each day, include:
+- Morning, Afternoon, and Evening activities.
+- A "Must-Try Local Dish" or "Recommended Restaurant" (focus on authentic Indian cuisine if applicable).
+- A "Pro Tip" for navigating the local area, cultural etiquette, or saving money.
+- If the budget is "low", prioritize free attractions, walking tours, and street food gems. If "high", suggest luxury heritage stays, private guides, and fine dining.
 
 Destination: {{destination}}
 Dates: {{dates}}
 Interests: {{interests}}
-Budget: {{budget}}`,
+Budget: {{budget}}
+
+Ensure the output is formatted clearly with headings, bullet points, and an inviting tone.`,
 });
 
 const generateItineraryFlow = ai.defineFlow(

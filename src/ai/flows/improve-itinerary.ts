@@ -30,13 +30,20 @@ const prompt = ai.definePrompt({
   name: 'improveItineraryPrompt',
   input: {schema: ImproveItineraryInputSchema},
   output: {schema: ImproveItineraryOutputSchema},
-  prompt: `You are an expert trip planner. A user has provided feedback on an existing itinerary.  Your job is to improve the itinerary based on the feedback.
+  prompt: `You are a meticulous senior trip curator. A traveler wants to refine their current plan to make it perfect. 
+Review the existing itinerary and the user's specific feedback to create a Version 2.0 that is even more aligned with their desires.
 
 Existing Itinerary:
 {{existingItinerary}}
 
 User Feedback:
 {{userFeedback}}
+
+Instructions:
+- Maintain the professional and day-by-day structure of the original.
+- Swap out activities or adjust pacing based specifically on the feedback provided.
+- Ensure the logical flow of travel (e.g., proximity of locations) remains sound.
+- If the feedback is about food, suggest specific new local restaurants.
 
 Improved Itinerary:`, 
 });

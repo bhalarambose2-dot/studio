@@ -1,8 +1,8 @@
 export const firebaseConfig = {
-  "projectId": "br-trip",
-  "appId": "1:477570603875:web:38836186229ec07496d156",
-  "apiKey": "AIzaSyCacBmyQBXhGUZHHGO9fap-DieYF3casQg",
-  "authDomain": "br-trip.firebaseapp.com",
+  "projectId": "br-courierside",
+  "appId": "1:569085294786:web:747cc4255b1641698ea35b",
+  "apiKey": "AIzaSyBp9vcS-FyUucufzedSHxCROzCN3l8lFFQ",
+  "authDomain": "br-courierside.firebaseapp.com",
   "measurementId": "",
-  "messagingSenderId": "477570603875"
+  "messagingSenderId": "569085294786"
 };
