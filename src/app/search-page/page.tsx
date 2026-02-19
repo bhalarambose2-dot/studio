@@ -84,6 +84,8 @@ const allLocations = [
   "Hawa Mahal, Badi Choupad, Jaipur, Rajasthan",
   "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
   "Amer Fort, Jaipur, Rajasthan",
+  "Jal Mahal, Amber Road, Jaipur",
+  "Pink City Market, Jaipur, Rajasthan",
 
   // DELHI (NCR)
   "Connaught Place, New Delhi, Delhi, India",
@@ -92,6 +94,8 @@ const allLocations = [
   "Chandni Chowk Market, Old Delhi, Delhi",
   "Saket District Centre, South Delhi, Delhi",
   "Lajpat Nagar Market, Delhi",
+  "Qutub Minar, Mehrauli, New Delhi",
+  "Red Fort, Old Delhi, India",
 
   // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
@@ -99,6 +103,8 @@ const allLocations = [
   "Juhu Beach, Mumbai, Maharashtra, India",
   "Bandra West, Linking Road, Mumbai, Maharashtra",
   "Dadar Station East, Mumbai",
+  "Andheri West, Lokhandwala, Mumbai",
+  "Colaba Causeway, Mumbai, Maharashtra",
 
   // OTHER MAJOR POINTS (ALL INDIA)
   "Baga Beach, Calangute, North Goa, India",
@@ -108,6 +114,11 @@ const allLocations = [
   "Solang Valley, Manali, Himachal Pradesh",
   "Fort Kochi, Kerala, India",
   "Mysore Palace, Karnataka",
+  "Charminar, Hyderabad, Telangana",
+  "Victoria Memorial, Kolkata, West Bengal",
+  "Golden Temple, Amritsar, Punjab",
+  "Hampi Ruins, Vijayanagar, Karnataka",
+  "Leh Main Market, Ladakh, India",
 ];
 
 export default function SearchCardPage() {
@@ -263,7 +274,7 @@ export default function SearchCardPage() {
 
   return (
     <div className="flex flex-col gap-8 pb-20">
-      <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white">
+      <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white/80 backdrop-blur-md">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 h-16 bg-muted/30 p-1">
             <TabsTrigger value="hotel" className="text-[10px] md:text-xs font-black italic uppercase"><Hotel className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4"/>Hotel</TabsTrigger>

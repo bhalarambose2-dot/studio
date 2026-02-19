@@ -31,9 +31,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-white relative overflow-hidden">
-      {/* Background Lighting Blobs */}
+      {/* Background Lighting Blobs with Moonlight effect */}
       <div className="bg-lighting-blob bg-lighting-blob-primary" />
       <div className="bg-lighting-blob bg-lighting-blob-accent" />
+      <div className="bg-moonlight" />
       
       <main className="flex-1 overflow-y-auto pb-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         {children}
