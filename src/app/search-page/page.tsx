@@ -39,7 +39,8 @@ import {
   Sparkles, 
   Route,
   Ticket,
-  Globe
+  Globe,
+  MapPinned
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -155,6 +156,8 @@ export default function SearchCardPage() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRouteMapOpen, setIsRouteMapOpen] = useState(false);
+  const [mapMode, setMapMode] = useState<'directions' | 'place'>('directions');
+  const [targetPlace, setTargetPlace] = useState('');
   
   const [hotelLocation, setHotelLocation] = useState('');
   const [displayedHotels, setDisplayedHotels] = useState(hotels);
@@ -183,6 +186,21 @@ export default function SearchCardPage() {
 
   const handleBookingSuccess = () => {
     setIsDialogOpen(false);
+    setMapMode('directions');
+    setIsRouteMapOpen(true);
+  };
+
+  const handleShowPlaceOnMap = (placeName: string) => {
+    if (!placeName) {
+      toast({
+        title: "Kripya Naam Bharein",
+        description: "Pehle kisi jagah ka naam ya address bharein.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setTargetPlace(placeName);
+    setMapMode('place');
     setIsRouteMapOpen(true);
   };
 
@@ -284,12 +302,22 @@ export default function SearchCardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Search All India</Label>
-                  <Input 
-                    placeholder="Search any city in India..." 
-                    value={hotelLocation}
-                    onChange={(e) => setHotelLocation(e.target.value)}
-                    className="h-14 rounded-2xl border-muted"
-                  />
+                  <div className="relative group">
+                    <Input 
+                      placeholder="Search any city in India..." 
+                      value={hotelLocation}
+                      onChange={(e) => setHotelLocation(e.target.value)}
+                      className="h-14 rounded-2xl border-muted pr-12"
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => handleShowPlaceOnMap(hotelLocation)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                        title="Automatic Address Finder"
+                    >
+                        <MapPinned className="h-4 w-4" />
+                    </button>
+                  </div>
                   <QuickSelectIndia onSelect={setHotelLocation} />
                 </div>
                 <div className="space-y-2">
@@ -318,12 +346,30 @@ export default function SearchCardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From Shehar</Label>
-                  <Input placeholder="Starting City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
+                  <div className="relative">
+                    <Input placeholder="Starting City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl pr-12" />
+                    <button 
+                        type="button"
+                        onClick={() => handleShowPlaceOnMap(busFrom)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                    >
+                        <MapPinned className="h-4 w-4" />
+                    </button>
+                  </div>
                   <QuickSelectIndia onSelect={setBusFrom} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To Shehar</Label>
-                  <Input placeholder="Destination City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
+                  <div className="relative">
+                    <Input placeholder="Destination City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl pr-12" />
+                    <button 
+                        type="button"
+                        onClick={() => handleShowPlaceOnMap(busTo)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                    >
+                        <MapPinned className="h-4 w-4" />
+                    </button>
+                  </div>
                   <QuickSelectIndia onSelect={setBusTo} />
                 </div>
                 <div className="space-y-2">
@@ -364,15 +410,24 @@ export default function SearchCardPage() {
                         placeholder="Search Pickup Location" 
                         value={bikePickup}
                         onChange={(e) => setBikePickup(e.target.value)}
-                        className="h-14 pl-12 pr-12 rounded-2xl" 
+                        className="h-14 pl-12 pr-24 rounded-2xl" 
                     />
-                    <button 
-                        type="button"
-                        onClick={() => detectLocation('bike')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary"
-                    >
-                        <LocateFixed className="h-4 w-4" />
-                    </button>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button 
+                            type="button"
+                            onClick={() => handleShowPlaceOnMap(bikePickup)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                        >
+                            <MapPinned className="h-4 w-4" />
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => detectLocation('bike')}
+                            className="p-2 rounded-xl bg-primary/10 text-primary"
+                        >
+                            <LocateFixed className="h-4 w-4" />
+                        </button>
+                    </div>
                   </div>
                   <QuickSelectIndia onSelect={setBikePickup} />
                 </div>
@@ -384,8 +439,15 @@ export default function SearchCardPage() {
                         placeholder="Drop Anywhere in India" 
                         value={bikeDrop}
                         onChange={(e) => setBikeDrop(e.target.value)}
-                        className="h-14 pl-12 rounded-2xl" 
+                        className="h-14 pl-12 pr-12 rounded-2xl" 
                     />
+                     <button 
+                        type="button"
+                        onClick={() => handleShowPlaceOnMap(bikeDrop)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                    >
+                        <MapPinned className="h-4 w-4" />
+                    </button>
                   </div>
                   <QuickSelectIndia onSelect={setBikeDrop} />
                 </div>
@@ -411,15 +473,24 @@ export default function SearchCardPage() {
                         placeholder="Pickup Point" 
                         value={carPickup}
                         onChange={(e) => setCarPickup(e.target.value)}
-                        className="h-14 pl-12 pr-12 rounded-2xl" 
+                        className="h-14 pl-12 pr-24 rounded-2xl" 
                     />
-                    <button 
-                        type="button"
-                        onClick={() => detectLocation('car')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary"
-                    >
-                        <LocateFixed className="h-4 w-4" />
-                    </button>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button 
+                            type="button"
+                            onClick={() => handleShowPlaceOnMap(carPickup)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                        >
+                            <MapPinned className="h-4 w-4" />
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => detectLocation('car')}
+                            className="p-2 rounded-xl bg-primary/10 text-primary"
+                        >
+                            <LocateFixed className="h-4 w-4" />
+                        </button>
+                    </div>
                   </div>
                   <QuickSelectIndia onSelect={setCarPickup} />
                 </div>
@@ -431,10 +502,17 @@ export default function SearchCardPage() {
                         placeholder="Destination City/Point" 
                         value={carDrop}
                         onChange={(e) => setCarDrop(e.target.value)}
-                        className="h-14 pl-12 rounded-2xl" 
+                        className="h-14 pl-12 pr-12 rounded-2xl" 
                     />
+                     <button 
+                        type="button"
+                        onClick={() => handleShowPlaceOnMap(carDrop)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                    >
+                        <MapPinned className="h-4 w-4" />
+                    </button>
                   </div>
-                  <QuickSelectIndia onSelect={setCarDrop} />
+                  <QuickSelectIndia onSelect={carDrop} />
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={() => handleBookNow({ name: 'SUV Cab', price: 85 })}>
@@ -510,9 +588,14 @@ export default function SearchCardPage() {
                       <Route className="h-6 w-6" />
                     </div>
                     <div>
-                        <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">NATIONAL LIVE GUIDE</DialogTitle>
+                        <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">
+                          {mapMode === 'directions' ? 'NATIONAL LIVE GUIDE' : 'PLACE FINDER'}
+                        </DialogTitle>
                         <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
-                            {getMapLocations().pickup} ➔ {getMapLocations().drop}
+                            {mapMode === 'directions' 
+                              ? `${getMapLocations().pickup} ➔ ${getMapLocations().drop}` 
+                              : `Location: ${targetPlace}`
+                            }
                         </DialogDescription>
                     </div>
                 </div>
@@ -522,7 +605,10 @@ export default function SearchCardPage() {
             </DialogHeader>
             <div className="flex-1 w-full h-full relative">
                 <iframe 
-                    src={`https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&origin=${encodeURIComponent(getMapLocations().pickup)}&destination=${encodeURIComponent(getMapLocations().drop)}&mode=driving&zoom=15`}
+                    src={mapMode === 'directions' 
+                      ? `https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&origin=${encodeURIComponent(getMapLocations().pickup)}&destination=${encodeURIComponent(getMapLocations().drop)}&mode=driving&zoom=15`
+                      : `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&q=${encodeURIComponent(targetPlace)}&zoom=15`
+                    }
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
@@ -532,7 +618,12 @@ export default function SearchCardPage() {
                 ></iframe>
                 <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border-l-4 border-l-green-500 max-w-xs">
                     <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Live National Tracking</p>
-                    <p className="text-xs font-bold text-slate-800">Bharat ke har kone ki detailed info ke saath navigation active hai. "Sahi Safar" ka anand lein!</p>
+                    <p className="text-xs font-bold text-slate-800">
+                      {mapMode === 'directions' 
+                        ? 'Bharat ke har kone ki detailed info ke saath navigation active hai. "Sahi Safar" ka anand lein!'
+                        : 'Is jagah ka automatic address aur detailed points map par load ho gaye hain.'
+                      }
+                    </p>
                 </div>
             </div>
         </DialogContent>
