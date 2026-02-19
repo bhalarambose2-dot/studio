@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -148,6 +149,7 @@ export default function SearchCardPage() {
 
   const [bikePickup, setBikePickup] = useState('');
   const [bikeDrop, setBikeDrop] = useState('');
+  const [carPickup, setCarPickup] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   useEffect(() => {
@@ -186,17 +188,50 @@ export default function SearchCardPage() {
     setDisplayedBuses(filteredBuses);
   };
 
-  const detectLocation = () => {
+  const detectLocation = (type: 'bike' | 'car') => {
     setIsDetectingLocation(true);
-    // Simulate GPS detection
-    setTimeout(() => {
-        setBikePickup('Current Location (Jodhpur, Rajasthan)');
+    
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const locationStr = `My Location (${latitude.toFixed(2)}, ${longitude.toFixed(2)}) - Rajasthan`;
+          
+          if (type === 'bike') setBikePickup(locationStr);
+          if (type === 'car') setCarPickup(locationStr);
+          
+          setIsDetectingLocation(false);
+          toast({
+            title: "Location Found!",
+            description: "Aapki current location detect kar li gayi hai.",
+          });
+        },
+        (error) => {
+          console.error(error);
+          // Fallback to a Rajasthan default if GPS fails
+          const fallback = 'Current Location (Rajasthan)';
+          if (type === 'bike') setBikePickup(fallback);
+          if (type === 'car') setCarPickup(fallback);
+          
+          setIsDetectingLocation(false);
+          toast({
+            title: "Location Detected",
+            description: "GPS permission ke bina humne aapki city estimate ki hai.",
+          });
+        },
+        { timeout: 10000 }
+      );
+    } else {
+        const fallback = 'Current Location (Rajasthan)';
+        if (type === 'bike') setBikePickup(fallback);
+        if (type === 'car') setCarPickup(fallback);
         setIsDetectingLocation(false);
         toast({
-            title: "Phone Location Found",
-            description: "Aapki live location detection safal rahi!",
+          title: "Browser Error",
+          description: "Aapka browser location support nahi karta.",
+          variant: "destructive"
         });
-    }, 1500);
+    }
   }
 
   return (
@@ -289,19 +324,20 @@ export default function SearchCardPage() {
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
-                        placeholder="Search Pickup City / Point" 
+                        placeholder="Search Pickup Point" 
                         value={bikePickup}
                         onChange={(e) => setBikePickup(e.target.value)}
                         className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
                     />
                     <button 
                         type="button"
-                        onClick={detectLocation}
+                        onClick={() => detectLocation('bike')}
                         disabled={isDetectingLocation}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50"
-                        title="Detect My Phone Location"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1 px-3"
+                        title="Use My Location"
                     >
-                        {isDetectingLocation ? <Loader2 className="h-5 w-5 animate-spin" /> : <LocateFixed className="h-5 w-5" />}
+                        {isDetectingLocation ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
+                        <span className="text-[9px] font-black uppercase hidden sm:block">Use GPS</span>
                     </button>
                   </div>
                 </div>
@@ -360,7 +396,24 @@ export default function SearchCardPage() {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (All Rajasthan)</Label>
-                  <Input placeholder="e.g., Jaipur Airport, Udaipur Station" className="h-14 rounded-2xl" />
+                  <div className="relative group">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
+                    <Input 
+                        placeholder="e.g., Jaipur Airport, Udaipur Station" 
+                        value={carPickup}
+                        onChange={(e) => setCarPickup(e.target.value)}
+                        className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => detectLocation('car')}
+                        disabled={isDetectingLocation}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1 px-3"
+                    >
+                        {isDetectingLocation ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
+                        <span className="text-[9px] font-black uppercase hidden sm:block">Use Location</span>
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
