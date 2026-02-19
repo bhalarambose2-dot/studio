@@ -40,7 +40,8 @@ import {
   Ticket,
   Globe,
   MapPinned,
-  SearchCode
+  SearchCode,
+  CheckCircle2
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -52,6 +53,25 @@ import { useToast } from '@/hooks/use-toast';
 
 const popularCitiesIndia = [
   'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi'
+];
+
+const allLocations = [
+  "Paota, Jodhpur, Rajasthan, India",
+  "Pavta, Bhaskar Circle, Ratanada, Jodhpur, Rajasthan",
+  "Paota C Road, BJS Colony, Jodhpur, Rajasthan, India",
+  "Paota B Road, Bhadwasiya, Laxmi Nagar, Jodhpur, Rajasthan",
+  "Paota Circle, Bhadwasiya, Paota, Jodhpur, Rajasthan, India",
+  "Railway Station, Jodhpur, Rajasthan",
+  "Airport Road, Jodhpur, Rajasthan",
+  "Clock Tower, Ghanta Ghar, Jodhpur",
+  "Jaipur City Palace, Rajasthan",
+  "Hawa Mahal, Jaipur, Rajasthan",
+  "India Gate, Delhi, India",
+  "Gateway of India, Mumbai",
+  "Marine Drive, Mumbai, Maharashtra",
+  "Connaught Place, New Delhi",
+  "Baga Beach, Goa, India",
+  "Kedarnath Temple, Uttarakhand",
 ];
 
 const hotels = [
@@ -87,48 +107,35 @@ const hotels = [
         "hint": "jaipur palace",
         "rooms_available": 6,
         "description": "Live like royalty in the heart of the Pink City."
-    },
-    {
-        "name": "Ganga Ghat Heritage",
-        "location": "Varanasi, UP",
-        "price": 1800,
-        "rating": 4.6,
-        "facilities": ["River View", "Rooftop Cafe", "Guided Tours"],
-        "image": "https://images.unsplash.com/photo-1561359313-0639aad49ca6?q=80&w=1080",
-        "hint": "varanasi hotel",
-        "rooms_available": 5,
-        "description": "Peaceful stay near the holy banks of Ganga."
     }
 ];
 
 const buses = [
     {
-        "name": "Vishwa Travels",
-        "busNumber": "DL-01-PB-2024",
-        "from": "Delhi",
-        "to": "Manali",
-        "departure": "10:30 PM",
-        "arrival": "08:30 AM",
-        "duration": "10h 00m",
-        "price": 1250,
-        "type": "Scania AC Sleeper (2+1)",
-        "rating": 4.5,
-        "seats": 12,
-        "amenities": ["Water Bottle", "Blanket", "Charging Point"]
+        "name": "Raj Travels",
+        "busNumber": "RJ-19-PB-1234",
+        "from": "Jodhpur",
+        "to": "Jaipur",
+        "departure": "11:00 PM",
+        "arrival": "05:00 AM",
+        "duration": "6h 00m",
+        "price": 550,
+        "type": "AC Sleeper (2+1)",
+        "rating": 4.2,
+        "seats": 15
     },
     {
-        "name": "Bharat Express",
-        "busNumber": "MH-01-AX-7788",
-        "from": "Mumbai",
-        "to": "Goa",
-        "departure": "08:00 PM",
+        "name": "Marwar Express",
+        "busNumber": "RJ-19-AX-7788",
+        "from": "Jodhpur",
+        "to": "Ahmedabad",
+        "departure": "09:00 PM",
         "arrival": "06:00 AM",
-        "duration": "10h 00m",
-        "price": 1550,
+        "duration": "9h 00m",
+        "price": 850,
         "type": "Volvo AC Multi-Axle",
         "rating": 4.4,
-        "seats": 15,
-        "amenities": ["Pushback Seats", "CCTV"]
+        "seats": 8
     }
 ];
 
@@ -172,12 +179,63 @@ export default function SearchCardPage() {
   const [carDrop, setCarDrop] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
+  // Autocomplete Logic
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [activeSuggestionKey, setActiveSuggestionKey] = useState<string | null>(null);
+
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab) {
       setActiveTab(tab);
     }
   }, [searchParams]);
+
+  const handleLocationChange = (val: string, key: string, setter: (v: string) => void) => {
+    setter(val);
+    if (val.length > 1) {
+      const filtered = allLocations.filter(loc => loc.toLowerCase().includes(val.toLowerCase()));
+      setSuggestions(filtered);
+      setActiveSuggestionKey(key);
+    } else {
+      setSuggestions([]);
+      setActiveSuggestionKey(null);
+    }
+  };
+
+  const SuggestionList = ({ keyName, setter }: { keyName: string, setter: (v: string) => void }) => {
+    if (activeSuggestionKey !== keyName || suggestions.length === 0) return null;
+    return (
+      <div className="absolute z-[100] w-full bg-white border border-slate-200 rounded-2xl shadow-2xl mt-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <ScrollArea className="max-h-[300px]">
+          {suggestions.map((loc, i) => {
+            const [main, ...rest] = loc.split(',');
+            return (
+              <div 
+                key={i} 
+                className="p-4 hover:bg-slate-50 cursor-pointer border-b last:border-0 flex items-start gap-4 group transition-colors"
+                onClick={() => {
+                  setter(loc);
+                  setSuggestions([]);
+                  setActiveSuggestionKey(null);
+                  toast({ title: 'Location Locked', description: `${main} select ho gaya hai.` });
+                }}
+              >
+                <div className="bg-slate-100 p-2 rounded-xl group-hover:bg-primary/10 transition-colors">
+                  <MapPin className="h-5 w-5 text-slate-400 group-hover:text-primary" />
+                </div>
+                <div className="flex flex-col">
+                  <p className="font-black text-sm text-slate-800 tracking-tight">{main}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider leading-relaxed pr-2">
+                    {rest.join(',').trim()}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </ScrollArea>
+      </div>
+    );
+  };
 
   const handleBookNow = (item: any) => {
     setSelectedItem(item);
@@ -202,10 +260,6 @@ export default function SearchCardPage() {
     setTargetPlace(placeName);
     setMapMode('place');
     setIsRouteMapOpen(true);
-    toast({
-        title: "Location Locked!",
-        description: `${placeName} ka detailed view map par load ho gaya hai.`,
-    });
   };
 
   const handleHotelSearch = () => {
@@ -307,13 +361,13 @@ export default function SearchCardPage() {
           <TabsContent value="hotel">
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Search & Lock Location</Label>
                   <div className="relative group">
                     <Input 
                       placeholder="Search any city in India..." 
                       value={hotelLocation}
-                      onChange={(e) => setHotelLocation(e.target.value)}
+                      onChange={(e) => handleLocationChange(e.target.value, 'hotelLocation', setHotelLocation)}
                       className="h-14 rounded-2xl border-muted pr-12 text-lg font-bold"
                     />
                     <button 
@@ -325,6 +379,7 @@ export default function SearchCardPage() {
                         <MapPinned className="h-5 w-5" />
                     </button>
                   </div>
+                  <SuggestionList keyName="hotelLocation" setter={setHotelLocation} />
                   <QuickSelectIndia onSelect={setHotelLocation} />
                 </div>
                 <div className="space-y-2">
@@ -351,10 +406,15 @@ export default function SearchCardPage() {
           <TabsContent value="bus">
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From (Lock Origin)</Label>
                   <div className="relative">
-                    <Input placeholder="Starting City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl pr-12 text-lg font-bold" />
+                    <Input 
+                      placeholder="Starting City" 
+                      value={busFrom} 
+                      onChange={(e) => handleLocationChange(e.target.value, 'busFrom', setBusFrom)}
+                      className="h-14 rounded-2xl pr-12 text-lg font-bold" 
+                    />
                     <button 
                         type="button"
                         onClick={() => handleShowPlaceOnMap(busFrom)}
@@ -363,12 +423,18 @@ export default function SearchCardPage() {
                         <MapPinned className="h-5 w-5" />
                     </button>
                   </div>
+                  <SuggestionList keyName="busFrom" setter={setBusFrom} />
                   <QuickSelectIndia onSelect={setBusFrom} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To (Lock Destination)</Label>
                   <div className="relative">
-                    <Input placeholder="Destination City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl pr-12 text-lg font-bold" />
+                    <Input 
+                      placeholder="Destination City" 
+                      value={busTo} 
+                      onChange={(e) => handleLocationChange(e.target.value, 'busTo', setBusTo)} 
+                      className="h-14 rounded-2xl pr-12 text-lg font-bold" 
+                    />
                     <button 
                         type="button"
                         onClick={() => handleShowPlaceOnMap(busTo)}
@@ -377,6 +443,7 @@ export default function SearchCardPage() {
                         <MapPinned className="h-5 w-5" />
                     </button>
                   </div>
+                  <SuggestionList keyName="busTo" setter={setBusTo} />
                   <QuickSelectIndia onSelect={setBusTo} />
                 </div>
                 <div className="space-y-2">
@@ -409,14 +476,14 @@ export default function SearchCardPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Pickup Location</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Search Pickup Location" 
                         value={bikePickup}
-                        onChange={(e) => setBikePickup(e.target.value)}
+                        onChange={(e) => handleLocationChange(e.target.value, 'bikePickup', setBikePickup)}
                         className="h-14 pl-12 pr-24 rounded-2xl text-lg font-bold" 
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
@@ -438,16 +505,17 @@ export default function SearchCardPage() {
                         </button>
                     </div>
                   </div>
+                  <SuggestionList keyName="bikePickup" setter={setBikePickup} />
                   <QuickSelectIndia onSelect={setBikePickup} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Drop Point</Label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Drop Anywhere in India" 
                         value={bikeDrop}
-                        onChange={(e) => setBikeDrop(e.target.value)}
+                        onChange={(e) => handleLocationChange(e.target.value, 'bikeDrop', setBikeDrop)}
                         className="h-14 pl-12 pr-12 rounded-2xl text-lg font-bold" 
                     />
                      <button 
@@ -458,6 +526,7 @@ export default function SearchCardPage() {
                         <MapPinned className="h-5 w-5" />
                     </button>
                   </div>
+                  <SuggestionList keyName="bikeDrop" setter={setBikeDrop} />
                   <QuickSelectIndia onSelect={setBikeDrop} />
                 </div>
               </div>
@@ -474,14 +543,14 @@ export default function SearchCardPage() {
           <TabsContent value="car">
             <CardContent className="p-6 md:p-10 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div className="space-y-2">
+                 <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (Auto-Lock Available)</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Pickup Point" 
                         value={carPickup}
-                        onChange={(e) => setCarPickup(e.target.value)}
+                        onChange={(e) => handleLocationChange(e.target.value, 'carPickup', setCarPickup)}
                         className="h-14 pl-12 pr-24 rounded-2xl text-lg font-bold" 
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
@@ -501,16 +570,17 @@ export default function SearchCardPage() {
                         </button>
                     </div>
                   </div>
+                  <SuggestionList keyName="carPickup" setter={setCarPickup} />
                   <QuickSelectIndia onSelect={setCarPickup} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination (Detailed Finder)</Label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Destination City/Point" 
                         value={carDrop}
-                        onChange={(e) => setCarDrop(e.target.value)}
+                        onChange={(e) => handleLocationChange(e.target.value, 'carDrop', setCarDrop)}
                         className="h-14 pl-12 pr-12 rounded-2xl text-lg font-bold" 
                     />
                      <button 
@@ -521,6 +591,7 @@ export default function SearchCardPage() {
                         <MapPinned className="h-5 w-5" />
                     </button>
                   </div>
+                  <SuggestionList keyName="carDrop" setter={setCarDrop} />
                   <QuickSelectIndia onSelect={setCarDrop} />
                 </div>
               </div>
@@ -564,6 +635,55 @@ export default function SearchCardPage() {
                                 <Button className="rounded-xl font-black italic px-6 uppercase shadow-md shadow-primary/10" onClick={() => handleBookNow(hotel)}>BOOK NOW</Button>
                             </div>
                         </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </section>
+      )}
+
+      {activeTab === 'bus' && (
+        <section className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase">National Bus Routes</h2>
+                <Badge variant="outline" className="font-bold border-primary/20 text-primary bg-primary/5">{displayedBuses.length} Buses Found</Badge>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {displayedBuses.map((bus) => (
+                    <Card key={bus.busNumber} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all rounded-[2rem] bg-white p-6">
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="text-xl font-black italic uppercase text-primary leading-none">{bus.name}</h3>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase mt-2">{bus.type}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-2xl font-black italic text-primary">₹{bus.price}</p>
+                                <p className="text-[9px] font-bold text-muted-foreground uppercase">Per Seat</p>
+                            </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-3 items-center gap-2 mb-6 bg-muted/20 p-4 rounded-2xl border border-dashed">
+                            <div className="text-center">
+                                <p className="text-lg font-black">{bus.departure}</p>
+                                <p className="text-[10px] font-bold uppercase opacity-60">{bus.from}</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <div className="h-px w-full bg-primary/30 relative">
+                                    <Bus className="h-4 w-4 text-primary absolute left-1/2 -translate-x-1/2 -top-2 bg-white rounded-full p-0.5" />
+                                </div>
+                                <p className="text-[8px] font-black uppercase mt-1">{bus.duration}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-lg font-black">{bus.arrival}</p>
+                                <p className="text-[10px] font-bold uppercase opacity-60">{bus.to}</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-4 border-t">
+                             <div className="flex items-center gap-1 text-[10px] font-black uppercase text-green-600">
+                                <CheckCircle2 className="h-3 w-3" /> {bus.seats} Seats Left
+                            </div>
+                            <Button className="rounded-xl font-black italic px-8 uppercase" onClick={() => handleBookNow(bus)}>BOOK NOW</Button>
+                        </div>
                     </Card>
                 ))}
             </div>
