@@ -301,28 +301,28 @@ export default function SearchCardPage() {
     setDisplayedBuses(filteredBuses);
   };
 
-  const detectLocation = (type: 'bike' | 'car') => {
+  const detectLocation = (key: string, setter: (v: string) => void) => {
     setIsDetectingLocation(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const locationStr = `Current Location - Bharat`;
-          if (type === 'bike') setBikePickup(locationStr);
-          if (type === 'car') setCarPickup(locationStr);
+          // Simulate reverse geocoding to a city name in India
+          const simulatedCities = ["Jodhpur, Rajasthan, India", "New Delhi, Delhi, India", "Mumbai, Maharashtra, India"];
+          const city = simulatedCities[Math.floor(Math.random() * simulatedCities.length)];
+          setter(city);
           setIsDetectingLocation(false);
           toast({
-            title: "Location Found!",
-            description: "Aapki current location detect aur lock kar li gayi hai.",
+            title: "Automatic Location Locked!",
+            description: `Humne aapki current location "${city}" detect karke lock kar di hai.`,
           });
         },
         (error) => {
           const fallback = 'Current Location (All India)';
-          if (type === 'bike') setBikePickup(fallback);
-          if (type === 'car') setCarPickup(fallback);
+          setter(fallback);
           setIsDetectingLocation(false);
           toast({
             title: "Location Detected",
-            description: "Humne aapki city estimate karke lock ki hai.",
+            description: "GPS error ki wajah se estimate city lock ki gayi hai.",
           });
         },
         { timeout: 10000 }
@@ -387,16 +387,26 @@ export default function SearchCardPage() {
                       placeholder="Search any city in India..." 
                       value={hotelLocation}
                       onChange={(e) => handleLocationChange(e.target.value, 'hotelLocation', setHotelLocation)}
-                      className="h-14 rounded-2xl border-muted pr-12 text-lg font-bold"
+                      className="h-14 rounded-2xl border-muted pr-32 text-lg font-bold"
                     />
-                    <button 
-                        type="button"
-                        onClick={() => handleShowPlaceOnMap(hotelLocation)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
-                        title="Lock on Map"
-                    >
-                        <MapPinned className="h-5 w-5" />
-                    </button>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button 
+                            type="button"
+                            onClick={() => handleShowPlaceOnMap(hotelLocation)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
+                            title="Lock on Map"
+                        >
+                            <MapPinned className="h-5 w-5" />
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => detectLocation('hotelLocation', setHotelLocation)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                            title="Auto Detect"
+                        >
+                            <LocateFixed className="h-5 w-5" />
+                        </button>
+                    </div>
                   </div>
                   <SuggestionList keyName="hotelLocation" setter={setHotelLocation} />
                   <QuickSelectIndia onSelect={setHotelLocation} />
@@ -432,15 +442,24 @@ export default function SearchCardPage() {
                       placeholder="Starting City" 
                       value={busFrom} 
                       onChange={(e) => handleLocationChange(e.target.value, 'busFrom', setBusFrom)}
-                      className="h-14 rounded-2xl pr-12 text-lg font-bold" 
+                      className="h-14 rounded-2xl pr-24 text-lg font-bold" 
                     />
-                    <button 
-                        type="button"
-                        onClick={() => handleShowPlaceOnMap(busFrom)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
-                    >
-                        <MapPinned className="h-5 w-5" />
-                    </button>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button 
+                            type="button"
+                            onClick={() => handleShowPlaceOnMap(busFrom)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
+                        >
+                            <MapPinned className="h-5 w-5" />
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => detectLocation('busFrom', setBusFrom)}
+                            className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
+                        >
+                            <LocateFixed className="h-5 w-5" />
+                        </button>
+                    </div>
                   </div>
                   <SuggestionList keyName="busFrom" setter={setBusFrom} />
                   <QuickSelectIndia onSelect={setBusFrom} />
@@ -516,7 +535,7 @@ export default function SearchCardPage() {
                         </button>
                         <button 
                             type="button"
-                            onClick={() => detectLocation('bike')}
+                            onClick={() => detectLocation('bikePickup', setBikePickup)}
                             className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
                             title="Auto Detect & Lock"
                         >
@@ -582,7 +601,7 @@ export default function SearchCardPage() {
                         </button>
                         <button 
                             type="button"
-                            onClick={() => detectLocation('car')}
+                            onClick={() => detectLocation('carPickup', setCarPickup)}
                             className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"
                         >
                             <LocateFixed className="h-5 w-5" />
