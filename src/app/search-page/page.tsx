@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -52,12 +51,11 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // JODHPUR (RAJASTHAN) - EK-EK JAGAH (HYPER LOCAL)
+  // JODHPUR (RAJASTHAN) - HYPER LOCAL
   "Paota Circle, Jodhpur, Rajasthan, India",
   "Paota Chauraha, Jodhpur, Rajasthan",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
   "Paota B Road Market, Jodhpur, Rajasthan",
-  "Paota Pollo Victory, Jodhpur, Rajasthan",
   "Pavta Circle, Mandore Road, Jodhpur, Rajasthan",
   "Pavta Sabji Mandi, Jodhpur, Rajasthan",
   "Pavta B Road, Laxmi Nagar, Jodhpur, Rajasthan",
@@ -81,10 +79,6 @@ const allLocations = [
   "C-Scheme Area, Jaipur, Rajasthan, India",
   "Vaishali Nagar, Jaipur, Rajasthan",
   "Hawa Mahal, Badi Choupad, Jaipur, Rajasthan",
-  "City Palace, Jaipur, Rajasthan, India",
-  "Malviya Nagar, Jaipur, Rajasthan",
-  "Bani Park, Jaipur, Rajasthan, India",
-  "Amer Fort, Amer Road, Jaipur, Rajasthan",
   "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
 
   // DELHI (NCR)
@@ -93,26 +87,17 @@ const allLocations = [
   "Aerocity, IGI Airport, Delhi",
   "Chandni Chowk Market, Old Delhi, Delhi",
   "Saket District Centre, South Delhi, Delhi",
-  "Hauz Khas Village, New Delhi, Delhi",
-  "Dwarka Sector 10 Metro, New Delhi, Delhi",
-  "Karol Bagh Market, New Delhi, Delhi",
-  "Majnu Ka Tila, North Delhi, Delhi",
 
   // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
   "Gateway of India, Colaba, Mumbai, Maharashtra",
   "Juhu Beach, Mumbai, Maharashtra, India",
   "Bandra West, Linking Road, Mumbai, Maharashtra",
-  "Andheri East, MIDC Area, Mumbai, Maharashtra",
-  "Borivali National Park, Mumbai, Maharashtra",
-  "Dadar Chowpatty, Mumbai, Maharashtra, India",
 
   // OTHER MAJOR POINTS
   "Baga Beach, Calangute, North Goa, India",
-  "Anjuna Beach, North Goa, Goa, India",
   "Kedarnath Temple Base, Uttarakhand",
   "Rishikesh, Lakshman Jhula Point, Uttarakhand",
-  "Varanasi Ghats, Dashashwamedh, Uttar Pradesh",
   "Mall Road, Shimla, Himachal Pradesh",
 ];
 
@@ -138,35 +123,6 @@ const hotels = [
         "hint": "manali resort",
         "rooms_available": 8,
         "description": "Experience the magic of the Himalayas with luxury stay."
-    }
-];
-
-const buses = [
-    {
-        "name": "Raj Travels",
-        "busNumber": "RJ-19-PB-1234",
-        "from": "Jodhpur",
-        "to": "Jaipur",
-        "departure": "11:00 PM",
-        "arrival": "05:00 AM",
-        "duration": "6h 00m",
-        "price": 550,
-        "type": "AC Sleeper (2+1)",
-        "rating": 4.2,
-        "seats": 15
-    }
-];
-
-const bikeRides = [
-    {
-        "name": "Bullet Standard",
-        "type": "Premium Ride",
-        "price": 18,
-        "location": "City Center",
-        "rating": 4.9,
-        "time": "4 min away",
-        "status": "Available Now",
-        "hint": "bullet bike"
     }
 ];
 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -51,7 +50,7 @@ export default function SearchPage() {
     });
   };
 
-  const bookingsQuery = useMemoFirebase(() => {
+  const recentBookingsQuery = useMemoFirebase(() => {
     if (!user) return null;
     return query(
         collection(firestore, 'users', user.uid, 'bookings'),
@@ -251,7 +250,7 @@ export default function SearchPage() {
         </ScrollArea>
       </section>
 
-      {/* Recent History Shortcut */}
+      {/* Recent History Shortcut - Set at Bottom as requested */}
       {recentBookings && recentBookings.length > 0 && (
         <section className="px-4 mt-8 pb-12">
             <div className="flex items-center justify-between mb-4">
