@@ -51,6 +51,7 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
+  // JODHPUR (RAJASTHAN)
   "Paota, Jodhpur, Rajasthan, India",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
   "Paota B Road, Bhadwasiya, Laxmi Nagar, Jodhpur, Rajasthan",
@@ -60,30 +61,76 @@ const allLocations = [
   "Sardarpura, Jodhpur, Rajasthan, India",
   "Chopasni Housing Board, Jodhpur, Rajasthan",
   "Railway Station, Jodhpur, Rajasthan, India",
-  "Airport Road, Jodhpur, Rajasthan, India",
+  "Airport Area, Jodhpur, Rajasthan, India",
   "Clock Tower, Ghanta Ghar, Jodhpur, Rajasthan",
   "Mehrangarh Fort Area, Jodhpur, Rajasthan",
+  "Mandore Garden, Jodhpur, Rajasthan",
+  "Basni, Industrial Area, Jodhpur, Rajasthan",
+  "Pal Road, Jodhpur, Rajasthan, India",
+  "Banar Road, Jodhpur, Rajasthan, India",
+  
+  // JAIPUR (RAJASTHAN)
   "Mansarovar, Jaipur, Rajasthan, India",
   "C-Scheme, Jaipur, Rajasthan, India",
   "Vaishali Nagar, Jaipur, Rajasthan",
   "Hawa Mahal Area, Badi Choupad, Jaipur, Rajasthan",
   "City Palace, Jaipur, Rajasthan, India",
+  "Malviya Nagar, Jaipur, Rajasthan",
+  "Bani Park, Jaipur, Rajasthan, India",
+  "Amer Fort Road, Jaipur, Rajasthan",
+  "Raja Park, Jaipur, Rajasthan, India",
+
+  // DELHI (NCR)
   "Connaught Place, New Delhi, Delhi, India",
   "India Gate, Rajpath, New Delhi, Delhi",
   "Aerocity, Indira Gandhi International Airport, Delhi",
   "Chandni Chowk, Old Delhi, Delhi",
+  "Saket, South Delhi, Delhi, India",
+  "Hauz Khas Village, New Delhi, Delhi",
+  "Dwarka Sector 10, New Delhi, Delhi",
+  "Karol Bagh, New Delhi, Delhi, India",
+  "Laxmi Nagar, East Delhi, Delhi",
+  "Rohini, North West Delhi, Delhi",
+
+  // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
   "Gateway of India, Colaba, Mumbai, Maharashtra",
   "Juhu Beach, Mumbai, Maharashtra, India",
   "Bandra West, Linking Road, Mumbai, Maharashtra",
-  "Baga Beach, Calangute, North Goa, India",
-  "Anjuna, North Goa, Goa, India",
-  "Panjim City Center, North Goa, India",
-  "Kedarnath Temple, Rudraprayag, Uttarakhand",
+  "Andheri East, MIDC, Mumbai, Maharashtra",
+  "Borivali West, Mumbai, Maharashtra, India",
+  "Dadar West, Mumbai, Maharashtra, India",
+  "Worli Sea Face, Mumbai, Maharashtra",
+  "Kurla West, Mumbai, Maharashtra, India",
+  "Powai, Hiranandani Gardens, Mumbai, Maharashtra",
+
+  // BENGALURU (KARNATAKA)
   "MG Road, Bengaluru, Karnataka, India",
   "Koramangala, Bengaluru, Karnataka",
   "Indiranagar, Bengaluru, Karnataka",
   "Whitefield, IT Hub, Bengaluru, Karnataka",
+  "Jayanagar, Bengaluru, Karnataka, India",
+  "HSR Layout, Bengaluru, Karnataka",
+  "Electronic City Phase 1, Bengaluru, Karnataka",
+  "Marathahalli, Bengaluru, Karnataka",
+  "Malleshwaram, Bengaluru, Karnataka",
+
+  // OTHER MAJOR POINTS
+  "Baga Beach, Calangute, North Goa, India",
+  "Anjuna, North Goa, Goa, India",
+  "Panjim City Center, North Goa, India",
+  "Kedarnath Temple, Rudraprayag, Uttarakhand",
+  "Rishikesh, Lakshman Jhula, Uttarakhand",
+  "Varanasi, Dashashwamedh Ghat, Uttar Pradesh",
+  "Mall Road, Shimla, Himachal Pradesh",
+  "Old Manali, Himachal Pradesh, India",
+  "Dal Lake, Srinagar, Jammu & Kashmir",
+  "Fort Kochi, Kochi, Kerala, India",
+  "Charminar, Hyderabad, Telangana, India",
+  "Sabarmati Ashram, Ahmedabad, Gujarat",
+  "Lucknow, Hazratganj, Uttar Pradesh",
+  "Park Street, Kolkata, West Bengal",
+  "Marine Drive, Kochi, Kerala, India",
 ];
 
 const hotels = [
