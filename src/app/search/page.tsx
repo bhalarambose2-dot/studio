@@ -21,7 +21,9 @@ import {
   Ticket,
   MapPin,
   Bike,
-  History
+  History,
+  ZapIcon,
+  BellRing
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,11 +35,21 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SearchPage() {
   const { firestore, user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
   const [activeOfferTab, setActiveOfferTab] = useState('All');
+  const { toast } = useToast();
+
+  const handleStartNotifications = () => {
+    toast({
+      title: "NOTIFICATIONS STARTED! 🔔",
+      description: "Ab aapko Bharat ke har kone ke 'Sahi Safar' updates milte rahenge.",
+      variant: "default",
+    });
+  };
 
   const bookingsQuery = useMemoFirebase(() => {
     if (!user) return null;
@@ -48,7 +60,7 @@ export default function SearchPage() {
     );
   }, [firestore, user]);
 
-  const { data: recentBookings } = useCollection(bookingsQuery);
+  const { data: recentBookings } = useCollection(recentBookingsQuery);
 
   const offers = [
     { title: "Special Deal: Get up to 25% OFF* on Hotels!", date: "Limited period offer", type: "Hotels", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" },
@@ -78,15 +90,18 @@ export default function SearchPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={handleStartNotifications}
+              className="bg-white text-primary h-10 rounded-full px-4 font-black italic text-[10px] uppercase shadow-lg hover:bg-white/90 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <BellRing className="h-4 w-4 animate-bounce" />
+              Start Alerts
+            </Button>
             <Link href="/wallet" className="bg-secondary text-white rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg shadow-secondary/30 transition-transform active:scale-95">
               <Wallet className="h-4 w-4" />
               <span className="text-sm font-black italic">₹{userProfile?.walletBalance || 0}</span>
             </Link>
-            <Button variant="ghost" size="icon" className="text-white bg-white/10 rounded-full h-10 w-10 relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-primary" />
-            </Button>
           </div>
         </header>
 
@@ -236,7 +251,7 @@ export default function SearchPage() {
         </ScrollArea>
       </section>
 
-      {/* Recent History Shortcut (Set to sabse niche) */}
+      {/* Recent History Shortcut */}
       {recentBookings && recentBookings.length > 0 && (
         <section className="px-4 mt-8 pb-12">
             <div className="flex items-center justify-between mb-4">
