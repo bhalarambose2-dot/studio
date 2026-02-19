@@ -51,7 +51,7 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // JODHPUR (RAJASTHAN)
+  // JODHPUR (RAJASTHAN) - EK-EK JAGAH
   "Paota, Jodhpur, Rajasthan, India",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
   "Paota B Road, Bhadwasiya, Laxmi Nagar, Jodhpur, Rajasthan",
@@ -68,6 +68,9 @@ const allLocations = [
   "Basni, Industrial Area, Jodhpur, Rajasthan",
   "Pal Road, Jodhpur, Rajasthan, India",
   "Banar Road, Jodhpur, Rajasthan, India",
+  "Shastri Nagar, Jodhpur, Rajasthan, India",
+  "Kamla Nehru Nagar, Jodhpur, Rajasthan",
+  "Mahamandir, Jodhpur, Rajasthan, India",
   
   // JAIPUR (RAJASTHAN)
   "Mansarovar, Jaipur, Rajasthan, India",
@@ -79,6 +82,7 @@ const allLocations = [
   "Bani Park, Jaipur, Rajasthan, India",
   "Amer Fort Road, Jaipur, Rajasthan",
   "Raja Park, Jaipur, Rajasthan, India",
+  "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
 
   // DELHI (NCR)
   "Connaught Place, New Delhi, Delhi, India",
@@ -91,6 +95,7 @@ const allLocations = [
   "Karol Bagh, New Delhi, Delhi, India",
   "Laxmi Nagar, East Delhi, Delhi",
   "Rohini, North West Delhi, Delhi",
+  "Majnu Ka Tila, North Delhi, Delhi",
 
   // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
@@ -115,7 +120,7 @@ const allLocations = [
   "Marathahalli, Bengaluru, Karnataka",
   "Malleshwaram, Bengaluru, Karnataka",
 
-  // OTHER MAJOR POINTS
+  // OTHER MAJOR POINTS ACROSS INDIA
   "Baga Beach, Calangute, North Goa, India",
   "Anjuna, North Goa, Goa, India",
   "Panjim City Center, North Goa, India",
@@ -131,6 +136,8 @@ const allLocations = [
   "Lucknow, Hazratganj, Uttar Pradesh",
   "Park Street, Kolkata, West Bengal",
   "Marine Drive, Kochi, Kerala, India",
+  "Vagator, Goa, India",
+  "Palolem Beach, South Goa, India",
 ];
 
 const hotels = [
