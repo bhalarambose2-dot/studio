@@ -17,7 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2 } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -26,6 +26,10 @@ import { BookingForm } from '@/components/booking-form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+
+const rajasthanCities = [
+  'Jaipur', 'Jodhpur', 'Udaipur', 'Jaisalmer', 'Bikaner', 'Pushkar', 'Ajmer', 'Mount Abu', 'Chittorgarh', 'Alwar', 'Kota', 'Sikar'
+];
 
 const hotels = [
     {
@@ -195,7 +199,7 @@ export default function SearchCardPage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const locationStr = `My Location (${latitude.toFixed(2)}, ${longitude.toFixed(2)}) - Rajasthan`;
+          const locationStr = `My Location (Jodhpur) - Rajasthan`;
           
           if (type === 'bike') setBikePickup(locationStr);
           if (type === 'car') setCarPickup(locationStr);
@@ -208,7 +212,6 @@ export default function SearchCardPage() {
         },
         (error) => {
           console.error(error);
-          // Fallback to a Rajasthan default if GPS fails
           const fallback = 'Current Location (Rajasthan)';
           if (type === 'bike') setBikePickup(fallback);
           if (type === 'car') setCarPickup(fallback);
@@ -234,6 +237,29 @@ export default function SearchCardPage() {
     }
   }
 
+  const QuickSelectRajasthan = ({ onSelect }: { onSelect: (city: string) => void }) => (
+    <div className="mt-3">
+        <p className="text-[10px] font-black uppercase text-primary mb-2 tracking-widest flex items-center gap-1">
+            <Sparkles className="h-3 w-3" /> Popular in Rajasthan
+        </p>
+        <ScrollArea className="w-full">
+            <div className="flex gap-2 pb-2">
+                {rajasthanCities.map(city => (
+                    <Badge 
+                        key={city} 
+                        variant="outline" 
+                        className="cursor-pointer hover:bg-primary hover:text-white transition-all rounded-xl font-bold italic px-3"
+                        onClick={() => onSelect(city)}
+                    >
+                        {city}
+                    </Badge>
+                ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-8 pb-20">
       <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white">
@@ -251,11 +277,12 @@ export default function SearchCardPage() {
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rajasthan Location (All RJ)</Label>
                   <Input 
-                    placeholder="e.g., Udaipur, Jaipur, Jodhpur" 
+                    placeholder="Search Jaipur, Udaipur, Jodhpur..." 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
                     className="h-14 rounded-2xl border-muted"
                   />
+                  <QuickSelectRajasthan onSelect={setHotelLocation} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Check-in / Out</Label>
@@ -282,12 +309,14 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From (All Rajasthan)</Label>
-                  <Input placeholder="Starting From City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From (Rajasthan)</Label>
+                  <Input placeholder="Starting City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
+                  <QuickSelectRajasthan onSelect={setBusFrom} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To (All Rajasthan)</Label>
-                  <Input placeholder="Going To City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To (Rajasthan)</Label>
+                  <Input placeholder="Destination City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
+                  <QuickSelectRajasthan onSelect={setBusTo} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date</Label>
@@ -311,16 +340,16 @@ export default function SearchCardPage() {
                         <Zap className="h-6 w-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black italic tracking-tighter uppercase">Rajasthan Bike Ride</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Fast Pickups • Sahi Nivesh</p>
+                        <h3 className="text-xl font-black italic tracking-tighter uppercase">Rajasthan Bike Taxi</h3>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Sahi Nivesh</p>
                     </div>
                 </div>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">PHONE LOCATION ENABLED</Badge>
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">GPS READY</Badge>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pick up (All Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pick up (Rajasthan)</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
@@ -340,6 +369,7 @@ export default function SearchCardPage() {
                         <span className="text-[9px] font-black uppercase hidden sm:block">Use GPS</span>
                     </button>
                   </div>
+                  <QuickSelectRajasthan onSelect={setBikePickup} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Point</Label>
@@ -352,6 +382,7 @@ export default function SearchCardPage() {
                         className="h-14 pl-12 rounded-2xl" 
                     />
                   </div>
+                  <QuickSelectRajasthan onSelect={setBikeDrop} />
                 </div>
               </div>
 
@@ -362,7 +393,7 @@ export default function SearchCardPage() {
                   <div className="flex items-center justify-between relative z-10">
                       <div className="flex items-center gap-3">
                           <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                          <span className="text-xs font-black italic uppercase">Live Map View (Rajasthan)</span>
+                          <span className="text-xs font-black italic uppercase">Live Map (Rajasthan)</span>
                       </div>
                       <Button 
                         variant="ghost" 
@@ -374,14 +405,7 @@ export default function SearchCardPage() {
                   </div>
                   <div className="h-32 w-full bg-slate-200/50 mt-4 rounded-2xl border border-dashed border-slate-300 flex items-center justify-center">
                       <div className="text-center space-y-2">
-                          <div className="flex justify-center -space-x-2">
-                              {[1,2,3].map(i => (
-                                  <div key={i} className="h-8 w-8 rounded-full border-2 border-white bg-primary flex items-center justify-center">
-                                      <Bike className="h-4 w-4 text-white" />
-                                  </div>
-                              ))}
-                          </div>
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bikes Nearby Your Phone Location</p>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tracking Bikes in Rajasthan...</p>
                       </div>
                   </div>
               </div>
@@ -395,11 +419,11 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (All Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (Rajasthan)</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
-                        placeholder="e.g., Jaipur Airport, Udaipur Station" 
+                        placeholder="Pickup Point" 
                         value={carPickup}
                         onChange={(e) => setCarPickup(e.target.value)}
                         className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
@@ -414,10 +438,11 @@ export default function SearchCardPage() {
                         <span className="text-[9px] font-black uppercase hidden sm:block">Use Location</span>
                     </button>
                   </div>
+                  <QuickSelectRajasthan onSelect={setCarPickup} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
-                  <Input placeholder="e.g., Destination / Hotel Name" className="h-14 rounded-2xl" />
+                  <Input placeholder="Destination" className="h-14 rounded-2xl" />
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
@@ -431,7 +456,7 @@ export default function SearchCardPage() {
       {activeTab === 'hotel' && (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter">RAJASTHAN HOTELS</h2>
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase">RAJASTHAN HOTELS</h2>
                 <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedHotels.length} Results</Badge>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -529,7 +554,6 @@ export default function SearchCardPage() {
         </Dialog>
       )}
 
-      {/* Embedded Live Map Dialog */}
       <Dialog open={isMapDialogOpen} onOpenChange={setIsMapDialogOpen}>
         <DialogContent className="max-w-4xl h-[80vh] p-0 overflow-hidden rounded-[2.5rem]">
             <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">
@@ -559,7 +583,7 @@ export default function SearchCardPage() {
                 <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-primary/20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                        <p className="text-xs font-black italic uppercase tracking-tight">Detecting Bikes Near Your Phone Location...</p>
+                        <p className="text-xs font-black italic uppercase tracking-tight">Detecting Locations Across Rajasthan...</p>
                     </div>
                     <Badge className="bg-primary text-white font-black italic text-[10px]">LIVE NOW</Badge>
                 </div>
