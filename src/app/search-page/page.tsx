@@ -174,6 +174,7 @@ export default function SearchCardPage() {
   const [bikePickup, setBikePickup] = useState('');
   const [bikeDrop, setBikeDrop] = useState('');
   const [carPickup, setCarPickup] = useState('');
+  const [carDrop, setCarDrop] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   useEffect(() => {
@@ -190,6 +191,7 @@ export default function SearchCardPage() {
 
   const handleBookingSuccess = () => {
     setIsDialogOpen(false);
+    // After payment, automatically start the map guide for bike/cab
     if (activeTab === 'bike' || activeTab === 'car') {
       setIsRouteMapOpen(true);
     }
@@ -225,13 +227,13 @@ export default function SearchCardPage() {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const locationStr = `My Location (Jodhpur) - Rajasthan`;
+          const locationStr = `Current Phone Location - Rajasthan`;
           if (type === 'bike') setBikePickup(locationStr);
           if (type === 'car') setCarPickup(locationStr);
           setIsDetectingLocation(false);
           toast({
             title: "Location Found!",
-            description: "Aapki current location detect kar li gayi hai.",
+            description: "Aapki current phone location detect kar li gayi hai.",
           });
         },
         (error) => {
@@ -281,6 +283,13 @@ export default function SearchCardPage() {
         </ScrollArea>
     </div>
   );
+
+  // Helper to determine active map locations based on tab
+  const getMapLocations = () => {
+    const pickup = activeTab === 'bike' ? bikePickup : carPickup;
+    const drop = activeTab === 'bike' ? bikeDrop : carDrop;
+    return { pickup: pickup || 'Jodhpur, Rajasthan', drop: drop || 'Udaipur, Rajasthan' };
+  };
 
   return (
     <div className="flex flex-col gap-8 pb-20">
@@ -363,7 +372,7 @@ export default function SearchCardPage() {
                     </div>
                     <div>
                         <h3 className="text-xl font-black italic tracking-tighter uppercase">Rajasthan Bike Taxi</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Sahi Nivesh</p>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Sahi Safar</p>
                     </div>
                 </div>
                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">GPS READY</Badge>
@@ -477,10 +486,29 @@ export default function SearchCardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
-                  <Input placeholder="Destination" className="h-14 rounded-2xl" />
+                  <div className="relative">
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
+                    <Input 
+                        placeholder="Destination" 
+                        value={carDrop}
+                        onChange={(e) => setCarDrop(e.target.value)}
+                        className="h-14 pl-12 rounded-2xl" 
+                    />
+                  </div>
+                  <QuickSelectRajasthan onSelect={setCarDrop} />
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={() => {
+                if (!carPickup || !carDrop) {
+                    toast({
+                        title: "Location missing",
+                        description: "Kripya pickup aur drop location bharein.",
+                        variant: "destructive"
+                    });
+                    return;
+                }
+                handleBookNow({ name: 'Premium Cab', price: '120' });
+              }}>
                 <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN CABS
               </Button>
             </CardContent>
@@ -573,8 +601,8 @@ export default function SearchCardPage() {
           <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter uppercase">
-                {activeTab === 'bike' ? <Bike className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
-                CONFIRM {activeTab === 'bike' ? 'BIKE RIDE' : 'BOOKING'}
+                {activeTab === 'bike' ? <Bike className="text-primary h-8 w-8" /> : activeTab === 'car' ? <Car className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
+                CONFIRM {activeTab === 'bike' || activeTab === 'car' ? 'RIDE' : 'BOOKING'}
               </DialogTitle>
               <DialogDescription className="font-medium text-muted-foreground">
                 Confirming {selectedItem.name} in Rajasthan. "Sahi Nivesh" for your travel.
@@ -637,7 +665,7 @@ export default function SearchCardPage() {
                     <div>
                         <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">LIVE NAVIGATION GUIDE</DialogTitle>
                         <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
-                            {bikePickup || 'Current Location'} ➔ {bikeDrop || 'Destination'}
+                            {getMapLocations().pickup} ➔ {getMapLocations().drop}
                         </DialogDescription>
                     </div>
                 </div>
@@ -647,7 +675,7 @@ export default function SearchCardPage() {
             </DialogHeader>
             <div className="flex-1 w-full h-full relative">
                 <iframe 
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(bikePickup || 'Jodhpur')}+to+${encodeURIComponent(bikeDrop || 'Rajasthan')}&output=embed`}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(getMapLocations().pickup)}+to+${encodeURIComponent(getMapLocations().drop)}&output=embed`}
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
@@ -657,12 +685,12 @@ export default function SearchCardPage() {
                 ></iframe>
                 <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border-l-4 border-l-green-500 max-w-xs">
                     <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Navigation Alert</p>
-                    <p className="text-xs font-bold text-slate-800">Aapki bike taxi ka driver rasta follow kar raha hai. "Sahi Safar" ka anand lein!</p>
+                    <p className="text-xs font-bold text-slate-800">Aapka driver rasta follow kar raha hai. Payment confirm ho gaya hai, "Sahi Safar" ka anand lein!</p>
                 </div>
                 <div className="absolute bottom-6 left-6 right-6 bg-primary text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-4 w-4 bg-white rounded-full animate-ping"></div>
-                        <p className="text-sm font-black italic uppercase">Ride in Progress...</p>
+                        <p className="text-sm font-black italic uppercase">Ride in Progress (Automatic Mode)...</p>
                     </div>
                     <Badge className="bg-white text-primary font-black italic">SAHI NIVESH</Badge>
                 </div>
