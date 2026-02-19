@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Ticket, CheckCircle2, QrCode, CreditCard, ShieldCheck, AlertCircle, IndianRupee, MapPin, Route, Clock, X } from 'lucide-react';
+import { Loader2, Ticket, CheckCircle2, QrCode, CreditCard, ShieldCheck, AlertCircle, IndianRupee, MapPin, Route, Clock, X, Navigation2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
 import Link from 'next/link';
@@ -120,9 +120,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         busName: itemDetails?.name || tripName,
         amount: amount,
         txnId: txnId,
+        pickup: itemDetails?.pickup || 'Current Location',
+        drop: tripName,
         ownerId: itemDetails?.ownerId || 'MOCK_OWNER_ID',
         status: 'Confirmed',
-        bookingDate: new Date(), // Using JS date for immediate display
+        bookingDate: new Date(), 
         timestamp: serverTimestamp(),
     };
     
@@ -136,7 +138,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             }));
         });
 
-        if (bookingType === 'bus') {
+        if (bookingType === 'bus' || bookingType === 'bike' || bookingType === 'car') {
           const globalBookingRef = collection(firestore, 'busBookings');
           addDoc(globalBookingRef, bookingDetails).catch(err => {
               errorEmitter.emit('permission-error', new FirestorePermissionError({
@@ -181,7 +183,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   };
 
   if (step === 'success' && confirmedBooking) {
-      const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(confirmedBooking.tripName)}&output=embed`;
+      const isRide = confirmedBooking.bookingType === 'bike' || confirmedBooking.bookingType === 'car' || confirmedBooking.bookingType === 'bus';
+      const mapUrl = isRide 
+        ? `https://maps.google.com/maps?saddr=${encodeURIComponent(confirmedBooking.pickup)}&daddr=${encodeURIComponent(confirmedBooking.drop)}&output=embed`
+        : `https://maps.google.com/maps?q=${encodeURIComponent(confirmedBooking.tripName)}&output=embed`;
+
       return (
           <div className="space-y-6 p-2 animate-in fade-in zoom-in duration-300">
               <div className="text-center space-y-2">
@@ -192,24 +198,41 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   <Badge className="bg-primary/10 text-primary border-none font-mono text-xs px-4 py-1">TICKET ID: {confirmedBooking.id}</Badge>
               </div>
 
-              {/* Map in Booking Complete */}
-              <div className="rounded-[2rem] overflow-hidden border-4 border-primary shadow-xl h-48 relative">
+              {/* Map with Route in Booking Complete */}
+              <div className="rounded-[2rem] overflow-hidden border-4 border-primary shadow-xl h-56 relative group">
                   <iframe src={mapUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" className="w-full h-full grayscale-[0.2]"></iframe>
-                  <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm p-2 rounded-xl border border-primary/20 shadow-md">
-                      <p className="text-[8px] font-black uppercase text-primary flex items-center gap-1">
-                          <Clock className="h-2 w-2" /> Duration: 5-6 Hrs (Est.)
+                  <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-sm p-3 rounded-xl border border-primary/20 shadow-md">
+                      <p className="text-[10px] font-black uppercase text-primary flex items-center gap-1 mb-1">
+                          <Navigation2 className="h-3 w-3" /> {isRide ? 'LIVE ROUTE LOCKED' : 'PLACE MARKED'}
+                      </p>
+                      <p className="text-[9px] font-bold text-muted-foreground flex items-center gap-1">
+                          <Clock className="h-2.5 w-2.5" /> Duration: 5-6 Hrs (Est.)
                       </p>
                   </div>
               </div>
 
               <div className="bg-muted/30 p-6 rounded-[2rem] space-y-4">
+                  {isRide && (
+                    <div className="space-y-3 mb-2">
+                         <div className="flex items-start gap-2">
+                            <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                            <div>
+                                <p className="text-[8px] font-black uppercase text-muted-foreground">Pickup Point</p>
+                                <p className="text-xs font-bold">{confirmedBooking.pickup}</p>
+                            </div>
+                         </div>
+                         <div className="flex items-start gap-2">
+                            <Navigation2 className="h-4 w-4 text-primary mt-0.5" />
+                            <div>
+                                <p className="text-[8px] font-black uppercase text-muted-foreground">Drop Destination</p>
+                                <p className="text-xs font-bold">{confirmedBooking.drop}</p>
+                            </div>
+                         </div>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center border-b border-dashed pb-3">
-                      <span className="text-[10px] font-black uppercase text-muted-foreground">Location</span>
-                      <span className="font-bold text-sm italic">{confirmedBooking.tripName}</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-dashed pb-3">
-                      <span className="text-[10px] font-black uppercase text-muted-foreground">Travelers</span>
-                      <span className="font-bold text-sm italic">{confirmedBooking.travelers} Persons</span>
+                      <span className="text-[10px] font-black uppercase text-muted-foreground">Customer</span>
+                      <span className="font-bold text-sm italic">{confirmedBooking.customerName}</span>
                   </div>
                   {confirmedBooking.seatNumber && (
                     <div className="flex justify-between items-center border-b border-dashed pb-3">
@@ -365,6 +388,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                 <FormLabel className="text-[10px] text-muted-foreground font-medium">
                   Main sahi identification details dene ke liye taiyar hoon aur <Link href="/terms" className="text-primary font-bold hover:underline">Terms & Conditions</Link> se sahmat hoon.
                 </FormLabel>
+                <FormLabel className="text-[8px] text-primary font-black uppercase block mt-1">Sahi Nivesh • Sahi Safar Verified</FormLabel>
                 <FormMessage />
               </div>
             </FormItem>

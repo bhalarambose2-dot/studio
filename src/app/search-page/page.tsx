@@ -123,6 +123,7 @@ export default function SearchCardPage() {
   const [isRouteMapOpen, setIsRouteMapOpen] = useState(false);
   const [mapMode, setMapMode] = useState<'directions' | 'place'>('directions');
   const [targetPlace, setTargetPlace] = useState('');
+  const [startPlace, setStartPlace] = useState('');
   
   const [hotelLocation, setHotelLocation] = useState('');
   const [busFrom, setBusFrom] = useState('');
@@ -209,6 +210,17 @@ export default function SearchCardPage() {
     setIsRouteMapOpen(true);
   };
 
+  const handleShowRouteOnMap = (from: string, to: string) => {
+      if (!from || !to) {
+          toast({ title: 'Adhura Route!', description: 'Kripya dono locations bhar dein.', variant: 'destructive' });
+          return;
+      }
+      setStartPlace(from);
+      setTargetPlace(to);
+      setMapMode('directions');
+      setIsRouteMapOpen(true);
+  }
+
   const QuickSelectIndia = ({ onSelect }: { onSelect: (city: string) => void }) => (
     <div className="mt-3">
         <p className="text-[10px] font-black uppercase text-primary mb-2 tracking-widest flex items-center gap-1">
@@ -235,17 +247,18 @@ export default function SearchCardPage() {
     </div>
   );
 
-  const handleBookingStart = (type: string, name: string, price: number) => {
+  const handleBookingStart = (type: string, name: string, price: number, pickup?: string) => {
     setSelectedItem({
       name: name,
       price: price,
-      type: type
+      type: type,
+      pickup: pickup
     });
     setIsDialogOpen(true);
   }
 
   const mapUrl = mapMode === 'directions' 
-    ? `https://maps.google.com/maps?saddr=${encodeURIComponent(activeTab === 'bike' ? bikePickup : busFrom)}&daddr=${encodeURIComponent(activeTab === 'bike' ? bikeDrop : busTo)}&output=embed`
+    ? `https://maps.google.com/maps?saddr=${encodeURIComponent(startPlace)}&daddr=${encodeURIComponent(targetPlace)}&output=embed`
     : `https://maps.google.com/maps?q=${encodeURIComponent(targetPlace)}&output=embed`;
 
   return (
@@ -323,7 +336,7 @@ export default function SearchCardPage() {
               </div>
               <Button 
                 className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
-                onClick={() => handleBookingStart('bus', busTo || 'National Route', 850)}
+                onClick={() => handleBookingStart('bus', busTo || 'National Route', 850, busFrom)}
               >
                 <Search className="mr-2 h-6 w-6" /> SEARCH & BOOK BUS
               </Button>
@@ -349,15 +362,18 @@ export default function SearchCardPage() {
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Point (Anywhere in Bharat)</Label>
                   <div className="relative">
                     <Navigation2 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
-                    <Input placeholder="Search Drop Point" value={bikeDrop} onChange={(e) => handleLocationChange(e.target.value, 'bikeDrop', setBikeDrop)} className="h-14 pl-12 pr-12 rounded-2xl text-lg font-bold" />
-                     <button type="button" onClick={() => handleShowPlaceOnMap(bikeDrop)} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"><MapPinned className="h-5 w-5" /></button>
+                    <Input placeholder="Search Drop Point" value={bikeDrop} onChange={(e) => handleLocationChange(e.target.value, 'bikeDrop', setBikeDrop)} className="h-14 pl-12 pr-24 rounded-2xl text-lg font-bold" />
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button type="button" onClick={() => handleShowRouteOnMap(bikePickup, bikeDrop)} className="p-2 rounded-xl bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all"><Route className="h-5 w-5" /></button>
+                        <button type="button" onClick={() => handleShowPlaceOnMap(bikeDrop)} className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"><MapPinned className="h-5 w-5" /></button>
+                    </div>
                   </div>
                   <SuggestionList keyName="bikeDrop" setter={setBikeDrop} />
                 </div>
               </div>
               <Button 
                 className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
-                onClick={() => handleBookingStart('bike', bikeDrop || 'Bike Taxi Ride', 150)}
+                onClick={() => handleBookingStart('bike', bikeDrop || 'Bike Taxi Ride', 150, bikePickup)}
               >
                  <Zap className="mr-2 h-6 w-6" /> BOOK BIKE TAXI
               </Button>
@@ -383,15 +399,18 @@ export default function SearchCardPage() {
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Point (National Search)</Label>
                   <div className="relative">
                     <Navigation2 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
-                    <Input placeholder="Drop City" value={carDrop} onChange={(e) => handleLocationChange(e.target.value, 'carDrop', setCarDrop)} className="h-14 pl-12 pr-12 rounded-2xl text-lg font-bold" />
-                     <button type="button" onClick={() => handleShowPlaceOnMap(carDrop)} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"><MapPinned className="h-5 w-5" /></button>
+                    <Input placeholder="Drop City" value={carDrop} onChange={(e) => handleLocationChange(e.target.value, 'carDrop', setCarDrop)} className="h-14 pl-12 pr-24 rounded-2xl text-lg font-bold" />
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <button type="button" onClick={() => handleShowRouteOnMap(carPickup, carDrop)} className="p-2 rounded-xl bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all"><Route className="h-5 w-5" /></button>
+                        <button type="button" onClick={() => handleShowPlaceOnMap(carDrop)} className="p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all"><MapPinned className="h-5 w-5" /></button>
+                    </div>
                   </div>
                   <SuggestionList keyName="carDrop" setter={setCarDrop} />
                 </div>
               </div>
               <Button 
                 className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
-                onClick={() => handleBookingStart('car', carDrop || 'Luxury Cab Ride', 450)}
+                onClick={() => handleBookingStart('car', carDrop || 'Luxury Cab Ride', 450, carPickup)}
               >
                 <Search className="mr-2 h-6 w-6" /> SEARCH & BOOK CAB
               </Button>
