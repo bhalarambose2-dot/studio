@@ -17,6 +17,8 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import Image from 'next/image';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
@@ -59,7 +61,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   });
 
   const calculateAmount = (travelers: number) => {
-    const priceStr = itemDetails?.price || '0';
+    const priceStr = String(itemDetails?.price || '500');
     const numericPrice = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 500;
     return numericPrice * travelers;
   };
@@ -70,7 +72,10 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   };
 
   const handleFinalConfirm = async () => {
-    if (!user || !formData) return;
+    if (!user || !formData) {
+        toast({ title: 'Error', description: 'User session or form data missing.', variant: 'destructive' });
+        return;
+    }
 
     if (txnId.length !== 12) {
       toast({
@@ -83,11 +88,8 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
 
     setIsLoading(true);
     
-    // Simulate payment verification
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    const seatNumber = bookingType === 'bus' ? `S-${Math.floor(Math.random() * 40) + 1}` : null;
     const amount = calculateAmount(formData.travelers);
+    const seatNumber = bookingType === 'bus' ? `S-${Math.floor(Math.random() * 40) + 1}` : null;
     
     const bookingDetails = { 
         userId: user.uid,
@@ -108,48 +110,61 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // 1. Save to User's private bookings
-        const userBookingRef = collection(firestore, 'users', user.uid, bookingType === 'bus' ? 'busBookings' : 'flightBookings');
-        await addDoc(userBookingRef, bookingDetails);
+        // 1. Unified Private Bookings Collection
+        const userBookingRef = collection(firestore, 'users', user.uid, 'bookings');
+        addDoc(userBookingRef, bookingDetails).catch(err => {
+            errorEmitter.emit('permission-error', new FirestorePermissionError({
+                path: userBookingRef.path,
+                operation: 'create',
+                requestResourceData: bookingDetails
+            }));
+        });
 
-        // 2. Save to Global Bus Bookings (Visible to Owners/Staff)
+        // 2. Global Bus Bookings (Visible to Owners/Staff)
         if (bookingType === 'bus') {
           const globalBookingRef = collection(firestore, 'busBookings');
-          await addDoc(globalBookingRef, bookingDetails);
+          addDoc(globalBookingRef, bookingDetails).catch(err => {
+              errorEmitter.emit('permission-error', new FirestorePermissionError({
+                  path: globalBookingRef.path,
+                  operation: 'create',
+                  requestResourceData: bookingDetails
+              }));
+          });
         }
 
         // 3. Save as a financial Transaction record in user's profile
         const transactionRef = collection(firestore, 'users', user.uid, 'transactions');
-        await addDoc(transactionRef, {
+        const transactionData = {
             type: 'debit',
             amount: amount,
             reference: txnId,
-            description: `Trip Booking: ${tripName}`,
+            description: `${bookingType.toUpperCase()} Booking: ${tripName}`,
             timestamp: serverTimestamp(),
             status: 'completed'
+        };
+        addDoc(transactionRef, transactionData).catch(err => {
+            errorEmitter.emit('permission-error', new FirestorePermissionError({
+                path: transactionRef.path,
+                operation: 'create',
+                requestResourceData: transactionData
+            }));
         });
         
         toast({
             title: 'Payment Verified & Ticket Saved!',
-            description: (
-              <div className="flex flex-col gap-1 text-sm mt-2 p-2 bg-green-50 rounded border border-green-200">
-                <p className="font-black text-green-700">TICKET CONFIRMED!</p>
-                <p>Booked for {formData.travelers} traveler(s).</p>
-                {seatNumber && <p className="font-bold">Seat Number: {seatNumber}</p>}
-                <p className="font-black">Amount: ₹{amount}</p>
-                <p className="text-[10px] text-muted-foreground mt-1">Transaction ID: {txnId}</p>
-              </div>
-            ),
+            description: `Aapka ${bookingType} ticket confirm ho gaya hai! Amount: ₹${amount}`,
         });
 
-        // Trigger success callback to show map in SearchCardPage
-        if (onSuccess) onSuccess();
+        // Small delay to simulate verification before closing
+        setTimeout(() => {
+            setIsLoading(false);
+            if (onSuccess) onSuccess();
+        }, 1500);
 
     } catch (error: any) {
+        setIsLoading(false);
         console.error("Booking Error:", error);
         toast({ title: 'Booking Failed', description: 'Data save karne mein dikat aayi. Support se contact karein.', variant: 'destructive' });
-    } finally {
-        setIsLoading(false);
     }
   };
 
@@ -171,6 +186,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                     alt="Payment QR"
                     width={180}
                     height={180}
+                    unoptimized
                 />
             </div>
 
@@ -200,7 +216,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                 </div>
 
                 <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1 h-12 font-bold" onClick={() => setStep('details')}>BACK</Button>
+                    <Button variant="outline" className="flex-1 h-12 font-bold" onClick={() => setStep('details')} disabled={isLoading}>BACK</Button>
                     <Button 
                         className="flex-1 h-12 font-black italic shadow-lg shadow-primary/20" 
                         disabled={txnId.length !== 12 || isLoading}
@@ -221,12 +237,10 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         <div className="bg-primary/5 p-4 rounded-2xl border-2 border-dashed border-primary/20 mb-4">
             <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Step 1: Booking Details</p>
             <p className="text-lg font-black italic leading-tight">{tripName}</p>
-            {itemDetails?.price && (
-              <div className="flex items-center gap-1 text-primary mt-1 font-bold">
-                <IndianRupee className="h-3 w-3" />
-                <p className="text-xs">{itemDetails.price} <span className="text-[10px] text-muted-foreground font-normal">/ person</span></p>
-              </div>
-            )}
+            <div className="flex items-center gap-1 text-primary mt-1 font-bold">
+              <IndianRupee className="h-3 w-3" />
+              <p className="text-xs">{itemDetails?.price || '500'} <span className="text-[10px] text-muted-foreground font-normal">/ per person</span></p>
+            </div>
         </div>
 
         <FormField
@@ -295,7 +309,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
           )}
         />
 
-        <Button type="submit" className="w-full font-black italic text-lg h-14 shadow-xl shadow-primary/20 rounded-2xl">
+        <Button type="submit" className="w-full font-black italic text-lg h-14 shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest">
             PROCEED TO PAYMENT
         </Button>
       </form>
