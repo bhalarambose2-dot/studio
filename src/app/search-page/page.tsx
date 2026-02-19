@@ -16,7 +16,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { BookingForm } from '@/components/booking-form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const hotels = [
     {
@@ -129,10 +130,10 @@ const bikeRides = [
 export default function SearchCardPage() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') || 'hotel';
+  const { toast } = useToast();
   
   const [activeTab, setActiveTab] = useState(initialTab);
   const [hotelDates, setHotelDates] = useState<{ from: Date | undefined, to: Date | undefined }>({ from: undefined, to: undefined });
-  const [busDate, setBusDate] = useState<Date | undefined>();
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -144,6 +145,10 @@ export default function SearchCardPage() {
   const [busFrom, setBusFrom] = useState('');
   const [busTo, setBusTo] = useState('');
   const [displayedBuses, setDisplayedBuses] = useState(buses);
+
+  const [bikePickup, setBikePickup] = useState('');
+  const [bikeDrop, setBikeDrop] = useState('');
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -181,6 +186,19 @@ export default function SearchCardPage() {
     setDisplayedBuses(filteredBuses);
   };
 
+  const detectLocation = () => {
+    setIsDetectingLocation(true);
+    // Simulate GPS detection
+    setTimeout(() => {
+        setBikePickup('Current Location (Jodhpur, Rajasthan)');
+        setIsDetectingLocation(false);
+        toast({
+            title: "Phone Location Found",
+            description: "Aapki live location detection safal rahi!",
+        });
+    }, 1500);
+  }
+
   return (
     <div className="flex flex-col gap-8 pb-20">
       <Card className="border-none shadow-lg rounded-[2.5rem] overflow-hidden bg-white">
@@ -196,9 +214,9 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rajasthan Location</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rajasthan Location (All RJ)</Label>
                   <Input 
-                    placeholder="e.g., Udaipur, Jaipur" 
+                    placeholder="e.g., Udaipur, Jaipur, Jodhpur" 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
                     className="h-14 rounded-2xl border-muted"
@@ -229,12 +247,12 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From City</Label>
-                  <Input placeholder="Starting From" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From (All Rajasthan)</Label>
+                  <Input placeholder="Starting From City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To City</Label>
-                  <Input placeholder="Going To" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To (All Rajasthan)</Label>
+                  <Input placeholder="Going To City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date</Label>
@@ -258,26 +276,45 @@ export default function SearchCardPage() {
                         <Zap className="h-6 w-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black italic tracking-tighter">JODHPUR BIKE TAXI: LIVE</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase">Sahi Safar • Sahi Nivesh • Available Now</p>
+                        <h3 className="text-xl font-black italic tracking-tighter uppercase">Rajasthan Bike Ride</h3>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Fast Pickups • Sahi Nivesh</p>
                     </div>
                 </div>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">RAPIDO STYLE FAST BOOKING</Badge>
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">PHONE LOCATION ENABLED</Badge>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup Location</Label>
-                  <div className="relative">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pick up (All Rajasthan)</Label>
+                  <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
-                    <Input placeholder="Search Pickup (e.g., Clock Tower)" className="h-14 pl-12 rounded-2xl" />
+                    <Input 
+                        placeholder="Search Pickup City / Point" 
+                        value={bikePickup}
+                        onChange={(e) => setBikePickup(e.target.value)}
+                        className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
+                    />
+                    <button 
+                        type="button"
+                        onClick={detectLocation}
+                        disabled={isDetectingLocation}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50"
+                        title="Detect My Phone Location"
+                    >
+                        {isDetectingLocation ? <Loader2 className="h-5 w-5 animate-spin" /> : <LocateFixed className="h-5 w-5" />}
+                    </button>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Location</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Point</Label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
-                    <Input placeholder="Search Drop (e.g., Mehrangarh)" className="h-14 pl-12 rounded-2xl" />
+                    <Input 
+                        placeholder="Drop (e.g., Hotel, Fort, Mall)" 
+                        value={bikeDrop}
+                        onChange={(e) => setBikeDrop(e.target.value)}
+                        className="h-14 pl-12 rounded-2xl" 
+                    />
                   </div>
                 </div>
               </div>
@@ -289,7 +326,7 @@ export default function SearchCardPage() {
                   <div className="flex items-center justify-between relative z-10">
                       <div className="flex items-center gap-3">
                           <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                          <span className="text-xs font-black italic uppercase">Live Map View (Jodhpur)</span>
+                          <span className="text-xs font-black italic uppercase">Live Map View (Rajasthan)</span>
                       </div>
                       <Button 
                         variant="ghost" 
@@ -308,12 +345,12 @@ export default function SearchCardPage() {
                                   </div>
                               ))}
                           </div>
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">3 Bikes nearby Sardarpura</p>
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bikes Nearby Your Phone Location</p>
                       </div>
                   </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                 <Zap className="mr-2 h-6 w-6" /> BOOK BIKE NOW
+                 <Zap className="mr-2 h-6 w-6" /> BOOK BIKE TAXI
               </Button>
             </CardContent>
           </TabsContent>
@@ -322,12 +359,12 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (Rajasthan)</Label>
-                  <Input placeholder="e.g., Jaipur Airport" className="h-14 rounded-2xl" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (All Rajasthan)</Label>
+                  <Input placeholder="e.g., Jaipur Airport, Udaipur Station" className="h-14 rounded-2xl" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
-                  <Input placeholder="e.g., Hotel Name" className="h-14 rounded-2xl" />
+                  <Input placeholder="e.g., Destination / Hotel Name" className="h-14 rounded-2xl" />
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
@@ -376,8 +413,8 @@ export default function SearchCardPage() {
       {activeTab === 'bike' && (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter uppercase">BIKE RIDE OPTIONS (JODHPUR)</h2>
-                <Badge className="bg-primary text-white border-none font-black italic">RAPIDO STYLE RIDES</Badge>
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase">LIVE BIKE RIDES (RAJASTHAN)</h2>
+                <Badge className="bg-primary text-white border-none font-black italic">FASTEST PICKUPS</Badge>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {bikeRides.map((ride, idx) => (
@@ -445,7 +482,7 @@ export default function SearchCardPage() {
             <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">
                 <div>
                     <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase flex items-center gap-2">
-                        <Map className="h-6 w-6" /> JODHPUR LIVE STATUS
+                        <Map className="h-6 w-6" /> RAJASTHAN LIVE STATUS
                     </DialogTitle>
                     <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
                         Real-time Traffic & Bike Taxi Locations
@@ -469,7 +506,7 @@ export default function SearchCardPage() {
                 <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-primary/20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                        <p className="text-xs font-black italic uppercase tracking-tight">3 Bikes Available near your location</p>
+                        <p className="text-xs font-black italic uppercase tracking-tight">Detecting Bikes Near Your Phone Location...</p>
                     </div>
                     <Badge className="bg-primary text-white font-black italic text-[10px]">LIVE NOW</Badge>
                 </div>
