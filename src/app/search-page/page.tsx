@@ -1,7 +1,6 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,22 +25,18 @@ import {
   Bus, 
   MapPin, 
   Clock, 
-  Info, 
   ShieldCheck, 
   Bike, 
   Zap, 
   Navigation, 
-  Map, 
   X, 
   LocateFixed, 
-  Loader2, 
-  Sparkles, 
   Route,
-  Ticket,
   Globe,
   MapPinned,
-  SearchCode,
-  CheckCircle2
+  CheckCircle2,
+  History,
+  Navigation2
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -52,26 +47,44 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 const popularCitiesIndia = [
-  'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi'
+  'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi', 'Jodhpur'
 ];
 
+// Expanded All India Locations with clear Mark/Details
 const allLocations = [
   "Paota, Jodhpur, Rajasthan, India",
-  "Pavta, Bhaskar Circle, Ratanada, Jodhpur, Rajasthan",
-  "Paota C Road, BJS Colony, Jodhpur, Rajasthan, India",
+  "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
   "Paota B Road, Bhadwasiya, Laxmi Nagar, Jodhpur, Rajasthan",
-  "Paota Circle, Bhadwasiya, Paota, Jodhpur, Rajasthan, India",
-  "Railway Station, Jodhpur, Rajasthan",
-  "Airport Road, Jodhpur, Rajasthan",
-  "Clock Tower, Ghanta Ghar, Jodhpur",
-  "Jaipur City Palace, Rajasthan",
-  "Hawa Mahal, Jaipur, Rajasthan",
-  "India Gate, Delhi, India",
-  "Gateway of India, Mumbai",
-  "Marine Drive, Mumbai, Maharashtra",
-  "Connaught Place, New Delhi",
-  "Baga Beach, Goa, India",
-  "Kedarnath Temple, Uttarakhand",
+  "Paota Circle, Bhadwasiya, Paota, Jodhpur, Rajasthan",
+  "Pavta, Bhaskar Circle, Ratanada, Jodhpur, Rajasthan",
+  "Ratanada, Jodhpur, Rajasthan, India",
+  "Sardarpura, Jodhpur, Rajasthan, India",
+  "Chopasni Housing Board, Jodhpur, Rajasthan",
+  "Railway Station, Jodhpur, Rajasthan, India",
+  "Airport Road, Jodhpur, Rajasthan, India",
+  "Clock Tower, Ghanta Ghar, Jodhpur, Rajasthan",
+  "Mehrangarh Fort Area, Jodhpur, Rajasthan",
+  "Mansarovar, Jaipur, Rajasthan, India",
+  "C-Scheme, Jaipur, Rajasthan, India",
+  "Vaishali Nagar, Jaipur, Rajasthan",
+  "Hawa Mahal Area, Badi Choupad, Jaipur, Rajasthan",
+  "City Palace, Jaipur, Rajasthan, India",
+  "Connaught Place, New Delhi, Delhi, India",
+  "India Gate, Rajpath, New Delhi, Delhi",
+  "Aerocity, Indira Gandhi International Airport, Delhi",
+  "Chandni Chowk, Old Delhi, Delhi",
+  "Marine Drive, Nariman Point, Mumbai, Maharashtra",
+  "Gateway of India, Colaba, Mumbai, Maharashtra",
+  "Juhu Beach, Mumbai, Maharashtra, India",
+  "Bandra West, Linking Road, Mumbai, Maharashtra",
+  "Baga Beach, Calangute, North Goa, India",
+  "Anjuna, North Goa, Goa, India",
+  "Panjim City Center, North Goa, India",
+  "Kedarnath Temple, Rudraprayag, Uttarakhand",
+  "MG Road, Bengaluru, Karnataka, India",
+  "Koramangala, Bengaluru, Karnataka",
+  "Indiranagar, Bengaluru, Karnataka",
+  "Whitefield, IT Hub, Bengaluru, Karnataka",
 ];
 
 const hotels = [
@@ -207,6 +220,9 @@ export default function SearchCardPage() {
     return (
       <div className="absolute z-[100] w-full bg-white border border-slate-200 rounded-2xl shadow-2xl mt-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <ScrollArea className="max-h-[300px]">
+          <div className="bg-primary/5 p-2 border-b">
+             <p className="text-[10px] font-black uppercase text-primary tracking-widest text-center">Behtarin Map Marks Found</p>
+          </div>
           {suggestions.map((loc, i) => {
             const [main, ...rest] = loc.split(',');
             return (
@@ -220,12 +236,12 @@ export default function SearchCardPage() {
                   toast({ title: 'Location Locked', description: `${main} select ho gaya hai.` });
                 }}
               >
-                <div className="bg-slate-100 p-2 rounded-xl group-hover:bg-primary/10 transition-colors">
-                  <MapPin className="h-5 w-5 text-slate-400 group-hover:text-primary" />
+                <div className="bg-slate-100 p-2.5 rounded-xl group-hover:bg-primary/10 transition-colors shadow-sm">
+                  <MapPin className="h-6 w-6 text-slate-400 group-hover:text-primary" />
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-black text-sm text-slate-800 tracking-tight">{main}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider leading-relaxed pr-2">
+                  <p className="font-black text-sm text-slate-800 tracking-tight group-hover:text-primary transition-colors">{main}</p>
+                  <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider leading-relaxed pr-2">
                     {rest.join(',').trim()}
                   </p>
                 </div>
@@ -511,7 +527,7 @@ export default function SearchCardPage() {
                 <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Drop Point</Label>
                   <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
+                    <Navigation2 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Drop Anywhere in India" 
                         value={bikeDrop}
@@ -576,7 +592,7 @@ export default function SearchCardPage() {
                 <div className="space-y-2 relative">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination (Detailed Finder)</Label>
                   <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
+                    <Navigation2 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-6 w-6" />
                     <Input 
                         placeholder="Destination City/Point" 
                         value={carDrop}
