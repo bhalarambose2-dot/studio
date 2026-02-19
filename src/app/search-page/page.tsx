@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -16,8 +16,28 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2, Sparkles, Route } from 'lucide-react';
-import { format } from 'date-fns';
+import { 
+  Calendar as CalendarIcon, 
+  Hotel, 
+  Search, 
+  Car, 
+  IndianRupee, 
+  Star, 
+  Bus, 
+  MapPin, 
+  Clock, 
+  Info, 
+  ShieldCheck, 
+  Bike, 
+  Zap, 
+  Navigation, 
+  Map, 
+  X, 
+  LocateFixed, 
+  Loader2, 
+  Sparkles, 
+  Route 
+} from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -205,12 +225,9 @@ export default function SearchCardPage() {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
           const locationStr = `My Location (Jodhpur) - Rajasthan`;
-          
           if (type === 'bike') setBikePickup(locationStr);
           if (type === 'car') setCarPickup(locationStr);
-          
           setIsDetectingLocation(false);
           toast({
             title: "Location Found!",
@@ -221,7 +238,6 @@ export default function SearchCardPage() {
           const fallback = 'Current Location (Rajasthan)';
           if (type === 'bike') setBikePickup(fallback);
           if (type === 'car') setCarPickup(fallback);
-          
           setIsDetectingLocation(false);
           toast({
             title: "Location Detected",
@@ -598,7 +614,6 @@ export default function SearchCardPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Route Map Dialog (Auto-opens after booking) */}
       <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
         <DialogContent className="max-w-4xl h-[85vh] p-0 overflow-hidden rounded-[2.5rem] border-4 border-primary shadow-2xl">
             <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">

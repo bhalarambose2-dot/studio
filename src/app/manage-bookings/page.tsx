@@ -1,14 +1,11 @@
-
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
 import { collection, orderBy, query, Timestamp } from "firebase/firestore";
-import { Briefcase, Loader2, Plus, Calendar, Users, MapPin, Bus, Car, Bike, Hotel } from "lucide-react";
-import Image from "next/image";
+import { Briefcase, Loader2, Plus, Calendar, Users, Bus, Car, Bike, Hotel } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 interface TripBooking {
     id: string;
@@ -80,6 +77,7 @@ export default function ManageBookingsPage() {
 
   const bookingsQuery = useMemoFirebase(() => {
     if (!user) return null;
+    // Unified collection for all trip types
     return query(
         collection(firestore, 'users', user.uid, 'bookings'),
         orderBy('bookingDate', 'desc')
@@ -129,3 +127,6 @@ export default function ManageBookingsPage() {
     </div>
   );
 }
+
+import { Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
