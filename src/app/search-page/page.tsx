@@ -50,7 +50,6 @@ const popularCitiesIndia = [
   'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi', 'Jodhpur'
 ];
 
-// Expanded All India Locations with clear Mark/Details
 const allLocations = [
   "Paota, Jodhpur, Rajasthan, India",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
@@ -358,10 +357,14 @@ export default function SearchCardPage() {
   );
 
   const getMapLocations = () => {
-    const pickup = activeTab === 'bike' ? bikePickup : carPickup;
-    const drop = activeTab === 'bike' ? bikeDrop : carDrop;
+    const pickup = activeTab === 'bike' ? bikePickup : (activeTab === 'bus' ? busFrom : carPickup);
+    const drop = activeTab === 'bike' ? bikeDrop : (activeTab === 'bus' ? busTo : carDrop);
     return { pickup: pickup || 'Delhi, India', drop: drop || 'Mumbai, India' };
   };
+
+  const mapUrl = mapMode === 'directions' 
+    ? `https://maps.google.com/maps?saddr=${encodeURIComponent(getMapLocations().pickup)}&daddr=${encodeURIComponent(getMapLocations().drop)}&output=embed`
+    : `https://maps.google.com/maps?q=${encodeURIComponent(targetPlace)}&output=embed`;
 
   return (
     <div className="flex flex-col gap-8 pb-20">
@@ -753,10 +756,7 @@ export default function SearchCardPage() {
             </DialogHeader>
             <div className="flex-1 w-full h-full relative">
                 <iframe 
-                    src={mapMode === 'directions' 
-                      ? `https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&origin=${encodeURIComponent(getMapLocations().pickup)}&destination=${encodeURIComponent(getMapLocations().drop)}&mode=driving&zoom=15`
-                      : `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&q=${encodeURIComponent(targetPlace)}&zoom=15`
-                    }
+                    src={mapUrl}
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
