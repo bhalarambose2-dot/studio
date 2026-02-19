@@ -54,7 +54,7 @@ const hotels = [
     {
         "name": "Hotel Lake View",
         "location": "Udaipur, Rajasthan",
-        "price": "1200",
+        "price": 1200,
         "rating": 4.3,
         "facilities": ["Wi-Fi", "Breakfast", "Lake View Rooms"],
         "image": "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop",
@@ -65,7 +65,7 @@ const hotels = [
     {
         "name": "Desert Safari Camp",
         "location": "Jaisalmer, Rajasthan",
-        "price": "1800",
+        "price": 3500,
         "rating": 4.5,
         "facilities": ["Camel Safari", "Cultural Show", "Dinner"],
         "image": "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1932&auto=format&fit=crop",
@@ -76,7 +76,7 @@ const hotels = [
     {
         "name": "Heritage Haveli",
         "location": "Jaipur, Rajasthan",
-        "price": "2500",
+        "price": 6500,
         "rating": 4.4,
         "facilities": ["Royal Rooms", "Restaurant", "Free Parking"],
         "image": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
@@ -87,7 +87,7 @@ const hotels = [
     {
         "name": "Blue City Boutique",
         "location": "Jodhpur, Rajasthan",
-        "price": "1500",
+        "price": 1800,
         "rating": 4.6,
         "facilities": ["Fort View", "Rooftop Cafe", "Guided Tours"],
         "image": "https://images.unsplash.com/photo-1721973733816-1791a072295a?q=80&w=1080&auto=format&fit=crop",
@@ -106,7 +106,7 @@ const buses = [
         "departure": "10:30 PM",
         "arrival": "04:30 AM",
         "duration": "6h 00m",
-        "price": "850",
+        "price": 850,
         "type": "AC Sleeper (2+1)",
         "rating": 4.5,
         "seats": 12,
@@ -120,7 +120,7 @@ const buses = [
         "departure": "08:00 AM",
         "arrival": "02:00 PM",
         "duration": "6h 00m",
-        "price": "550",
+        "price": 550,
         "type": "AC Seater",
         "rating": 4.4,
         "seats": 15,
@@ -132,7 +132,7 @@ const bikeRides = [
     {
         "name": "Bullet Standard",
         "type": "Premium Ride",
-        "price": "15",
+        "price": 18,
         "location": "Jodhpur City",
         "rating": 4.9,
         "time": "4 min away",
@@ -142,12 +142,31 @@ const bikeRides = [
     {
         "name": "Activa Fast",
         "type": "Quick Ride",
-        "price": "8",
+        "price": 12,
         "location": "Sardarpura",
         "rating": 4.7,
         "time": "2 min away",
         "status": "Available Now",
         "hint": "scooter bike"
+    }
+];
+
+const cabs = [
+    {
+        "name": "Mini Cab",
+        "type": "Sedan",
+        "price": 45,
+        "rating": 4.8,
+        "time": "5 min away",
+        "description": "Perfect for city rides."
+    },
+    {
+        "name": "Prime SUV",
+        "type": "SUV",
+        "price": 85,
+        "rating": 4.9,
+        "time": "8 min away",
+        "description": "Extra space for family."
     }
 ];
 
@@ -191,7 +210,6 @@ export default function SearchCardPage() {
 
   const handleBookingSuccess = () => {
     setIsDialogOpen(false);
-    // After payment, automatically start the map guide for bike/cab
     if (activeTab === 'bike' || activeTab === 'car') {
       setIsRouteMapOpen(true);
     }
@@ -284,7 +302,6 @@ export default function SearchCardPage() {
     </div>
   );
 
-  // Helper to determine active map locations based on tab
   const getMapLocations = () => {
     const pickup = activeTab === 'bike' ? bikePickup : carPickup;
     const drop = activeTab === 'bike' ? bikeDrop : carDrop;
@@ -394,7 +411,6 @@ export default function SearchCardPage() {
                         onClick={() => detectLocation('bike')}
                         disabled={isDetectingLocation}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1 px-3"
-                        title="Use My Location"
                     >
                         {isDetectingLocation ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
                         <span className="text-[9px] font-black uppercase hidden sm:block">Use GPS</span>
@@ -417,29 +433,6 @@ export default function SearchCardPage() {
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-3xl border border-slate-200 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-                      <Map className="h-20 w-20" />
-                  </div>
-                  <div className="flex items-center justify-between relative z-10">
-                      <div className="flex items-center gap-3">
-                          <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                          <span className="text-xs font-black italic uppercase">Live Map (Rajasthan)</span>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        onClick={() => setIsMapDialogOpen(true)}
-                        className="text-[10px] font-black text-primary hover:underline italic uppercase flex items-center gap-1 h-auto p-0"
-                      >
-                          <Info className="h-3 w-3" /> View Real Traffic
-                      </Button>
-                  </div>
-                  <div className="h-32 w-full bg-slate-200/50 mt-4 rounded-2xl border border-dashed border-slate-300 flex items-center justify-center">
-                      <div className="text-center space-y-2">
-                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tracking Bikes in Rajasthan...</p>
-                      </div>
-                  </div>
-              </div>
               <Button 
                 className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
                 onClick={() => {
@@ -507,7 +500,7 @@ export default function SearchCardPage() {
                     });
                     return;
                 }
-                handleBookNow({ name: 'Premium Cab', price: '120' });
+                handleBookNow(cabs[0]);
               }}>
                 <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN CABS
               </Button>
@@ -540,7 +533,7 @@ export default function SearchCardPage() {
                             </p>
                             <div className="flex items-center justify-between mt-auto border-t pt-4">
                                 <div className="text-2xl font-black text-primary italic">
-                                    ₹{hotel.price}<span className="text-[10px] font-medium text-muted-foreground not-italic">/night</span>
+                                    ₹{hotel.price.toLocaleString('en-IN')}<span className="text-[10px] font-medium text-muted-foreground not-italic">/night</span>
                                 </div>
                                 <Button className="rounded-xl font-bold italic px-6" onClick={() => handleBookNow(hotel)}>BOOK NOW</Button>
                             </div>
@@ -585,14 +578,6 @@ export default function SearchCardPage() {
                     </Card>
                 ))}
             </div>
-            
-            <div className="bg-primary/5 p-8 rounded-[3rem] border-2 border-dashed border-primary/20 text-center space-y-4">
-                <h3 className="text-2xl font-black italic tracking-tighter">BIKE CHALAYEIN AUR KAMAYEIN (PARTNER WITH US)</h3>
-                <p className="text-sm text-muted-foreground font-medium max-w-2xl mx-auto">Agar aapke paas bike hai aur aap Rajasthan mein extra kamai karna chahte hain, toh aaj hi humare saath judiye. "Sahi Nivesh" se apni bike ko taxi banayein.</p>
-                <Link href="/partnership">
-                  <Button variant="outline" className="mt-4 border-primary text-primary font-black italic uppercase h-12 rounded-xl hover:bg-primary hover:text-white transition-all">BECOME A PARTNER</Button>
-                </Link>
-            </div>
         </section>
       )}
 
@@ -617,43 +602,6 @@ export default function SearchCardPage() {
           </DialogContent>
         </Dialog>
       )}
-
-      <Dialog open={isMapDialogOpen} onOpenChange={setIsMapDialogOpen}>
-        <DialogContent className="max-w-4xl h-[80vh] p-0 overflow-hidden rounded-[2.5rem]">
-            <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">
-                <div>
-                    <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase flex items-center gap-2">
-                        <Map className="h-6 w-6" /> RAJASTHAN LIVE STATUS
-                    </DialogTitle>
-                    <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
-                        Real-time Traffic & Bike Taxi Locations
-                    </DialogDescription>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => setIsMapDialogOpen(false)} className="text-white hover:bg-white/20">
-                    <X className="h-6 w-6" />
-                </Button>
-            </DialogHeader>
-            <div className="flex-1 w-full h-full relative">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114406.49503463692!2d72.93282299726562!3d26.273892799999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39418cff11326727%3A0x6a3783dbd12987a4!2sJodhpur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin&layer=t" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen={true} 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="w-full h-full"
-                ></iframe>
-                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-primary/20 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
-                        <p className="text-xs font-black italic uppercase tracking-tight">Detecting Locations Across Rajasthan...</p>
-                    </div>
-                    <Badge className="bg-primary text-white font-black italic text-[10px]">LIVE NOW</Badge>
-                </div>
-            </div>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
         <DialogContent className="max-w-4xl h-[85vh] p-0 overflow-hidden rounded-[2.5rem] border-4 border-primary shadow-2xl">

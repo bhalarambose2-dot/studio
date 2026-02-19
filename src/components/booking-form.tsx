@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -61,9 +60,15 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   });
 
   const calculateAmount = (travelers: number) => {
-    const priceStr = String(itemDetails?.price || '500');
-    const numericPrice = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 500;
-    return numericPrice * travelers;
+    const basePrice = parseFloat(String(itemDetails?.price)) || 500;
+    
+    if (bookingType === 'bike' || bookingType === 'car') {
+        // For rides, we simulate a 10km ride as an estimate for payment
+        return basePrice * 10;
+    }
+    
+    // For Hotel/Bus, it's per person/night
+    return basePrice * travelers;
   };
 
   const onDetailsSubmit = (values: BookingFormValues) => {
@@ -110,7 +115,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // 1. Unified Private Bookings Collection
         const userBookingRef = collection(firestore, 'users', user.uid, 'bookings');
         addDoc(userBookingRef, bookingDetails).catch(err => {
             errorEmitter.emit('permission-error', new FirestorePermissionError({
@@ -120,7 +124,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             }));
         });
 
-        // 2. Global Bus Bookings (Visible to Owners/Staff)
         if (bookingType === 'bus') {
           const globalBookingRef = collection(firestore, 'busBookings');
           addDoc(globalBookingRef, bookingDetails).catch(err => {
@@ -132,7 +135,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
           });
         }
 
-        // 3. Save as a financial Transaction record in user's profile
         const transactionRef = collection(firestore, 'users', user.uid, 'transactions');
         const transactionData = {
             type: 'debit',
@@ -152,10 +154,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         
         toast({
             title: 'Payment Verified & Ticket Saved!',
-            description: `Aapka ${bookingType} ticket confirm ho gaya hai! Amount: ₹${amount}`,
+            description: `Aapka ${bookingType} ticket confirm ho gaya hai! Amount: ₹${amount.toLocaleString('en-IN')}`,
         });
 
-        // Small delay to simulate verification before closing
         setTimeout(() => {
             setIsLoading(false);
             if (onSuccess) onSuccess();
@@ -239,7 +240,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             <p className="text-lg font-black italic leading-tight">{tripName}</p>
             <div className="flex items-center gap-1 text-primary mt-1 font-bold">
               <IndianRupee className="h-3 w-3" />
-              <p className="text-xs">{itemDetails?.price || '500'} <span className="text-[10px] text-muted-foreground font-normal">/ per person</span></p>
+              <p className="text-xs">₹{itemDetails?.price?.toLocaleString('en-IN') || '500'} <span className="text-[10px] text-muted-foreground font-normal">/ {bookingType === 'bike' || bookingType === 'car' ? 'per km' : 'per unit'}</span></p>
             </div>
         </div>
 
