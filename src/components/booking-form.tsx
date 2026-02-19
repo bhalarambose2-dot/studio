@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Ticket, CheckCircle2, QrCode, CreditCard, ShieldCheck, AlertCircle, IndianRupee } from 'lucide-react';
+import { Loader2, Ticket, CheckCircle2, QrCode, CreditCard, ShieldCheck, AlertCircle, IndianRupee, MapPin, Route, Clock, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
 import Link from 'next/link';
@@ -42,9 +42,10 @@ interface BookingFormProps {
 export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSuccess }: BookingFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'details' | 'payment'>('details');
+  const [step, setStep] = useState<'details' | 'payment' | 'success'>('details');
   const [txnId, setTxnId] = useState('');
   const [formData, setFormData] = useState<BookingFormValues | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<any>(null);
   const { firestore, user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
@@ -61,7 +62,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     },
   });
 
-  // Automatically fill Name and Email when user profile or user auth is available
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -74,13 +74,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
 
   const calculateAmount = (travelers: number) => {
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
-    
     if (bookingType === 'bike' || bookingType === 'car') {
-        // For rides, we simulate a 10km ride as an estimate for payment
         return basePrice * 10;
     }
-    
-    // For Hotel/Bus, it's per person/night
     return basePrice * travelers;
   };
 
@@ -108,8 +104,10 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     
     const amount = calculateAmount(formData.travelers);
     const seatNumber = bookingType === 'bus' ? `S-${Math.floor(Math.random() * 40) + 1}` : null;
+    const ticketId = `BT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
     const bookingDetails = { 
+        id: ticketId,
         userId: user.uid,
         tripName: tripName,
         customerName: formData.name,
@@ -124,7 +122,8 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         txnId: txnId,
         ownerId: itemDetails?.ownerId || 'MOCK_OWNER_ID',
         status: 'Confirmed',
-        bookingDate: serverTimestamp(),
+        bookingDate: new Date(), // Using JS date for immediate display
+        timestamp: serverTimestamp(),
     };
     
     try {
@@ -165,22 +164,71 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             }));
         });
         
-        toast({
-            title: 'Payment Verified & Ticket Saved!',
-            description: `Aapka ${bookingType} ticket confirm ho gaya hai! Amount: ₹${amount.toLocaleString('en-IN')}`,
-        });
+        setConfirmedBooking(bookingDetails);
+        setStep('success');
+        setIsLoading(false);
 
-        setTimeout(() => {
-            setIsLoading(false);
-            if (onSuccess) onSuccess();
-        }, 1500);
+        toast({
+            title: 'Payment Verified!',
+            description: `Aapka ${bookingType} ticket confirm ho gaya hai!`,
+        });
 
     } catch (error: any) {
         setIsLoading(false);
         console.error("Booking Error:", error);
-        toast({ title: 'Booking Failed', description: 'Data save karne mein dikat aayi. Support se contact karein.', variant: 'destructive' });
+        toast({ title: 'Booking Failed', description: 'Data save karne mein dikat aayi.', variant: 'destructive' });
     }
   };
+
+  if (step === 'success' && confirmedBooking) {
+      const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(confirmedBooking.tripName)}&output=embed`;
+      return (
+          <div className="space-y-6 p-2 animate-in fade-in zoom-in duration-300">
+              <div className="text-center space-y-2">
+                  <div className="mx-auto bg-green-100 text-green-600 p-4 rounded-full w-fit mb-4">
+                      <CheckCircle2 className="h-12 w-12" />
+                  </div>
+                  <h3 className="text-3xl font-black italic tracking-tighter uppercase text-green-600">Safar Confirmed!</h3>
+                  <Badge className="bg-primary/10 text-primary border-none font-mono text-xs px-4 py-1">TICKET ID: {confirmedBooking.id}</Badge>
+              </div>
+
+              {/* Map in Booking Complete */}
+              <div className="rounded-[2rem] overflow-hidden border-4 border-primary shadow-xl h-48 relative">
+                  <iframe src={mapUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" className="w-full h-full grayscale-[0.2]"></iframe>
+                  <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm p-2 rounded-xl border border-primary/20 shadow-md">
+                      <p className="text-[8px] font-black uppercase text-primary flex items-center gap-1">
+                          <Clock className="h-2 w-2" /> Duration: 5-6 Hrs (Est.)
+                      </p>
+                  </div>
+              </div>
+
+              <div className="bg-muted/30 p-6 rounded-[2rem] space-y-4">
+                  <div className="flex justify-between items-center border-b border-dashed pb-3">
+                      <span className="text-[10px] font-black uppercase text-muted-foreground">Location</span>
+                      <span className="font-bold text-sm italic">{confirmedBooking.tripName}</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-dashed pb-3">
+                      <span className="text-[10px] font-black uppercase text-muted-foreground">Travelers</span>
+                      <span className="font-bold text-sm italic">{confirmedBooking.travelers} Persons</span>
+                  </div>
+                  {confirmedBooking.seatNumber && (
+                    <div className="flex justify-between items-center border-b border-dashed pb-3">
+                        <span className="text-[10px] font-black uppercase text-muted-foreground">Seat Lock</span>
+                        <span className="font-black text-primary italic">{confirmedBooking.seatNumber}</span>
+                    </div>
+                  )}
+                   <div className="flex justify-between items-center pt-2">
+                      <span className="text-[10px] font-black uppercase text-muted-foreground">Total Paid</span>
+                      <span className="text-2xl font-black italic text-primary">₹{confirmedBooking.amount?.toLocaleString('en-IN')}</span>
+                  </div>
+              </div>
+
+              <Button className="w-full h-14 font-black italic uppercase rounded-2xl shadow-xl shadow-primary/20" onClick={() => onSuccess && onSuccess()}>
+                  GO TO DASHBOARD
+              </Button>
+          </div>
+      );
+  }
 
   if (step === 'payment' && formData) {
     const totalAmount = calculateAmount(formData.travelers);

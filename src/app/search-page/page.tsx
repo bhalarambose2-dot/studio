@@ -51,7 +51,7 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // JODHPUR (RAJASTHAN) - HYPER LOCAL
+  // JODHPUR (RAJASTHAN) - HYPER LOCAL FOR AUTOMATIC LOCK
   "Paota Circle, Jodhpur, Rajasthan, India",
   "Paota Chauraha, Jodhpur, Rajasthan",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
@@ -73,6 +73,8 @@ const allLocations = [
   "Shastri Nagar, Jodhpur, Rajasthan, India",
   "Kamla Nehru Nagar, Jodhpur, Rajasthan",
   "Mahamandir Railway Station, Jodhpur, Rajasthan",
+  "Umaid Bhawan Palace, Jodhpur, Rajasthan",
+  "Kaylana Lake, Jodhpur, Rajasthan",
   
   // JAIPUR (RAJASTHAN)
   "Mansarovar Metro Station, Jaipur, Rajasthan",
@@ -80,6 +82,7 @@ const allLocations = [
   "Vaishali Nagar, Jaipur, Rajasthan",
   "Hawa Mahal, Badi Choupad, Jaipur, Rajasthan",
   "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
+  "Amer Fort, Jaipur, Rajasthan",
 
   // DELHI (NCR)
   "Connaught Place, New Delhi, Delhi, India",
@@ -87,18 +90,23 @@ const allLocations = [
   "Aerocity, IGI Airport, Delhi",
   "Chandni Chowk Market, Old Delhi, Delhi",
   "Saket District Centre, South Delhi, Delhi",
+  "Lajpat Nagar Market, Delhi",
 
   // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
   "Gateway of India, Colaba, Mumbai, Maharashtra",
   "Juhu Beach, Mumbai, Maharashtra, India",
   "Bandra West, Linking Road, Mumbai, Maharashtra",
+  "Dadar Station East, Mumbai",
 
-  // OTHER MAJOR POINTS
+  // OTHER MAJOR POINTS (ALL INDIA)
   "Baga Beach, Calangute, North Goa, India",
   "Kedarnath Temple Base, Uttarakhand",
   "Rishikesh, Lakshman Jhula Point, Uttarakhand",
   "Mall Road, Shimla, Himachal Pradesh",
+  "Solang Valley, Manali, Himachal Pradesh",
+  "Fort Kochi, Kerala, India",
+  "Mysore Palace, Karnataka",
 ];
 
 const hotels = [
