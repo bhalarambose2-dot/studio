@@ -17,21 +17,21 @@
       },
       "required": ["id", "fullName", "email", "role"]
     },
-    "BusBooking": {
-      "title": "BusBooking",
+    "Booking": {
+      "title": "Booking",
       "type": "object",
+      "description": "A unified booking record for any service type.",
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
+        "tripName": { "type": "string" },
         "customerName": { "type": "string" },
         "customerPhone": { "type": "string" },
-        "busNumber": { "type": "string" },
-        "busName": { "type": "string" },
-        "seatNumber": { "type": "string" },
+        "bookingType": { "type": "string", "enum": ["hotel", "bus", "bike", "car"] },
         "amount": { "type": "number" },
-        "txnId": { "type": "string" },
         "status": { "type": "string" },
-        "bookingDate": { "type": "string", "format": "date-time" }
+        "bookingDate": { "type": "string", "format": "date-time" },
+        "seatNumber": { "type": "string" }
       }
     },
     "Transaction": {
@@ -63,6 +63,14 @@
         }
       },
       {
+        "path": "/users/{userId}/bookings/{bookingId}",
+        "definition": {
+          "entityName": "Booking",
+          "schema": { "$ref": "#/backend/entities/Booking" },
+          "description": "Private booking history for a user."
+        }
+      },
+      {
         "path": "/users/{userId}/transactions/{txnId}",
         "definition": {
           "entityName": "Transaction",
@@ -74,8 +82,8 @@
         "path": "/busBookings/{bookingId}",
         "definition": {
           "entityName": "BusBooking",
-          "schema": { "$ref": "#/backend/entities/BusBooking" },
-          "description": "Global bus bookings records."
+          "schema": { "$ref": "#/backend/entities/Booking" },
+          "description": "Global records for bus operations."
         }
       }
     ]
