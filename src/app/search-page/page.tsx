@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -37,7 +38,8 @@ import {
   Loader2, 
   Sparkles, 
   Route,
-  Ticket
+  Ticket,
+  Globe
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -47,8 +49,8 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
-const rajasthanCities = [
-  'Jaipur', 'Jodhpur', 'Udaipur', 'Jaisalmer', 'Bikaner', 'Pushkar', 'Ajmer', 'Mount Abu', 'Chittorgarh', 'Alwar', 'Kota', 'Sikar'
+const popularCitiesIndia = [
+  'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi'
 ];
 
 const hotels = [
@@ -64,82 +66,68 @@ const hotels = [
         "description": "Enjoy stunning views of the lake from our comfortable rooms in the City of Lakes."
     },
     {
-        "name": "Desert Safari Camp",
-        "location": "Jaisalmer, Rajasthan",
+        "name": "Mountain Bliss Resort",
+        "location": "Manali, Himachal Pradesh",
         "price": 3500,
         "rating": 4.5,
-        "facilities": ["Camel Safari", "Cultural Show", "Dinner"],
-        "image": "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=1932&auto=format&fit=crop",
-        "hint": "jaisalmer desert",
+        "facilities": ["Snow View", "Fireplace", "Dinner"],
+        "image": "https://images.unsplash.com/photo-1605649440411-9ef219324bc6?q=80&w=1080",
+        "hint": "manali resort",
         "rooms_available": 8,
-        "description": "Experience the magic of the Thar desert with our premium safari camps."
+        "description": "Experience the magic of the Himalayas with luxury stay."
     },
     {
-        "name": "Heritage Haveli",
+        "name": "Royal Palace",
         "location": "Jaipur, Rajasthan",
         "price": 6500,
         "rating": 4.4,
         "facilities": ["Royal Rooms", "Restaurant", "Free Parking"],
         "image": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
-        "hint": "jaipur haveli",
+        "hint": "jaipur palace",
         "rooms_available": 6,
-        "description": "Live like royalty in this beautifully restored heritage haveli in the Pink City."
+        "description": "Live like royalty in the heart of the Pink City."
     },
     {
-        "name": "Blue City Boutique",
-        "location": "Jodhpur, Rajasthan",
+        "name": "Ganga Ghat Heritage",
+        "location": "Varanasi, UP",
         "price": 1800,
         "rating": 4.6,
-        "facilities": ["Fort View", "Rooftop Cafe", "Guided Tours"],
-        "image": "https://images.unsplash.com/photo-1721973733816-1791a072295a?q=80&w=1080&auto=format&fit=crop",
-        "hint": "jodhpur boutique",
+        "facilities": ["River View", "Rooftop Cafe", "Guided Tours"],
+        "image": "https://images.unsplash.com/photo-1561359313-0639aad49ca6?q=80&w=1080",
+        "hint": "varanasi hotel",
         "rooms_available": 5,
-        "description": "Beautiful rooms with a stunning view of Mehrangarh Fort."
+        "description": "Peaceful stay near the holy banks of Ganga."
     }
 ];
 
 const buses = [
     {
-        "name": "Raj Travels",
-        "busNumber": "RJ-14-PB-2024",
-        "from": "Jaipur",
-        "to": "Delhi",
+        "name": "Vishwa Travels",
+        "busNumber": "DL-01-PB-2024",
+        "from": "Delhi",
+        "to": "Manali",
         "departure": "10:30 PM",
-        "arrival": "04:30 AM",
-        "duration": "6h 00m",
-        "price": 850,
-        "type": "AC Sleeper (2+1)",
+        "arrival": "08:30 AM",
+        "duration": "10h 00m",
+        "price": 1250,
+        "type": "Scania AC Sleeper (2+1)",
         "rating": 4.5,
         "seats": 12,
         "amenities": ["Water Bottle", "Blanket", "Charging Point"]
     },
     {
-        "name": "Marwar Express",
-        "busNumber": "RJ-19-AX-7788",
-        "from": "Jodhpur",
-        "to": "Udaipur",
-        "departure": "08:00 AM",
-        "arrival": "02:00 PM",
-        "duration": "6h 00m",
-        "price": 550,
-        "type": "AC Seater",
+        "name": "Bharat Express",
+        "busNumber": "MH-01-AX-7788",
+        "from": "Mumbai",
+        "to": "Goa",
+        "departure": "08:00 PM",
+        "arrival": "06:00 AM",
+        "duration": "10h 00m",
+        "price": 1550,
+        "type": "Volvo AC Multi-Axle",
         "rating": 4.4,
         "seats": 15,
         "amenities": ["Pushback Seats", "CCTV"]
-    },
-    {
-        "name": "Pink City Luxury",
-        "busNumber": "RJ-14-GH-1122",
-        "from": "Jaipur",
-        "to": "Jodhpur",
-        "departure": "06:00 AM",
-        "arrival": "12:00 PM",
-        "duration": "6h 00m",
-        "price": 950,
-        "type": "Volvo AC Multi-Axle",
-        "rating": 4.8,
-        "seats": 20,
-        "amenities": ["LCD", "Snacks", "Wifi"]
     }
 ];
 
@@ -148,40 +136,11 @@ const bikeRides = [
         "name": "Bullet Standard",
         "type": "Premium Ride",
         "price": 18,
-        "location": "Jodhpur City",
+        "location": "City Center",
         "rating": 4.9,
         "time": "4 min away",
         "status": "Available Now",
         "hint": "bullet bike"
-    },
-    {
-        "name": "Activa Fast",
-        "type": "Quick Ride",
-        "price": 12,
-        "location": "Sardarpura",
-        "rating": 4.7,
-        "time": "2 min away",
-        "status": "Available Now",
-        "hint": "scooter bike"
-    }
-];
-
-const cabs = [
-    {
-        "name": "Mini Cab",
-        "type": "Sedan",
-        "price": 45,
-        "rating": 4.8,
-        "time": "5 min away",
-        "description": "Perfect for city rides."
-    },
-    {
-        "name": "Prime SUV",
-        "type": "SUV",
-        "price": 85,
-        "rating": 4.9,
-        "time": "8 min away",
-        "description": "Extra space for family."
     }
 ];
 
@@ -224,9 +183,7 @@ export default function SearchCardPage() {
 
   const handleBookingSuccess = () => {
     setIsDialogOpen(false);
-    if (activeTab === 'bike' || activeTab === 'car') {
-      setIsRouteMapOpen(true);
-    }
+    setIsRouteMapOpen(true);
   };
 
   const handleHotelSearch = () => {
@@ -255,52 +212,41 @@ export default function SearchCardPage() {
 
   const detectLocation = (type: 'bike' | 'car') => {
     setIsDetectingLocation(true);
-    
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const locationStr = `Current Phone Location - Rajasthan`;
+          const locationStr = `Current Location - Bharat`;
           if (type === 'bike') setBikePickup(locationStr);
           if (type === 'car') setCarPickup(locationStr);
           setIsDetectingLocation(false);
           toast({
             title: "Location Found!",
-            description: "Aapki current phone location detect kar li gayi hai.",
+            description: "Aapki current location detect kar li gayi hai.",
           });
         },
         (error) => {
-          const fallback = 'Current Location (Rajasthan)';
+          const fallback = 'Current Location (All India)';
           if (type === 'bike') setBikePickup(fallback);
           if (type === 'car') setCarPickup(fallback);
           setIsDetectingLocation(false);
           toast({
             title: "Location Detected",
-            description: "GPS permission ke bina humne aapki city estimate ki hai.",
+            description: "Humne aapki city estimate ki hai.",
           });
         },
         { timeout: 10000 }
       );
-    } else {
-        const fallback = 'Current Location (Rajasthan)';
-        if (type === 'bike') setBikePickup(fallback);
-        if (type === 'car') setCarPickup(fallback);
-        setIsDetectingLocation(false);
-        toast({
-          title: "Browser Error",
-          description: "Aapka browser location support nahi karta.",
-          variant: "destructive"
-        });
     }
   }
 
-  const QuickSelectRajasthan = ({ onSelect }: { onSelect: (city: string) => void }) => (
+  const QuickSelectIndia = ({ onSelect }: { onSelect: (city: string) => void }) => (
     <div className="mt-3">
         <p className="text-[10px] font-black uppercase text-primary mb-2 tracking-widest flex items-center gap-1">
-            <Sparkles className="h-3 w-3" /> Popular in Rajasthan
+            <Globe className="h-3 w-3" /> Popular In India
         </p>
         <ScrollArea className="w-full">
             <div className="flex gap-2 pb-2">
-                {rajasthanCities.map(city => (
+                {popularCitiesIndia.map(city => (
                     <Badge 
                         key={city} 
                         variant="outline" 
@@ -319,7 +265,7 @@ export default function SearchCardPage() {
   const getMapLocations = () => {
     const pickup = activeTab === 'bike' ? bikePickup : carPickup;
     const drop = activeTab === 'bike' ? bikeDrop : carDrop;
-    return { pickup: pickup || 'Jodhpur, Rajasthan', drop: drop || 'Udaipur, Rajasthan' };
+    return { pickup: pickup || 'Delhi, India', drop: drop || 'Mumbai, India' };
   };
 
   return (
@@ -337,14 +283,14 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rajasthan Location (All RJ)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Search All India</Label>
                   <Input 
-                    placeholder="Search Jaipur, Udaipur, Jodhpur..." 
+                    placeholder="Search any city in India..." 
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
                     className="h-14 rounded-2xl border-muted"
                   />
-                  <QuickSelectRajasthan onSelect={setHotelLocation} />
+                  <QuickSelectIndia onSelect={setHotelLocation} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Check-in / Out</Label>
@@ -362,7 +308,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleHotelSearch}>
-                <Search className="mr-2 h-6 w-6" /> SEARCH HOTELS
+                <Search className="mr-2 h-6 w-6" /> SEARCH ALL INDIA
               </Button>
             </CardContent>
           </TabsContent>
@@ -371,14 +317,14 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From (Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">From Shehar</Label>
                   <Input placeholder="Starting City" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="h-14 rounded-2xl" />
-                  <QuickSelectRajasthan onSelect={setBusFrom} />
+                  <QuickSelectIndia onSelect={setBusFrom} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To (Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">To Shehar</Label>
                   <Input placeholder="Destination City" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="h-14 rounded-2xl" />
-                  <QuickSelectRajasthan onSelect={setBusTo} />
+                  <QuickSelectIndia onSelect={setBusTo} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date</Label>
@@ -389,7 +335,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={handleBusSearch}>
-                <Search className="mr-2 h-6 w-6" /> SEARCH BUSES
+                <Search className="mr-2 h-6 w-6" /> SEARCH NATIONAL BUSES
               </Button>
             </CardContent>
           </TabsContent>
@@ -402,64 +348,52 @@ export default function SearchCardPage() {
                         <Zap className="h-6 w-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black italic tracking-tighter uppercase">Rajasthan Bike Taxi</h3>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Live Tracking • Sahi Safar</p>
+                        <h3 className="text-xl font-black italic tracking-tighter uppercase">All India Bike Taxi</h3>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">National Network • Sahi Safar</p>
                     </div>
                 </div>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">GPS READY</Badge>
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none font-black italic px-4 py-1">LIVE GPS</Badge>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pick up (Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup Location</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
-                        placeholder="Search Pickup Point" 
+                        placeholder="Search Pickup Location" 
                         value={bikePickup}
                         onChange={(e) => setBikePickup(e.target.value)}
-                        className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
+                        className="h-14 pl-12 pr-12 rounded-2xl" 
                     />
                     <button 
                         type="button"
                         onClick={() => detectLocation('bike')}
-                        disabled={isDetectingLocation}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1 px-3"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary"
                     >
-                        {isDetectingLocation ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
-                        <span className="text-[9px] font-black uppercase hidden sm:block">Use GPS</span>
+                        <LocateFixed className="h-4 w-4" />
                     </button>
                   </div>
-                  <QuickSelectRajasthan onSelect={setBikePickup} />
+                  <QuickSelectIndia onSelect={setBikePickup} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop Point</Label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
-                        placeholder="Drop (e.g., Hotel, Fort, Mall)" 
+                        placeholder="Drop Anywhere in India" 
                         value={bikeDrop}
                         onChange={(e) => setBikeDrop(e.target.value)}
                         className="h-14 pl-12 rounded-2xl" 
                     />
                   </div>
-                  <QuickSelectRajasthan onSelect={setBikeDrop} />
+                  <QuickSelectIndia onSelect={setBikeDrop} />
                 </div>
               </div>
 
               <Button 
                 className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
-                onClick={() => {
-                    if (!bikePickup || !bikeDrop) {
-                        toast({
-                            title: "Location missing",
-                            description: "Kripya pickup aur drop location bharein.",
-                            variant: "destructive"
-                        });
-                        return;
-                    }
-                    handleBookNow(bikeRides[0]);
-                }}
+                onClick={() => handleBookNow(bikeRides[0])}
               >
                  <Zap className="mr-2 h-6 w-6" /> BOOK BIKE TAXI
               </Button>
@@ -470,53 +404,41 @@ export default function SearchCardPage() {
             <CardContent className="p-6 md:p-10 space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup (Rajasthan)</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pickup Point</Label>
                   <div className="relative group">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
                         placeholder="Pickup Point" 
                         value={carPickup}
                         onChange={(e) => setCarPickup(e.target.value)}
-                        className="h-14 pl-12 pr-12 rounded-2xl border-primary/20 focus:border-primary transition-all" 
+                        className="h-14 pl-12 pr-12 rounded-2xl" 
                     />
                     <button 
                         type="button"
                         onClick={() => detectLocation('car')}
-                        disabled={isDetectingLocation}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center gap-1 px-3"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-primary/10 text-primary"
                     >
-                        {isDetectingLocation ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
-                        <span className="text-[9px] font-black uppercase hidden sm:block">Use Location</span>
+                        <LocateFixed className="h-4 w-4" />
                     </button>
                   </div>
-                  <QuickSelectRajasthan onSelect={setCarPickup} />
+                  <QuickSelectIndia onSelect={setCarPickup} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Drop</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination</Label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 text-primary h-5 w-5" />
                     <Input 
-                        placeholder="Destination" 
+                        placeholder="Destination City/Point" 
                         value={carDrop}
                         onChange={(e) => setCarDrop(e.target.value)}
                         className="h-14 pl-12 rounded-2xl" 
                     />
                   </div>
-                  <QuickSelectRajasthan onSelect={setCarDrop} />
+                  <QuickSelectIndia onSelect={setCarDrop} />
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={() => {
-                if (!carPickup || !carDrop) {
-                    toast({
-                        title: "Location missing",
-                        description: "Kripya pickup aur drop location bharein.",
-                        variant: "destructive"
-                    });
-                    return;
-                }
-                handleBookNow(cabs[0]);
-              }}>
-                <Search className="mr-2 h-6 w-6" /> SEARCH RAJASTHAN CABS
+              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl" onClick={() => handleBookNow({ name: 'SUV Cab', price: 85 })}>
+                <Search className="mr-2 h-6 w-6" /> SEARCH NATIONAL CABS
               </Button>
             </CardContent>
           </TabsContent>
@@ -526,7 +448,7 @@ export default function SearchCardPage() {
       {activeTab === 'hotel' && (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter uppercase">RAJASTHAN HOTELS</h2>
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase">INDIA HOTELS</h2>
                 <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedHotels.length} Results</Badge>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -558,112 +480,16 @@ export default function SearchCardPage() {
         </section>
       )}
 
-      {activeTab === 'bus' && (
-        <section className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter uppercase">RAJASTHAN BUS SERVICE</h2>
-                <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedBuses.length} Routes Found</Badge>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {displayedBuses.map((bus, idx) => (
-                    <Card key={idx} className="overflow-hidden group border-none shadow-xl hover:shadow-2xl transition-all rounded-[2rem] bg-white border-l-8 border-l-primary">
-                        <CardContent className="p-6 space-y-4">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <h3 className="font-black text-xl italic uppercase text-primary">{bus.name}</h3>
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">{bus.type}</p>
-                                    <Badge variant="secondary" className="mt-1 text-[9px] font-mono">{bus.busNumber}</Badge>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-2xl font-black italic text-primary">₹{bus.price}</p>
-                                    <p className="text-[10px] text-muted-foreground font-bold">PER SEAT</p>
-                                </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between bg-muted/30 p-4 rounded-2xl border border-dashed">
-                                <div className="text-center">
-                                    <p className="text-lg font-black">{bus.departure}</p>
-                                    <p className="text-[10px] font-bold uppercase text-muted-foreground">{bus.from}</p>
-                                </div>
-                                <div className="flex flex-col items-center gap-1 opacity-40">
-                                    <div className="h-0.5 w-12 bg-primary/50 relative">
-                                        <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
-                                    </div>
-                                    <span className="text-[8px] font-black uppercase">{bus.duration}</span>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-lg font-black">{bus.arrival}</p>
-                                    <p className="text-[10px] font-bold uppercase text-muted-foreground">{bus.to}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between pt-2">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-1 text-[10px] font-black text-green-600">
-                                        <Ticket className="h-3 w-3" />
-                                        {bus.seats} Seats Left
-                                    </div>
-                                    <div className="flex items-center gap-1 text-[10px] font-black text-orange-600">
-                                        <Star className="h-3 w-3 fill-orange-600" />
-                                        {bus.rating}
-                                    </div>
-                                </div>
-                                <Button className="rounded-xl font-bold italic px-8 h-10 shadow-lg shadow-primary/20" onClick={() => handleBookNow(bus)}>BOOK NOW</Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-        </section>
-      )}
-
-      {activeTab === 'bike' && (
-        <section className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black italic tracking-tighter uppercase">LIVE BIKE RIDES (RAJASTHAN)</h2>
-                <Badge className="bg-primary text-white border-none font-black italic">FASTEST PICKUPS</Badge>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {bikeRides.map((ride, idx) => (
-                    <Card key={idx} className="border-none shadow-xl hover:shadow-2xl transition-all overflow-hidden rounded-[2.5rem] bg-white border-l-8 border-l-primary">
-                        <CardContent className="p-6 flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-primary/10 p-4 rounded-[2rem] text-primary">
-                                    <Bike className="h-8 w-8" />
-                                </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-black italic uppercase tracking-tighter">{ride.name}</h3>
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest">{ride.type}</Badge>
-                                        <span className="text-[10px] text-green-600 font-bold flex items-center gap-1"><Clock className="h-3 w-3" /> {ride.time}</span>
-                                    </div>
-                                    <p className="text-[10px] text-muted-foreground font-medium flex items-center gap-1"><MapPin className="h-3 w-3" /> {ride.location}</p>
-                                </div>
-                            </div>
-                            <div className="text-right space-y-2">
-                                <div className="text-3xl font-black text-primary italic flex items-center justify-end">
-                                    <IndianRupee className="h-6 w-6" />
-                                    {ride.price}<span className="text-[10px] font-medium text-muted-foreground not-italic">/km</span>
-                                </div>
-                                <Button className="font-black italic uppercase rounded-xl px-6 h-10 shadow-lg shadow-primary/20" onClick={() => handleBookNow(ride)}>BOOK RIDE</Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-        </section>
-      )}
-
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter uppercase">
-                {activeTab === 'bike' ? <Bike className="text-primary h-8 w-8" /> : activeTab === 'car' ? <Car className="text-primary h-8 w-8" /> : activeTab === 'bus' ? <Bus className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
-                CONFIRM {activeTab === 'bike' || activeTab === 'car' ? 'RIDE' : 'BOOKING'}
+                <Route className="text-primary h-8 w-8" />
+                CONFIRM SAFAR
               </DialogTitle>
               <DialogDescription className="font-medium text-muted-foreground">
-                Confirming {selectedItem.name} in Rajasthan. "Sahi Nivesh" for your travel.
+                Confirming {selectedItem.name} across Bharat. "Sahi Nivesh" for your travel.
               </DialogDescription>
             </DialogHeader>
             <BookingForm 
@@ -684,7 +510,7 @@ export default function SearchCardPage() {
                       <Route className="h-6 w-6" />
                     </div>
                     <div>
-                        <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">LIVE NAVIGATION GUIDE</DialogTitle>
+                        <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">NATIONAL LIVE GUIDE</DialogTitle>
                         <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
                             {getMapLocations().pickup} ➔ {getMapLocations().drop}
                         </DialogDescription>
@@ -696,7 +522,7 @@ export default function SearchCardPage() {
             </DialogHeader>
             <div className="flex-1 w-full h-full relative">
                 <iframe 
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(getMapLocations().pickup)}+to+${encodeURIComponent(getMapLocations().drop)}&output=embed`}
+                    src={`https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSy'}&origin=${encodeURIComponent(getMapLocations().pickup)}&destination=${encodeURIComponent(getMapLocations().drop)}&mode=driving&zoom=15`}
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
@@ -705,15 +531,8 @@ export default function SearchCardPage() {
                     className="w-full h-full"
                 ></iframe>
                 <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border-l-4 border-l-green-500 max-w-xs">
-                    <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Navigation Alert</p>
-                    <p className="text-xs font-bold text-slate-800">Aapka driver rasta follow kar raha hai. Payment confirm ho gaya hai, "Sahi Safar" ka anand lein!</p>
-                </div>
-                <div className="absolute bottom-6 left-6 right-6 bg-primary text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="h-4 w-4 bg-white rounded-full animate-ping"></div>
-                        <p className="text-sm font-black italic uppercase">Ride in Progress (Automatic Mode)...</p>
-                    </div>
-                    <Badge className="bg-white text-primary font-black italic">SAHI NIVESH</Badge>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Live National Tracking</p>
+                    <p className="text-xs font-bold text-slate-800">Bharat ke har kone ki detailed info ke saath navigation active hai. "Sahi Safar" ka anand lein!</p>
                 </div>
             </div>
         </DialogContent>
@@ -721,4 +540,3 @@ export default function SearchCardPage() {
     </div>
   );
 }
-
