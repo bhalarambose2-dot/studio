@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -19,22 +20,35 @@ import {
   Zap,
   Ticket,
   MapPin,
-  Bike
+  Bike,
+  History
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useFirebase } from '@/firebase';
+import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
 
 export default function SearchPage() {
-  const { user } = useFirebase();
+  const { firestore, user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
   const [activeOfferTab, setActiveOfferTab] = useState('All');
+
+  const bookingsQuery = useMemoFirebase(() => {
+    if (!user) return null;
+    return query(
+        collection(firestore, 'users', user.uid, 'bookings'),
+        orderBy('bookingDate', 'desc'),
+        limit(3)
+    );
+  }, [firestore, user]);
+
+  const { data: recentBookings } = useCollection(bookingsQuery);
 
   const offers = [
     { title: "Special Deal: Get up to 25% OFF* on Hotels!", date: "Limited period offer", type: "Hotels", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=1080" },
@@ -55,9 +69,10 @@ export default function SearchPage() {
               <AvatarFallback className="bg-white text-primary font-black uppercase">{userProfile?.fullName?.[0] || 'B'}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <h1 className="text-white text-lg font-black tracking-tight leading-none">Hey {userProfile?.fullName?.split(' ')[0] || 'Bhala'}</h1>
-              <Link href="/menu" className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1 mt-1 flex items-center gap-1 group transition-all hover:bg-white/30">
-                <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explore goTribe</span>
+              <h1 className="text-white text-lg font-black tracking-tight leading-none">Hey {userProfile?.fullName?.split(' ')[0] || 'Traveler'}</h1>
+              <Link href="/manage-bookings" className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1 mt-1 flex items-center gap-1 group transition-all hover:bg-white/30">
+                <History className="h-3 w-3 text-white" />
+                <span className="text-white text-[10px] font-bold uppercase tracking-widest">History</span>
                 <ChevronRight className="h-3 w-3 text-white transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
@@ -118,6 +133,39 @@ export default function SearchPage() {
 
       {/* Spacer for floating grid */}
       <div className="h-28" />
+
+      {/* Recent History Shortcut */}
+      {recentBookings && recentBookings.length > 0 && (
+        <section className="px-4 mt-8">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-black italic tracking-tighter uppercase flex items-center gap-2">
+                    <History className="h-5 w-5 text-primary" /> Recent Safar
+                </h2>
+                <Link href="/manage-bookings" className="text-primary text-[10px] font-black uppercase">View All</Link>
+            </div>
+            <div className="space-y-3">
+                {recentBookings.map((b: any) => (
+                    <Link href="/manage-bookings" key={b.id}>
+                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-primary/10 p-2 rounded-xl">
+                                    {b.bookingType === 'hotel' ? <Hotel className="h-4 w-4 text-primary" /> : b.bookingType === 'bus' ? <Bus className="h-4 w-4 text-primary" /> : <Bike className="h-4 w-4 text-primary" />}
+                                </div>
+                                <div>
+                                    <p className="text-xs font-black uppercase tracking-tight">{b.tripName}</p>
+                                    <p className="text-[9px] text-muted-foreground font-bold">{b.bookingDate?.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm font-black italic text-primary">₹{b.amount}</p>
+                                <Badge className="text-[8px] h-4 bg-green-100 text-green-700 border-none font-black uppercase">Confirmed</Badge>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </section>
+      )}
 
       {/* Hero Offer Banner */}
       <section className="px-4 mt-8">

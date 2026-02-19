@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet, History } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -118,6 +119,15 @@ export default function MenuPage() {
           <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground">ट्रिप मैनेजमेंट (Trip Management)</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
+          <Link href="/manage-bookings">
+            <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors border-b">
+              <div className="flex items-center gap-4">
+                <History className="h-5 w-5 text-primary"/>
+                <p className="text-sm font-bold">बुकिंग हिस्ट्री (Booking History)</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </Link>
           <Link href="/manage-bookings">
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors border-b">
               <div className="flex items-center gap-4">
