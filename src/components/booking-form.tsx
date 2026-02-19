@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Ticket, CheckCircle2, QrCode, CreditCard, ShieldCheck, AlertCircle, IndianRupee } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
 import Link from 'next/link';
 import { useFirebase } from '@/firebase';
@@ -18,6 +18,7 @@ import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { useUserProfile } from '@/lib/firebase/use-user-profile';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
@@ -45,19 +46,31 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   const [txnId, setTxnId] = useState('');
   const [formData, setFormData] = useState<BookingFormValues | null>(null);
   const { firestore, user } = useFirebase();
+  const { userProfile } = useUserProfile(user?.uid);
 
   const upiId = "8769930595-2@ybl";
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      name: user?.displayName || '',
+      name: userProfile?.fullName || user?.displayName || '',
       email: user?.email || '',
       phone: '',
       travelers: 1,
       terms: false,
     },
   });
+
+  // Automatically fill Name and Email when user profile or user auth is available
+  useEffect(() => {
+    if (userProfile || user) {
+      form.reset({
+        ...form.getValues(),
+        name: userProfile?.fullName || user?.displayName || form.getValues().name,
+        email: user?.email || form.getValues().email,
+      });
+    }
+  }, [userProfile, user, form]);
 
   const calculateAmount = (travelers: number) => {
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
