@@ -16,7 +16,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -136,6 +136,7 @@ export default function SearchCardPage() {
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
   
   const [hotelLocation, setHotelLocation] = useState('');
   const [displayedHotels, setDisplayedHotels] = useState(hotels);
@@ -290,9 +291,13 @@ export default function SearchCardPage() {
                           <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
                           <span className="text-xs font-black italic uppercase">Live Map View (Jodhpur)</span>
                       </div>
-                      <a href="https://www.google.com/maps/search/traffic+in+jodhpur" target="_blank" className="text-[10px] font-black text-primary hover:underline italic uppercase flex items-center gap-1">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setIsMapDialogOpen(true)}
+                        className="text-[10px] font-black text-primary hover:underline italic uppercase flex items-center gap-1 h-auto p-0"
+                      >
                           <Info className="h-3 w-3" /> View Real Traffic
-                      </a>
+                      </Button>
                   </div>
                   <div className="h-32 w-full bg-slate-200/50 mt-4 rounded-2xl border border-dashed border-slate-300 flex items-center justify-center">
                       <div className="text-center space-y-2">
@@ -433,6 +438,44 @@ export default function SearchCardPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Embedded Live Map Dialog */}
+      <Dialog open={isMapDialogOpen} onOpenChange={setIsMapDialogOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] p-0 overflow-hidden rounded-[2.5rem]">
+            <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">
+                <div>
+                    <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase flex items-center gap-2">
+                        <Map className="h-6 w-6" /> JODHPUR LIVE STATUS
+                    </DialogTitle>
+                    <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
+                        Real-time Traffic & Bike Taxi Locations
+                    </DialogDescription>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setIsMapDialogOpen(false)} className="text-white hover:bg-white/20">
+                    <X className="h-6 w-6" />
+                </Button>
+            </DialogHeader>
+            <div className="flex-1 w-full h-full relative">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114406.49503463692!2d72.93282299726562!3d26.273892799999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39418cff11326727%3A0x6a3783dbd12987a4!2sJodhpur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin&layer=t" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={true} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="w-full h-full"
+                ></iframe>
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-primary/20 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
+                        <p className="text-xs font-black italic uppercase tracking-tight">3 Bikes Available near your location</p>
+                    </div>
+                    <Badge className="bg-primary text-white font-black italic text-[10px]">LIVE NOW</Badge>
+                </div>
+            </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
