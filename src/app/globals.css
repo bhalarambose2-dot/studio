@@ -28,7 +28,7 @@ body {
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 24 96% 54%;
-    --radius: 1rem;
+    --radius: 1.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -49,6 +49,7 @@ body {
   }
 }
 
+/* Moonlight Background Effects */
 .bg-lighting-blob {
   position: fixed;
   width: 800px;
