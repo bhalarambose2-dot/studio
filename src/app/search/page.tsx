@@ -134,39 +134,6 @@ export default function SearchPage() {
       {/* Spacer for floating grid */}
       <div className="h-28" />
 
-      {/* Recent History Shortcut */}
-      {recentBookings && recentBookings.length > 0 && (
-        <section className="px-4 mt-8">
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-black italic tracking-tighter uppercase flex items-center gap-2">
-                    <History className="h-5 w-5 text-primary" /> Recent Safar
-                </h2>
-                <Link href="/manage-bookings" className="text-primary text-[10px] font-black uppercase">View All</Link>
-            </div>
-            <div className="space-y-3">
-                {recentBookings.map((b: any) => (
-                    <Link href="/manage-bookings" key={b.id}>
-                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-primary/10 p-2 rounded-xl">
-                                    {b.bookingType === 'hotel' ? <Hotel className="h-4 w-4 text-primary" /> : b.bookingType === 'bus' ? <Bus className="h-4 w-4 text-primary" /> : <Bike className="h-4 w-4 text-primary" />}
-                                </div>
-                                <div>
-                                    <p className="text-xs font-black uppercase tracking-tight">{b.tripName}</p>
-                                    <p className="text-[9px] text-muted-foreground font-bold">{b.bookingDate?.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm font-black italic text-primary">₹{b.amount}</p>
-                                <Badge className="text-[8px] h-4 bg-green-100 text-green-700 border-none font-black uppercase">Confirmed</Badge>
-                            </div>
-                        </div>
-                    </Link>
-                ))}
-            </div>
-        </section>
-      )}
-
       {/* Hero Offer Banner */}
       <section className="px-4 mt-8">
         <Link href="/destination-guides">
@@ -216,7 +183,7 @@ export default function SearchPage() {
       </section>
 
       {/* Offers Section */}
-      <section className="mt-12 space-y-6 pb-12">
+      <section className="mt-12 space-y-6">
         <div className="px-4 flex items-center justify-between">
           <h2 className="text-2xl font-black italic tracking-tighter">Offers For You</h2>
         </div>
@@ -268,6 +235,39 @@ export default function SearchPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </section>
+
+      {/* Recent History Shortcut (Set to sabse niche) */}
+      {recentBookings && recentBookings.length > 0 && (
+        <section className="px-4 mt-8 pb-12">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-black italic tracking-tighter uppercase flex items-center gap-2">
+                    <History className="h-5 w-5 text-primary" /> Recent Safar
+                </h2>
+                <Link href="/manage-bookings" className="text-primary text-[10px] font-black uppercase">View All</Link>
+            </div>
+            <div className="space-y-3">
+                {recentBookings.map((b: any) => (
+                    <Link href="/manage-bookings" key={b.id}>
+                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-primary/10 p-2 rounded-xl">
+                                    {b.bookingType === 'hotel' ? <Hotel className="h-4 w-4 text-primary" /> : b.bookingType === 'bus' ? <Bus className="h-4 w-4 text-primary" /> : <Bike className="h-4 w-4 text-primary" />}
+                                </div>
+                                <div>
+                                    <p className="text-xs font-black uppercase tracking-tight">{b.tripName}</p>
+                                    <p className="text-[9px] text-muted-foreground font-bold">{b.bookingDate?.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm font-black italic text-primary">₹{b.amount}</p>
+                                <Badge className="text-[8px] h-4 bg-green-100 text-green-700 border-none font-black uppercase">Confirmed</Badge>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </section>
+      )}
     </div>
   );
 }
