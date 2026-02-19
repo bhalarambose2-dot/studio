@@ -17,7 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, Hotel, Search, Car, CreditCard, IndianRupee, Star, Bus, MapPin, Clock, Info, ShieldCheck, Bike, Zap, Navigation, Map, X, LocateFixed, Loader2, Sparkles, Route } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -143,6 +143,7 @@ export default function SearchCardPage() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
+  const [isRouteMapOpen, setIsRouteMapOpen] = useState(false);
   
   const [hotelLocation, setHotelLocation] = useState('');
   const [displayedHotels, setDisplayedHotels] = useState(hotels);
@@ -167,6 +168,13 @@ export default function SearchCardPage() {
     setSelectedItem(item);
     setIsDialogOpen(true);
   }
+
+  const handleBookingSuccess = () => {
+    setIsDialogOpen(false);
+    if (activeTab === 'bike' || activeTab === 'car') {
+      setIsRouteMapOpen(true);
+    }
+  };
 
   const handleHotelSearch = () => {
     if (!hotelLocation) {
@@ -549,6 +557,7 @@ export default function SearchCardPage() {
                 tripName={selectedItem.name} 
                 bookingType={activeTab}
                 itemDetails={selectedItem}
+                onSuccess={handleBookingSuccess}
             />
           </DialogContent>
         </Dialog>
@@ -586,6 +595,50 @@ export default function SearchCardPage() {
                         <p className="text-xs font-black italic uppercase tracking-tight">Detecting Locations Across Rajasthan...</p>
                     </div>
                     <Badge className="bg-primary text-white font-black italic text-[10px]">LIVE NOW</Badge>
+                </div>
+            </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Route Map Dialog (Auto-opens after booking) */}
+      <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
+        <DialogContent className="max-w-4xl h-[85vh] p-0 overflow-hidden rounded-[2.5rem] border-4 border-primary shadow-2xl">
+            <DialogHeader className="p-6 bg-primary text-white flex flex-row items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="bg-white text-primary p-2 rounded-xl">
+                      <Route className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <DialogTitle className="text-2xl font-black italic tracking-tighter uppercase">LIVE NAVIGATION GUIDE</DialogTitle>
+                        <DialogDescription className="text-white/80 font-bold uppercase text-[10px] tracking-widest">
+                            {bikePickup || 'Current Location'} ➔ {bikeDrop || 'Destination'}
+                        </DialogDescription>
+                    </div>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setIsRouteMapOpen(false)} className="text-white hover:bg-white/20">
+                    <X className="h-6 w-6" />
+                </Button>
+            </DialogHeader>
+            <div className="flex-1 w-full h-full relative">
+                <iframe 
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(bikePickup || 'Jodhpur')}+to+${encodeURIComponent(bikeDrop || 'Rajasthan')}&output=embed`}
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={true} 
+                    loading="lazy" 
+                    className="w-full h-full"
+                ></iframe>
+                <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border-l-4 border-l-green-500 max-w-xs">
+                    <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Navigation Alert</p>
+                    <p className="text-xs font-bold text-slate-800">Aapki bike taxi ka driver rasta follow kar raha hai. "Sahi Safar" ka anand lein!</p>
+                </div>
+                <div className="absolute bottom-6 left-6 right-6 bg-primary text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="h-4 w-4 bg-white rounded-full animate-ping"></div>
+                        <p className="text-sm font-black italic uppercase">Ride in Progress...</p>
+                    </div>
+                    <Badge className="bg-white text-primary font-black italic">SAHI NIVESH</Badge>
                 </div>
             </div>
         </DialogContent>

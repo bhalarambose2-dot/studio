@@ -34,9 +34,10 @@ interface BookingFormProps {
     tripName: string;
     bookingType?: string;
     itemDetails?: any;
+    onSuccess?: () => void;
 }
 
-export function BookingForm({ tripName, bookingType = 'hotel', itemDetails }: BookingFormProps) {
+export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSuccess }: BookingFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'details' | 'payment'>('details');
@@ -140,6 +141,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails }: Bo
               </div>
             ),
         });
+
+        // Trigger success callback to show map in SearchCardPage
+        if (onSuccess) onSuccess();
 
     } catch (error: any) {
         console.error("Booking Error:", error);
