@@ -431,8 +431,21 @@ export default function SearchCardPage() {
                       </div>
                   </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                 <Zap className="mr-2 h-6 w-6" /> Active booking
+              <Button 
+                className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
+                onClick={() => {
+                    if (!bikePickup || !bikeDrop) {
+                        toast({
+                            title: "Location missing",
+                            description: "Kripya pickup aur drop location bharein.",
+                            variant: "destructive"
+                        });
+                        return;
+                    }
+                    handleBookNow(bikeRides[0]);
+                }}
+              >
+                 <Zap className="mr-2 h-6 w-6" /> BOOK BIKE TAXI
               </Button>
             </CardContent>
           </TabsContent>
