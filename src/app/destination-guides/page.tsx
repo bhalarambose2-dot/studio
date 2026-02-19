@@ -40,7 +40,7 @@ export default function DestinationGuidesPage() {
                     />
                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
                         <IndianRupee className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-black italic text-primary">{dest.price}</span>
+                        <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
                         <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
                     </div>
                   </div>
@@ -81,7 +81,7 @@ export default function DestinationGuidesPage() {
                     />
                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
                         <IndianRupee className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-black italic text-primary">{dest.price}</span>
+                        <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
                         <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
                     </div>
                   </div>
