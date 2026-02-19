@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -219,7 +218,6 @@ export default function SearchCardPage() {
           });
         },
         (error) => {
-          console.error(error);
           const fallback = 'Current Location (Rajasthan)';
           if (type === 'bike') setBikePickup(fallback);
           if (type === 'car') setCarPickup(fallback);
