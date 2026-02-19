@@ -36,7 +36,8 @@ import {
   MapPinned,
   CheckCircle2,
   History,
-  Navigation2
+  Navigation2,
+  Briefcase
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -107,31 +108,6 @@ const allLocations = [
   "Solang Valley, Manali, Himachal Pradesh",
   "Fort Kochi, Kerala, India",
   "Mysore Palace, Karnataka",
-];
-
-const hotels = [
-    {
-        "name": "Hotel Lake View",
-        "location": "Udaipur, Rajasthan",
-        "price": 1200,
-        "rating": 4.3,
-        "facilities": ["Wi-Fi", "Breakfast", "Lake View Rooms"],
-        "image": "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop",
-        "hint": "udaipur hotel",
-        "rooms_available": 10,
-        "description": "Enjoy stunning views of the lake from our comfortable rooms in the City of Lakes."
-    },
-    {
-        "name": "Mountain Bliss Resort",
-        "location": "Manali, Himachal Pradesh",
-        "price": 3500,
-        "rating": 4.5,
-        "facilities": ["Snow View", "Fireplace", "Dinner"],
-        "image": "https://images.unsplash.com/photo-1605649440411-9ef219324bc6?q=80&w=1080",
-        "hint": "manali resort",
-        "rooms_available": 8,
-        "description": "Experience the magic of the Himalayas with luxury stay."
-    }
 ];
 
 export default function SearchCardPage() {
@@ -259,6 +235,15 @@ export default function SearchCardPage() {
     </div>
   );
 
+  const handleBookingStart = (type: string, name: string, price: number) => {
+    setSelectedItem({
+      name: name,
+      price: price,
+      type: type
+    });
+    setIsDialogOpen(true);
+  }
+
   const mapUrl = mapMode === 'directions' 
     ? `https://maps.google.com/maps?saddr=${encodeURIComponent(activeTab === 'bike' ? bikePickup : busFrom)}&daddr=${encodeURIComponent(activeTab === 'bike' ? bikeDrop : busTo)}&output=embed`
     : `https://maps.google.com/maps?q=${encodeURIComponent(targetPlace)}&output=embed`;
@@ -304,8 +289,11 @@ export default function SearchCardPage() {
                   </Popover>
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                <Search className="mr-2 h-6 w-6" /> SEARCH ALL INDIA STAYS
+              <Button 
+                className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
+                onClick={() => handleBookingStart('hotel', hotelLocation || 'Bharat Hotel', 1200)}
+              >
+                <Search className="mr-2 h-6 w-6" /> SEARCH & BOOK HOTEL
               </Button>
             </CardContent>
           </TabsContent>
@@ -333,8 +321,11 @@ export default function SearchCardPage() {
                   <SuggestionList keyName="busTo" setter={setBusTo} />
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                <Search className="mr-2 h-6 w-6" /> SEARCH NATIONAL BUSES
+              <Button 
+                className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
+                onClick={() => handleBookingStart('bus', busTo || 'National Route', 850)}
+              >
+                <Search className="mr-2 h-6 w-6" /> SEARCH & BOOK BUS
               </Button>
             </CardContent>
           </TabsContent>
@@ -364,7 +355,10 @@ export default function SearchCardPage() {
                   <SuggestionList keyName="bikeDrop" setter={setBikeDrop} />
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
+              <Button 
+                className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
+                onClick={() => handleBookingStart('bike', bikeDrop || 'Bike Taxi Ride', 150)}
+              >
                  <Zap className="mr-2 h-6 w-6" /> BOOK BIKE TAXI
               </Button>
             </CardContent>
@@ -395,13 +389,39 @@ export default function SearchCardPage() {
                   <SuggestionList keyName="carDrop" setter={setCarDrop} />
                 </div>
               </div>
-              <Button className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl">
-                <Search className="mr-2 h-6 w-6" /> SEARCH NATIONAL CABS
+              <Button 
+                className="w-full h-16 text-xl font-black italic uppercase tracking-widest shadow-xl shadow-primary/20 rounded-2xl"
+                onClick={() => handleBookingStart('car', carDrop || 'Luxury Cab Ride', 450)}
+              >
+                <Search className="mr-2 h-6 w-6" /> SEARCH & BOOK CAB
               </Button>
             </CardContent>
           </TabsContent>
         </Tabs>
       </Card>
+
+      {/* Booking Dialog */}
+      {isDialogOpen && selectedItem && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8 max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter uppercase">
+                <Briefcase className="text-primary h-8 w-8" />
+                CONFIRM BOOKING
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Confirming your {selectedItem.type} booking for {selectedItem.name}.
+              </DialogDescription>
+            </DialogHeader>
+            <BookingForm 
+                tripName={selectedItem.name} 
+                bookingType={selectedItem.type}
+                itemDetails={selectedItem}
+                onSuccess={() => setIsDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
       
       {/* Map Dialogs */}
       <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
