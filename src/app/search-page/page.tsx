@@ -36,7 +36,8 @@ import {
   LocateFixed, 
   Loader2, 
   Sparkles, 
-  Route 
+  Route,
+  Ticket
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -125,6 +126,20 @@ const buses = [
         "rating": 4.4,
         "seats": 15,
         "amenities": ["Pushback Seats", "CCTV"]
+    },
+    {
+        "name": "Pink City Luxury",
+        "busNumber": "RJ-14-GH-1122",
+        "from": "Jaipur",
+        "to": "Jodhpur",
+        "departure": "06:00 AM",
+        "arrival": "12:00 PM",
+        "duration": "6h 00m",
+        "price": 950,
+        "type": "Volvo AC Multi-Axle",
+        "rating": 4.8,
+        "seats": 20,
+        "amenities": ["LCD", "Snacks", "Wifi"]
     }
 ];
 
@@ -180,7 +195,6 @@ export default function SearchCardPage() {
   
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
   const [isRouteMapOpen, setIsRouteMapOpen] = useState(false);
   
   const [hotelLocation, setHotelLocation] = useState('');
@@ -544,6 +558,65 @@ export default function SearchCardPage() {
         </section>
       )}
 
+      {activeTab === 'bus' && (
+        <section className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black italic tracking-tighter uppercase">RAJASTHAN BUS SERVICE</h2>
+                <Badge variant="outline" className="font-bold border-primary/20 text-primary">{displayedBuses.length} Routes Found</Badge>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {displayedBuses.map((bus, idx) => (
+                    <Card key={idx} className="overflow-hidden group border-none shadow-xl hover:shadow-2xl transition-all rounded-[2rem] bg-white border-l-8 border-l-primary">
+                        <CardContent className="p-6 space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="font-black text-xl italic uppercase text-primary">{bus.name}</h3>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">{bus.type}</p>
+                                    <Badge variant="secondary" className="mt-1 text-[9px] font-mono">{bus.busNumber}</Badge>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-2xl font-black italic text-primary">₹{bus.price}</p>
+                                    <p className="text-[10px] text-muted-foreground font-bold">PER SEAT</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between bg-muted/30 p-4 rounded-2xl border border-dashed">
+                                <div className="text-center">
+                                    <p className="text-lg font-black">{bus.departure}</p>
+                                    <p className="text-[10px] font-bold uppercase text-muted-foreground">{bus.from}</p>
+                                </div>
+                                <div className="flex flex-col items-center gap-1 opacity-40">
+                                    <div className="h-0.5 w-12 bg-primary/50 relative">
+                                        <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
+                                    </div>
+                                    <span className="text-[8px] font-black uppercase">{bus.duration}</span>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-lg font-black">{bus.arrival}</p>
+                                    <p className="text-[10px] font-bold uppercase text-muted-foreground">{bus.to}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-1 text-[10px] font-black text-green-600">
+                                        <Ticket className="h-3 w-3" />
+                                        {bus.seats} Seats Left
+                                    </div>
+                                    <div className="flex items-center gap-1 text-[10px] font-black text-orange-600">
+                                        <Star className="h-3 w-3 fill-orange-600" />
+                                        {bus.rating}
+                                    </div>
+                                </div>
+                                <Button className="rounded-xl font-bold italic px-8 h-10 shadow-lg shadow-primary/20" onClick={() => handleBookNow(bus)}>BOOK NOW</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </section>
+      )}
+
       {activeTab === 'bike' && (
         <section className="space-y-6">
             <div className="flex items-center justify-between">
@@ -586,7 +659,7 @@ export default function SearchCardPage() {
           <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter uppercase">
-                {activeTab === 'bike' ? <Bike className="text-primary h-8 w-8" /> : activeTab === 'car' ? <Car className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
+                {activeTab === 'bike' ? <Bike className="text-primary h-8 w-8" /> : activeTab === 'car' ? <Car className="text-primary h-8 w-8" /> : activeTab === 'bus' ? <Bus className="text-primary h-8 w-8" /> : <Hotel className="text-primary h-8 w-8" />}
                 CONFIRM {activeTab === 'bike' || activeTab === 'car' ? 'RIDE' : 'BOOKING'}
               </DialogTitle>
               <DialogDescription className="font-medium text-muted-foreground">
@@ -648,3 +721,4 @@ export default function SearchCardPage() {
     </div>
   );
 }
+

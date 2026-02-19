@@ -1,15 +1,24 @@
-
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MapPin, IndianRupee, Sparkles } from "lucide-react";
+import { MapPin, IndianRupee, Sparkles, Briefcase } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { popularDestinations } from '../popularDestinations';
 import { newSeasonDestinations } from '../newSeasonDestinations';
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { BookingForm } from '@/components/booking-form';
 
 export default function DestinationGuidesPage() {
+  const [selectedDest, setSelectedDest] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleBookNow = (dest: any) => {
+    setSelectedDest(dest);
+    setIsDialogOpen(true);
+  };
 
   return (
     <div className="container mx-auto space-y-12 pb-24">
@@ -27,33 +36,34 @@ export default function DestinationGuidesPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {popularDestinations.map((dest) => (
-            <Link href="/search" key={dest.name} className="block group">
-              <Card className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col rounded-[2rem] bg-white">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <Image
-                      src={dest.image}
-                      alt={`Image of ${dest.name}`}
-                      data-ai-hint={dest.hint}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
-                        <IndianRupee className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
-                        <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
-                    </div>
+            <Card key={dest.name} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col rounded-[2rem] bg-white group">
+              <CardHeader className="p-0">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <Image
+                    src={dest.image}
+                    alt={`Image of ${dest.name}`}
+                    data-ai-hint={dest.hint}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
+                      <IndianRupee className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
+                      <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-5 flex-grow space-y-2">
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex-grow space-y-4 flex flex-col">
+                <div className="space-y-2 flex-grow">
                   <h3 className="font-black text-lg italic uppercase tracking-tighter leading-tight group-hover:text-primary transition-colors">{dest.name}</h3>
                   <div className="flex items-center text-[10px] font-black uppercase text-muted-foreground tracking-widest">
                     <MapPin className="w-3 h-3 mr-1 text-primary" />
                     <span>Rajasthan Guide</span>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+                <Button className="w-full font-black italic uppercase rounded-xl shadow-lg shadow-primary/10" onClick={() => handleBookNow(dest)}>BOOK TRIP</Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>
@@ -68,36 +78,60 @@ export default function DestinationGuidesPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {newSeasonDestinations.map((dest) => (
-            <Link href="/search" key={dest.name} className="block group">
-              <Card className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col rounded-[2rem] bg-white">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <Image
-                      src={dest.image}
-                      alt={`Image of ${dest.name}`}
-                      data-ai-hint={dest.hint}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
-                        <IndianRupee className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
-                        <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
-                    </div>
+            <Card key={dest.name} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col rounded-[2rem] bg-white group">
+              <CardHeader className="p-0">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <Image
+                    src={dest.image}
+                    alt={`Image of ${dest.name}`}
+                    data-ai-hint={dest.hint}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
+                      <IndianRupee className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-black italic text-primary">{dest.price.toLocaleString('en-IN')}</span>
+                      <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">Starts</span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-5 flex-grow space-y-2">
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 flex-grow space-y-4 flex flex-col">
+                <div className="space-y-2 flex-grow">
                   <h3 className="font-black text-lg italic uppercase tracking-tighter leading-tight group-hover:text-primary transition-colors">{dest.name}</h3>
                   <div className="flex items-center text-[10px] font-black uppercase text-muted-foreground tracking-widest">
                     <MapPin className="w-3 h-3 mr-1 text-primary" />
                     <span>Himalayan Guide</span>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+                <Button className="w-full font-black italic uppercase rounded-xl shadow-lg shadow-primary/10" onClick={() => handleBookNow(dest)}>BOOK TRIP</Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>
+
+      {isDialogOpen && selectedDest && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-md rounded-[2.5rem] p-8">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-3xl font-black italic tracking-tighter uppercase">
+                <Briefcase className="text-primary h-8 w-8" />
+                CONFIRM TRIP
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Confirming your trip to {selectedDest.name}. Experience Rajasthan like never before.
+              </DialogDescription>
+            </DialogHeader>
+            <BookingForm 
+                tripName={selectedDest.name} 
+                bookingType="hotel"
+                itemDetails={selectedDest}
+                onSuccess={() => setIsDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
+
