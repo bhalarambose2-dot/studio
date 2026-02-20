@@ -47,8 +47,8 @@ const sendOtpEmailFlow = ai.defineFlow(
     outputSchema: SendOtpEmailOutputSchema,
   },
   async input => {
-    // Simulate AI composing the message
-    await prompt(input);
+    // Note: AI prompt call removed to avoid API quota issues (429 Too Many Requests).
+    // The flow now proceeds directly to logging the OTP for the prototype.
     
     // Log the OTP very clearly for the developer/user to see in the terminal
     console.log(`\n****************************************************`);
