@@ -47,11 +47,14 @@ const sendOtpEmailFlow = ai.defineFlow(
     outputSchema: SendOtpEmailOutputSchema,
   },
   async input => {
-    // In a production app, you would integrate with an email provider like Resend or SendGrid here.
-    // For this prototype, we simulate the AI composing the secure message.
+    // Simulate AI composing the message
     await prompt(input);
     
-    console.log(`[SIMULATED EMAIL SENT TO ${input.email}]: Your OTP is ${input.otpCode}`);
+    // Log the OTP very clearly for the developer/user to see in the terminal
+    console.log(`\n****************************************************`);
+    console.log(`[SIMULATED EMAIL SENT TO ${input.email}]`);
+    console.log(`YOUR LOGIN OTP IS: ${input.otpCode}`);
+    console.log(`****************************************************\n`);
     
     return {
       success: true,

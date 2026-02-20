@@ -24,23 +24,23 @@ import { doc, getDoc } from 'firebase/firestore';
 import { sendOtpEmail } from '@/ai/flows/send-otp-email';
 
 const signInSchema = z.object({
-  email: z.string().email('Invalid email address.'),
-  password: z.string().min(1, 'Password is required.'),
+  email: z.string().email('Sahi email address bharein.'),
+  password: z.string().min(1, 'Password zaroori hai.'),
 });
 
 const signUpSchema = z.object({
-  fullName: z.string().min(2, 'Full name is required.'),
-  email: z.string().email('Invalid email address.'),
+  fullName: z.string().min(2, 'Pura naam likhein.'),
+  email: z.string().email('Sahi email address bharein.'),
   role: z.enum(['traveler', 'admin', 'staff', 'bus_owner']),
-  password: z.string().min(8, 'Password must be at least 8 characters.'),
+  password: z.string().min(8, 'Password kam se kam 8 characters ka ho.'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Passwords match nahi kar rahe.",
   path: ['confirmPassword'],
 });
 
 const emailOtpSchema = z.object({
-  email: z.string().email('Valid email is required.'),
+  email: z.string().email('Kripya ek valid email address bharein.'),
   otpCode: z.string().optional(),
 });
 
@@ -99,6 +99,7 @@ export default function AuthPage() {
   const otpForm = useForm<EmailOTPFormValues>({
     resolver: zodResolver(emailOtpSchema),
     defaultValues: { email: '', otpCode: '' },
+    mode: 'onChange'
   });
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -165,7 +166,7 @@ export default function AuthPage() {
       setGeneratedOtp(otp);
       
       // Call the Genkit flow to simulate sending the email
-      // The code will be logged in the server console for the developer to see
+      // The OTP will be logged in the SERVER CONSOLE (Terminal)
       await sendOtpEmail({
         email: values.email,
         otpCode: otp,
@@ -174,12 +175,13 @@ export default function AuthPage() {
       setCurrentOtpStep('code');
       toast({
         title: 'OTP SENT! 📧',
-        description: `Login code aapke email ${values.email} par bhej diya gaya hai.`,
+        description: `Login code aapke email ${values.email} par bhej diya gaya hai. Kripya inbox check karein.`,
       });
     } catch (error: any) {
+      console.error("OTP Send Error:", error);
       toast({
         title: 'OTP Failed',
-        description: 'Kripya email check karein ya dubara koshish karein.',
+        description: 'OTP bhejne mein dikat aayi. Kripya email check karein.',
         variant: 'destructive',
       });
     } finally {
@@ -188,8 +190,9 @@ export default function AuthPage() {
   };
 
   const handleVerifyEmailOTP = async (values: EmailOTPFormValues) => {
-    // Basic validation
-    if (!values.otpCode) {
+    const inputOtp = values.otpCode || '';
+    
+    if (inputOtp.length !== 6) {
         toast({
             title: 'OTP Required',
             description: 'Kripya 6-digit code bharein.',
@@ -199,7 +202,7 @@ export default function AuthPage() {
     }
 
     // Strict comparison with the generated code
-    if (values.otpCode !== generatedOtp) {
+    if (inputOtp !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
             description: 'Kripya apne email par bheja gaya sahi 6-digit code bharein.',
@@ -236,9 +239,10 @@ export default function AuthPage() {
       });
     } catch (error: any) {
       setIsLoading(false);
+      console.error("Verification Error:", error);
       toast({
         title: 'Verification Failed',
-        description: 'Kripya dubara koshish karein.',
+        description: 'Login karte waqt dikat aayi. Dubara koshish karein.',
         variant: 'destructive',
       });
     }
@@ -246,7 +250,7 @@ export default function AuthPage() {
 
   if (isUserLoading) {
     return (
-        <div className="flex items-center justify-center min-screen bg-white">
+        <div className="flex items-center justify-center min-h-screen bg-white">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
         </div>
     );
@@ -412,10 +416,15 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                                <Input placeholder="yourname@gmail.com" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black italic text-lg tracking-wider" />
+                                <Input 
+                                  placeholder="yourname@gmail.com" 
+                                  {...field} 
+                                  className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black italic text-lg tracking-wider" 
+                                />
                             </div>
                           </FormControl>
                           <FormMessage />
+                          <p className="text-[9px] text-muted-foreground font-bold uppercase mt-1">Sahi email bharein taaki hum code bhej sakein.</p>
                         </FormItem>
                       )}
                     />
@@ -438,7 +447,7 @@ export default function AuthPage() {
                             </div>
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your email inbox (and server logs) for the login code</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Apne email inbox (aur server terminal) mein 6-digit code dekhein.</p>
                         </FormItem>
                       )}
                     />
