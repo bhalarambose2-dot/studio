@@ -98,7 +98,6 @@ export default function AuthPage() {
   const otpForm = useForm<EmailOTPFormValues>({
     resolver: zodResolver(emailOtpSchema),
     defaultValues: { email: '', otpCode: '' },
-    mode: 'onChange'
   });
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -160,15 +159,18 @@ export default function AuthPage() {
   const handleSendEmailOTP = async (values: EmailOTPFormValues) => {
     setIsLoading(true);
     try {
-      // Generate a fresh 6-digit OTP
+      // 1. Generate OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // 2. Set state immediately
       setGeneratedOtp(otp);
       
-      // Log for the prototype to ensure user can find it easily
-      console.log(`[PROTOTYPE] OTP for ${values.email} is: ${otp}`);
+      // 3. Log to Browser Console for easy access
+      console.log(`\n====================================================`);
+      console.log(`BR TRIP OTP: ${otp}`);
+      console.log(`====================================================\n`);
       
-      // Call the Genkit flow to simulate sending the email
-      // The OTP will be logged in the SERVER CONSOLE (Terminal)
+      // 4. Call server flow for Terminal logging
       await sendOtpEmail({
         email: values.email,
         otpCode: otp,
@@ -176,14 +178,14 @@ export default function AuthPage() {
       
       setCurrentOtpStep('code');
       toast({
-        title: 'OTP SENT! 📧',
-        description: `Login code aapke email par bhej diya gaya hai. Kripya Terminal/Console check karein.`,
+        title: 'OTP DISPATCHED! 📧',
+        description: `Kripya Terminal ya Browser Console check karein.`,
       });
     } catch (error: any) {
-      console.error("OTP Send Error:", error);
+      console.error("OTP Dispatch Error:", error);
       toast({
-        title: 'OTP Failed',
-        description: 'OTP bhejne mein dikat aayi. Kripya email check karein.',
+        title: 'OTP Error',
+        description: 'OTP bhejne mein dikat aayi.',
         variant: 'destructive',
       });
     } finally {
@@ -196,18 +198,18 @@ export default function AuthPage() {
     
     if (inputOtp.length !== 6) {
         toast({
-            title: 'OTP Required',
+            title: 'Code Adhura Hai',
             description: 'Kripya 6-digit code bharein.',
             variant: 'destructive'
         });
         return;
     }
 
-    // Strict comparison with the generated code
+    // Strict state-based comparison
     if (inputOtp !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
-            description: 'Kripya apne email par bheja gaya sahi 6-digit code bharein.',
+            description: 'Kripya sahi 6-digit code bharein.',
             variant: 'destructive'
         });
         return;
@@ -215,7 +217,7 @@ export default function AuthPage() {
 
     setIsLoading(true);
     try {
-      // Sign in anonymously for the prototype to grant access
+      // Sign in anonymously for prototype access
       const userCredential = await signInAnonymously(auth);
       const user = userCredential.user;
       
@@ -236,15 +238,14 @@ export default function AuthPage() {
       }
 
       toast({
-        title: 'EMAIL VERIFIED! ✅',
-        description: 'Sahi Safar mein aapka swagat hai.',
+        title: 'LOGIN SUCCESS! ✅',
+        description: 'Sahi Safar mein swagat hai.',
       });
     } catch (error: any) {
       setIsLoading(false);
-      console.error("Verification Error:", error);
       toast({
         title: 'Verification Failed',
-        description: 'Login karte waqt dikat aayi. Dubara koshish karein.',
+        description: 'Login nahi ho saka.',
         variant: 'destructive',
       });
     }
@@ -260,26 +261,26 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50">
-       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] animate-pulse delay-700" />
+       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
         
       <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl border-white shadow-2xl relative z-10 rounded-[2.5rem] overflow-hidden">
         <CardHeader className="text-center pb-2 pt-10">
-          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4 shadow-inner">
+          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4">
             <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter text-foreground">BR TRIP</CardTitle>
-          <CardDescription className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-1">Sahi Nivesh • Sahi Safar</CardDescription>
+          <CardTitle className="text-4xl font-black italic tracking-tighter text-foreground uppercase">BR TRIP</CardTitle>
+          <CardDescription className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-1 italic">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-2xl mb-8">
-              <TabsTrigger value="signin" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">Email</TabsTrigger>
-              <TabsTrigger value="signup" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">Join</TabsTrigger>
-              <TabsTrigger value="otp" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">Email OTP</TabsTrigger>
+              <TabsTrigger value="signin" className="rounded-xl font-black uppercase text-[10px]">Email</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-xl font-black uppercase text-[10px]">Join</TabsTrigger>
+              <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="signin" className="space-y-4">
+            <TabsContent value="signin">
               <Form {...signInForm}>
                 <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-6">
                   <FormField
@@ -287,9 +288,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Email</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 rounded-2xl font-medium" />
+                          <Input placeholder="you@example.com" {...field} className="h-14 rounded-2xl font-medium" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -300,15 +301,15 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 rounded-2xl font-medium" />
+                          <Input type="password" placeholder="••••••••" {...field} className="h-14 rounded-2xl font-medium" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <LogIn className="mr-2 h-6 w-6" />}
                     Sign In
                   </Button>
@@ -316,7 +317,7 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="signup" className="space-y-4">
+            <TabsContent value="signup">
               <Form {...signUpForm}>
                 <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
                   <FormField
@@ -324,9 +325,9 @@ export default function AuthPage() {
                     name="fullName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Full Name</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
+                          <Input placeholder="John Doe" {...field} className="h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -337,9 +338,9 @@ export default function AuthPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Email</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
+                          <Input placeholder="you@example.com" {...field} className="h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -350,18 +351,18 @@ export default function AuthPage() {
                     name="role"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Register As</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Role</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium">
+                            <SelectTrigger className="h-12 rounded-2xl font-medium">
                               <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="rounded-2xl">
-                            <SelectItem value="traveler">Traveler / Customer</SelectItem>
-                            <SelectItem value="bus_owner">Bus Malik / Owner</SelectItem>
-                            <SelectItem value="admin">Platform Admin</SelectItem>
-                            <SelectItem value="staff">Working Boy / Staff</SelectItem>
+                          <SelectContent>
+                            <SelectItem value="traveler">Traveler</SelectItem>
+                            <SelectItem value="bus_owner">Bus Owner</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="staff">Staff</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -373,9 +374,9 @@ export default function AuthPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -386,15 +387,15 @@ export default function AuthPage() {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Confirm Password</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-12 rounded-2xl font-medium"/>
+                          <Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl font-medium"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest mt-6">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase mt-4">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Sign Up
                   </Button>
@@ -402,7 +403,7 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="otp" className="space-y-4">
+            <TabsContent value="otp">
               <Form {...otpForm}>
                 <form 
                   onSubmit={otpForm.handleSubmit(currentOtpStep === 'email' ? handleSendEmailOTP : handleVerifyEmailOTP)} 
@@ -414,19 +415,18 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Email Address</FormLabel>
+                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email for OTP</FormLabel>
                           <FormControl>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
                                 <Input 
-                                  placeholder="yourname@gmail.com" 
+                                  placeholder="name@gmail.com" 
                                   {...field} 
-                                  className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black italic text-lg tracking-wider" 
+                                  className="h-14 pl-12 rounded-2xl font-black italic text-lg" 
                                 />
                             </div>
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-muted-foreground font-bold uppercase mt-1">Sahi email bharein taaki hum code bhej sakein.</p>
                         </FormItem>
                       )}
                     />
@@ -436,32 +436,29 @@ export default function AuthPage() {
                       name="otpCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Enter 6-Digit Email OTP</FormLabel>
+                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
                           <FormControl>
-                            <div className="relative">
-                                <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                                <Input 
-                                    placeholder="XXXXXX" 
-                                    {...field} 
-                                    className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black text-center text-2xl tracking-[0.5em] italic" 
-                                    maxLength={6}
-                                />
-                            </div>
+                            <Input 
+                                placeholder="XXXXXX" 
+                                {...field} 
+                                className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic" 
+                                maxLength={6}
+                            />
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Apne email inbox (aur server terminal) mein 6-digit code dekhein.</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Code Terminal ya Console mein dekhein.</p>
                         </FormItem>
                       )}
                     />
                   )}
 
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase">
                     {isLoading ? (
                       <Loader2 className="mr-2 animate-spin h-6 w-6" />
                     ) : currentOtpStep === 'email' ? (
-                      <><Mail className="mr-2 h-6 w-6" /> Send Email OTP</>
+                      <><Mail className="mr-2 h-6 w-6" /> Send OTP</>
                     ) : (
-                      <><ShieldCheck className="mr-2 h-6 w-6" /> Verify & Login</>
+                      <><ShieldCheck className="mr-2 h-6 w-6" /> Verify Code</>
                     )}
                   </Button>
 
@@ -469,11 +466,8 @@ export default function AuthPage() {
                     <Button 
                         variant="ghost" 
                         type="button"
-                        className="w-full text-[10px] font-black uppercase text-primary tracking-widest hover:bg-primary/5"
-                        onClick={() => {
-                            setCurrentOtpStep('email');
-                            setGeneratedOtp(null);
-                        }}
+                        className="w-full text-[10px] font-black uppercase text-primary"
+                        onClick={() => setCurrentOtpStep('email')}
                     >
                         <ArrowLeft className="h-3 w-3 mr-2" /> Change Email
                     </Button>

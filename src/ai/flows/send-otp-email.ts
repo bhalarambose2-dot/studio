@@ -2,10 +2,9 @@
 
 /**
  * @fileOverview A flow to simulate sending an OTP email to a user.
- *
- * - sendOtpEmail - A function that "sends" an OTP to the specified email.
- * - SendOtpEmailInput - The input type for the sendOtpEmail function.
- * - SendOtpEmailOutput - The return type for the sendOtpEmail function.
+ * 
+ * This flow is now purely functional to avoid Gemini AI quota issues (429).
+ * It logs the OTP to the server console for the prototype.
  */
 
 import {ai} from '@/ai/genkit';
@@ -23,6 +22,10 @@ const SendOtpEmailOutputSchema = z.object({
 });
 export type SendOtpEmailOutput = z.infer<typeof SendOtpEmailOutputSchema>;
 
+/**
+ * Simulated OTP Email Sender
+ * Logs the OTP very clearly in the terminal for the developer/user.
+ */
 export async function sendOtpEmail(input: SendOtpEmailInput): Promise<SendOtpEmailOutput> {
   return sendOtpEmailFlow(input);
 }
@@ -34,18 +37,16 @@ const sendOtpEmailFlow = ai.defineFlow(
     outputSchema: SendOtpEmailOutputSchema,
   },
   async input => {
-    // Note: AI prompt call removed to avoid API quota issues (429 Too Many Requests).
-    // The flow now proceeds directly to logging the OTP for the prototype.
-    
     // Log the OTP very clearly for the developer/user to see in the terminal
-    console.log(`\n****************************************************`);
-    console.log(`[SIMULATED EMAIL SENT TO ${input.email}]`);
-    console.log(`YOUR LOGIN OTP IS: ${input.otpCode}`);
-    console.log(`****************************************************\n`);
+    console.log(`\n\n====================================================`);
+    console.log(`[SIMULATED EMAIL DISPATCH]`);
+    console.log(`TO: ${input.email}`);
+    console.log(`YOUR OTP CODE IS: ${input.otpCode}`);
+    console.log(`====================================================\n\n`);
     
     return {
       success: true,
-      message: `OTP sent to ${input.email} via secure channel.`,
+      message: `OTP sent to ${input.email} (Check Server Console).`,
     };
   }
 );
