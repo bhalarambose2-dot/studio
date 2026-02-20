@@ -160,10 +160,12 @@ export default function AuthPage() {
   const handleSendEmailOTP = async (values: EmailOTPFormValues) => {
     setIsLoading(true);
     try {
+      // Generate a fresh 6-digit OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
       // Call the Genkit flow to simulate sending the email
+      // The code will be logged in the server console for the developer to see
       await sendOtpEmail({
         email: values.email,
         otpCode: otp,
@@ -172,7 +174,7 @@ export default function AuthPage() {
       setCurrentOtpStep('code');
       toast({
         title: 'OTP SENT! 📧',
-        description: `Aapka login code aapke email par bhej diya gaya hai.`,
+        description: `Login code aapke email ${values.email} par bhej diya gaya hai.`,
       });
     } catch (error: any) {
       toast({
@@ -186,7 +188,18 @@ export default function AuthPage() {
   };
 
   const handleVerifyEmailOTP = async (values: EmailOTPFormValues) => {
-    if (!values.otpCode || values.otpCode !== generatedOtp) {
+    // Basic validation
+    if (!values.otpCode) {
+        toast({
+            title: 'OTP Required',
+            description: 'Kripya 6-digit code bharein.',
+            variant: 'destructive'
+        });
+        return;
+    }
+
+    // Strict comparison with the generated code
+    if (values.otpCode !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
             description: 'Kripya apne email par bheja gaya sahi 6-digit code bharein.',
@@ -197,6 +210,7 @@ export default function AuthPage() {
 
     setIsLoading(true);
     try {
+      // Sign in anonymously for the prototype to grant access
       const userCredential = await signInAnonymously(auth);
       const user = userCredential.user;
       
@@ -232,7 +246,7 @@ export default function AuthPage() {
 
   if (isUserLoading) {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="flex items-center justify-center min-screen bg-white">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
         </div>
     );
@@ -424,7 +438,7 @@ export default function AuthPage() {
                             </div>
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your email inbox for the login code</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your email inbox (and server logs) for the login code</p>
                         </FormItem>
                       )}
                     />
