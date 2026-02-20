@@ -49,7 +49,6 @@ type EmailOTPFormValues = z.infer<typeof emailOtpSchema>;
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [otpStep, setOtpStep] =('email'); // 'email' | 'code'
   const [currentOtpStep, setCurrentOtpStep] = useState<'email' | 'code'>('email');
   const [generatedOtp, setGeneratedOtp] = useState<string | null>(null);
   const { toast } = useToast();
@@ -169,8 +168,8 @@ export default function AuthPage() {
       setCurrentOtpStep('code');
       toast({
         title: 'OTP SENT! 📧',
-        description: `Your 6-digit code for ${values.email} is: ${otp}`,
-        duration: 10000,
+        description: `Aapka 6-digit code hai: ${otp}`,
+        duration: 20000,
       });
     } catch (error: any) {
       toast({
@@ -187,7 +186,7 @@ export default function AuthPage() {
     if (!values.otpCode || values.otpCode !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
-            description: 'Please enter the correct 6-digit code sent to your email.',
+            description: 'Please enter the correct 6-digit code shown in the toast.',
             variant: 'destructive'
         });
         return;
@@ -422,7 +421,7 @@ export default function AuthPage() {
                             </div>
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your Email Inbox/Spam for the code</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check the code shown in the toast notification</p>
                         </FormItem>
                       )}
                     />
@@ -441,6 +440,7 @@ export default function AuthPage() {
                   {currentOtpStep === 'code' && (
                     <Button 
                         variant="ghost" 
+                        type="button"
                         className="w-full text-[10px] font-black uppercase text-primary tracking-widest hover:bg-primary/5"
                         onClick={() => {
                             setCurrentOtpStep('email');
