@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -27,18 +26,6 @@ export type SendOtpEmailOutput = z.infer<typeof SendOtpEmailOutputSchema>;
 export async function sendOtpEmail(input: SendOtpEmailInput): Promise<SendOtpEmailOutput> {
   return sendOtpEmailFlow(input);
 }
-
-const prompt = ai.definePrompt({
-  name: 'sendOtpEmailPrompt',
-  input: {schema: SendOtpEmailInputSchema},
-  prompt: `You are the automated notification system for BR TRIP. 
-Send a professional and secure login notification to the user at {{email}}.
-
-OTP Code: {{otpCode}}
-
-The email should be in a mix of Hindi and English (Hinglish) to maintain the brand voice: "Sahi Nivesh • Sahi Safar".
-Include a warning that they should not share this code with anyone.`,
-});
 
 const sendOtpEmailFlow = ai.defineFlow(
   {

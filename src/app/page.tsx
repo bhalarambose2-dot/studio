@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -165,6 +164,9 @@ export default function AuthPage() {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
+      // Log for the prototype to ensure user can find it easily
+      console.log(`[PROTOTYPE] OTP for ${values.email} is: ${otp}`);
+      
       // Call the Genkit flow to simulate sending the email
       // The OTP will be logged in the SERVER CONSOLE (Terminal)
       await sendOtpEmail({
@@ -175,7 +177,7 @@ export default function AuthPage() {
       setCurrentOtpStep('code');
       toast({
         title: 'OTP SENT! 📧',
-        description: `Login code aapke email ${values.email} par bhej diya gaya hai. Kripya inbox check karein.`,
+        description: `Login code aapke email par bhej diya gaya hai. Kripya Terminal/Console check karein.`,
       });
     } catch (error: any) {
       console.error("OTP Send Error:", error);
