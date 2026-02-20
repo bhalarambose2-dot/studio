@@ -4,7 +4,7 @@
  * @fileOverview A flow to simulate sending an OTP email to a user.
  * 
  * This flow is now purely functional to avoid Gemini AI quota issues (429).
- * It logs the OTP to the server console for the prototype.
+ * It logs the OTP very clearly to the server terminal as a "Customer Care" dispatch.
  */
 
 import {ai} from '@/ai/genkit';
@@ -23,8 +23,8 @@ const SendOtpEmailOutputSchema = z.object({
 export type SendOtpEmailOutput = z.infer<typeof SendOtpEmailOutputSchema>;
 
 /**
- * Simulated OTP Email Sender
- * Logs the OTP very clearly in the terminal for the developer/user.
+ * Simulated OTP Email Sender (Customer Care Dispatch)
+ * Logs the OTP very clearly in the terminal for the developer/user to see.
  */
 export async function sendOtpEmail(input: SendOtpEmailInput): Promise<SendOtpEmailOutput> {
   return sendOtpEmailFlow(input);
@@ -37,16 +37,21 @@ const sendOtpEmailFlow = ai.defineFlow(
     outputSchema: SendOtpEmailOutputSchema,
   },
   async input => {
-    // Log the OTP very clearly for the developer/user to see in the terminal
+    // Simulated Dispatch Log - This bypasses Gemini 429 errors
     console.log(`\n\n====================================================`);
-    console.log(`[SIMULATED EMAIL DISPATCH]`);
+    console.log(`[BR TRIP - CUSTOMER CARE EMAIL DISPATCH]`);
+    console.log(`STATUS: OUTGOING`);
     console.log(`TO: ${input.email}`);
-    console.log(`YOUR OTP CODE IS: ${input.otpCode}`);
+    console.log(`SUBJECT: Your Sahi Safar Login OTP`);
+    console.log(`----------------------------------------------------`);
+    console.log(`YOUR 6-DIGIT OTP CODE IS: ${input.otpCode}`);
+    console.log(`----------------------------------------------------`);
+    console.log(`TIMESTAMP: ${new Date().toLocaleString()}`);
     console.log(`====================================================\n\n`);
     
     return {
       success: true,
-      message: `OTP sent to ${input.email} (Check Server Console).`,
+      message: `OTP dispatched to ${input.email} via Customer Care.`,
     };
   }
 );

@@ -273,7 +273,7 @@ export default function AuthPage() {
           <CardDescription className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-1 italic">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
-          <Tabs defaultValue="signin" className="w-full">
+          <Tabs defaultValue="otp" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-2xl mb-8">
               <TabsTrigger value="signin" className="rounded-xl font-black uppercase text-[10px]">Email</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-xl font-black uppercase text-[10px]">Join</TabsTrigger>
