@@ -21,6 +21,7 @@ import {
   signInAnonymously
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { sendOtpEmail } from '@/ai/flows/send-otp-email';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -162,19 +163,21 @@ export default function AuthPage() {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call the Genkit flow to simulate sending the email
+      await sendOtpEmail({
+        email: values.email,
+        otpCode: otp,
+      });
       
       setCurrentOtpStep('code');
       toast({
         title: 'OTP SENT! 📧',
-        description: `Aapka 6-digit code hai: ${otp}`,
-        duration: 20000,
+        description: `Aapka login code aapke email par bhej diya gaya hai.`,
       });
     } catch (error: any) {
       toast({
         title: 'OTP Failed',
-        description: 'Kripya email check karein.',
+        description: 'Kripya email check karein ya dubara koshish karein.',
         variant: 'destructive',
       });
     } finally {
@@ -186,7 +189,7 @@ export default function AuthPage() {
     if (!values.otpCode || values.otpCode !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
-            description: 'Please enter the correct 6-digit code shown in the toast.',
+            description: 'Kripya apne email par bheja gaya sahi 6-digit code bharein.',
             variant: 'destructive'
         });
         return;
@@ -421,7 +424,7 @@ export default function AuthPage() {
                             </div>
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check the code shown in the toast notification</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your email inbox for the login code</p>
                         </FormItem>
                       )}
                     />
