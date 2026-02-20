@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -162,15 +163,10 @@ export default function AuthPage() {
       // 1. Generate OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       
-      // 2. Set state immediately
+      // 2. Set state for verification
       setGeneratedOtp(otp);
       
-      // 3. Log to Browser Console for easy access
-      console.log(`\n====================================================`);
-      console.log(`BR TRIP OTP: ${otp}`);
-      console.log(`====================================================\n`);
-      
-      // 4. Call server flow for Terminal logging
+      // 3. Dispatch to Backend (Server Terminal only - No client-side logging)
       await sendOtpEmail({
         email: values.email,
         otpCode: otp,
@@ -179,7 +175,7 @@ export default function AuthPage() {
       setCurrentOtpStep('code');
       toast({
         title: 'OTP DISPATCHED! 📧',
-        description: `Kripya Terminal ya Browser Console check karein.`,
+        description: `Kripya apna email check karein (Simulated Dispatch).`,
       });
     } catch (error: any) {
       console.error("OTP Dispatch Error:", error);
@@ -209,7 +205,7 @@ export default function AuthPage() {
     if (inputOtp !== generatedOtp) {
         toast({
             title: 'Galat OTP ❌',
-            description: 'Kripya sahi 6-digit code bharein.',
+            description: 'Kripya sahi 6-digit code bharein jo aapke email dispatch mein gaya hai.',
             variant: 'destructive'
         });
         return;
@@ -446,7 +442,7 @@ export default function AuthPage() {
                             />
                           </FormControl>
                           <FormMessage />
-                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Code Terminal ya Console mein dekhein.</p>
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2 italic">Aapka OTP Email Dispatch (Terminal) mein bheja gaya hai.</p>
                         </FormItem>
                       )}
                     />

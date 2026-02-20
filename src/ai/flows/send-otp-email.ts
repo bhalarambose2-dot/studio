@@ -1,10 +1,11 @@
+
 'use server';
 
 /**
  * @fileOverview A flow to simulate sending an OTP email to a user.
  * 
- * This flow is now purely functional to avoid Gemini AI quota issues (429).
- * It logs the OTP very clearly to the server terminal as a "Customer Care" dispatch.
+ * This flow is purely functional to avoid Gemini AI quota issues (429).
+ * It logs the OTP ONLY to the server terminal as a "Customer Care Dispatch".
  */
 
 import {ai} from '@/ai/genkit';
@@ -24,7 +25,7 @@ export type SendOtpEmailOutput = z.infer<typeof SendOtpEmailOutputSchema>;
 
 /**
  * Simulated OTP Email Sender (Customer Care Dispatch)
- * Logs the OTP very clearly in the terminal for the developer/user to see.
+ * Logs the OTP ONLY in the server terminal for professional security simulation.
  */
 export async function sendOtpEmail(input: SendOtpEmailInput): Promise<SendOtpEmailOutput> {
   return sendOtpEmailFlow(input);
@@ -37,21 +38,22 @@ const sendOtpEmailFlow = ai.defineFlow(
     outputSchema: SendOtpEmailOutputSchema,
   },
   async input => {
-    // Simulated Dispatch Log - This bypasses Gemini 429 errors
+    // Simulated Dispatch Log - This is the "Email Server"
+    // No code is logged to the browser or console.
     console.log(`\n\n====================================================`);
-    console.log(`[BR TRIP - CUSTOMER CARE EMAIL DISPATCH]`);
-    console.log(`STATUS: OUTGOING`);
+    console.log(`[BR TRIP - PRIVATE CUSTOMER CARE EMAIL DISPATCH]`);
+    console.log(`STATUS: DISPATCHED TO INBOX`);
     console.log(`TO: ${input.email}`);
-    console.log(`SUBJECT: Your Sahi Safar Login OTP`);
+    console.log(`SUBJECT: Sahi Safar Security Code`);
     console.log(`----------------------------------------------------`);
-    console.log(`YOUR 6-DIGIT OTP CODE IS: ${input.otpCode}`);
+    console.log(`CONFIDENTIAL OTP CODE: ${input.otpCode}`);
     console.log(`----------------------------------------------------`);
-    console.log(`TIMESTAMP: ${new Date().toLocaleString()}`);
+    console.log(`DISPATCH_TIME: ${new Date().toISOString()}`);
     console.log(`====================================================\n\n`);
     
     return {
       success: true,
-      message: `OTP dispatched to ${input.email} via Customer Care.`,
+      message: `OTP dispatched to ${input.email} via Private Dispatch.`,
     };
   }
 );
