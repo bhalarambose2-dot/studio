@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "User": {
@@ -50,7 +49,7 @@
     }
   },
   "auth": {
-    "providers": ["password"]
+    "providers": ["password", "phone"]
   },
   "firestore": {
     "structure": [

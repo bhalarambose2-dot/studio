@@ -10,12 +10,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2, Bus, Briefcase } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Briefcase, Phone, ShieldCheck, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useFirebase, setDocumentNonBlocking } from '@/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  RecaptchaVerifier, 
+  signInWithPhoneNumber,
+  ConfirmationResult
+} from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 const signInSchema = z.object({
@@ -34,11 +39,19 @@ const signUpSchema = z.object({
   path: ['confirmPassword'],
 });
 
+const otpSchema = z.object({
+  phoneNumber: z.string().min(10, 'Valid phone number is required (e.g. +91XXXXXXXXXX)'),
+  otpCode: z.string().optional(),
+});
+
 type SignInFormValues = z.infer<typeof signInSchema>;
 type SignUpFormValues = z.infer<typeof signUpSchema>;
+type OTPFormValues = z.infer<typeof otpSchema>;
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpStep, setOtpStep] = useState<'phone' | 'code'>('phone');
   const { toast } = useToast();
   const router = useRouter();
   const { auth, firestore, user, isUserLoading } = useFirebase();
@@ -81,6 +94,11 @@ export default function AuthPage() {
   const signUpForm = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { fullName: '', email: '', role: 'traveler', password: '', confirmPassword: '' },
+  });
+
+  const otpForm = useForm<OTPFormValues>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { phoneNumber: '', otpCode: '' },
   });
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -139,6 +157,77 @@ export default function AuthPage() {
     }
   };
 
+  const setupRecaptcha = () => {
+    if ((window as any).recaptchaVerifier) return (window as any).recaptchaVerifier;
+    const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': () => {}
+    });
+    (window as any).recaptchaVerifier = verifier;
+    return verifier;
+  };
+
+  const handleSendOTP = async (values: OTPFormValues) => {
+    setIsLoading(true);
+    try {
+      const verifier = setupRecaptcha();
+      const result = await signInWithPhoneNumber(auth, values.phoneNumber, verifier);
+      setConfirmationResult(result);
+      setOtpStep('code');
+      toast({
+        title: 'OTP SENT! 📲',
+        description: `Aapke number ${values.phoneNumber} par code bhej diya gaya hai.`,
+      });
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: 'OTP Send Failed',
+        description: error.message || 'Phone number check karein (+91 format zaroori hai).',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (values: OTPFormValues) => {
+    if (!confirmationResult || !values.otpCode) return;
+    setIsLoading(true);
+    try {
+      const userCredential = await confirmationResult.confirm(values.otpCode);
+      const user = userCredential.user;
+      
+      // Check if user profile exists, if not create a default one
+      const userDocRef = doc(firestore, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (!userDoc.exists()) {
+        setDocumentNonBlocking(userDocRef, {
+          id: user.uid,
+          fullName: 'Traveler',
+          email: user.phoneNumber || '',
+          role: 'traveler',
+          walletBalance: 0,
+          kycStatus: 'none',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }, { merge: true });
+      }
+
+      toast({
+        title: 'OTP VERIFIED! ✅',
+        description: 'Sahi Safar mein aapka swagat hai.',
+      });
+    } catch (error: any) {
+      setIsLoading(false);
+      toast({
+        title: 'Verification Failed',
+        description: 'Galat OTP code. Kripya dubara check karein.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (isUserLoading) {
     return (
         <div className="flex items-center justify-center min-h-screen bg-white">
@@ -149,6 +238,7 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50">
+       <div id="recaptcha-container"></div>
        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] animate-pulse delay-700" />
         
@@ -162,10 +252,12 @@ export default function AuthPage() {
         </CardHeader>
         <CardContent className="p-8">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100/50 p-1 rounded-2xl mb-8">
-              <TabsTrigger value="signin" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-xs">Sign In</TabsTrigger>
-              <TabsTrigger value="signup" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-xs">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-2xl mb-8">
+              <TabsTrigger value="signin" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">Email</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">Join</TabsTrigger>
+              <TabsTrigger value="otp" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
+
             <TabsContent value="signin" className="space-y-4">
               <Form {...signInForm}>
                 <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-6">
@@ -202,6 +294,7 @@ export default function AuthPage() {
                 </form>
               </Form>
             </TabsContent>
+
             <TabsContent value="signup" className="space-y-4">
               <Form {...signUpForm}>
                 <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
@@ -284,6 +377,80 @@ export default function AuthPage() {
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Sign Up
                   </Button>
+                </form>
+              </Form>
+            </TabsContent>
+
+            <TabsContent value="otp" className="space-y-4">
+              <Form {...otpForm}>
+                <form 
+                  onSubmit={otpForm.handleSubmit(otpStep === 'phone' ? handleSendOTP : handleVerifyOTP)} 
+                  className="space-y-6"
+                >
+                  {otpStep === 'phone' ? (
+                    <FormField
+                      control={otpForm.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Phone Number (+91...)</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
+                                <Input placeholder="+91 8306930595" {...field} className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black italic text-lg tracking-wider" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    <FormField
+                      control={otpForm.control}
+                      name="otpCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] uppercase font-black text-muted-foreground tracking-widest ml-1">Enter 6-Digit OTP</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                                <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
+                                <Input 
+                                    placeholder="XXXXXX" 
+                                    {...field} 
+                                    className="bg-slate-50 border-slate-200 focus:border-primary/50 h-14 pl-12 rounded-2xl font-black text-center text-2xl tracking-[0.5em] italic" 
+                                    maxLength={6}
+                                />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                          <p className="text-[9px] text-center text-muted-foreground font-bold uppercase mt-2">Check your SMS for the code</p>
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase tracking-widest">
+                    {isLoading ? (
+                      <Loader2 className="mr-2 animate-spin h-6 w-6" />
+                    ) : otpStep === 'phone' ? (
+                      <><Phone className="mr-2 h-6 w-6" /> Send OTP Code</>
+                    ) : (
+                      <><ShieldCheck className="mr-2 h-6 w-6" /> Verify & Login</>
+                    )}
+                  </Button>
+
+                  {otpStep === 'code' && (
+                    <Button 
+                        variant="ghost" 
+                        className="w-full text-[10px] font-black uppercase text-primary tracking-widest hover:bg-primary/5"
+                        onClick={() => {
+                            setOtpStep('phone');
+                            setConfirmationResult(null);
+                        }}
+                    >
+                        Change Number
+                    </Button>
+                  )}
                 </form>
               </Form>
             </TabsContent>
