@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -9,12 +10,18 @@ import {
   Gift,
   Handshake,
   Menu,
+  Bike,
+  ClipboardList
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useFirebase } from '@/firebase';
+import { useUserProfile } from '@/lib/firebase/use-user-profile';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mounted, setMounted] = React.useState(false);
+  const { user } = useFirebase();
+  const { userProfile } = useUserProfile(user?.uid);
 
   React.useEffect(() => {
     setMounted(true);
@@ -28,6 +35,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (pathname === '/') {
     return <main className="relative min-h-screen overflow-hidden">{children}</main>;
   }
+
+  const isCaptain = userProfile?.role === 'staff' || userProfile?.role === 'bus_owner';
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-white relative overflow-hidden">
@@ -43,14 +52,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <footer className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white/95 backdrop-blur-xl shadow-[0_-5px_25px_rgba(0,0,0,0.1)]">
         <nav className="grid h-20 grid-cols-5 items-center justify-items-center px-1">
           <Link
-            href="/search"
+            href={isCaptain ? "/staff" : "/search"}
             className={cn(
               'flex flex-col items-center gap-1 transition-all group',
-              pathname === '/search' ? 'text-primary' : 'text-muted-foreground'
+              (pathname === '/search' || pathname === '/staff') ? 'text-primary' : 'text-muted-foreground'
             )}
           >
-            <Home className={cn("h-6 w-6 transition-transform group-active:scale-90", pathname === '/search' && "fill-primary/20")} />
-            <span className="text-[10px] font-black uppercase tracking-tight">Home</span>
+            <Home className={cn("h-6 w-6 transition-transform group-active:scale-90", (pathname === '/search' || pathname === '/staff') && "fill-primary/20")} />
+            <span className="text-[10px] font-black uppercase tracking-tight">{isCaptain ? 'Duty' : 'Home'}</span>
           </Link>
           
           <Link
@@ -61,7 +70,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Briefcase className={cn("h-6 w-6 transition-transform group-active:scale-90", pathname === '/manage-bookings' && "fill-primary/20")} />
-            <span className="text-[10px] font-black uppercase tracking-tight">My Trips</span>
+            <span className="text-[10px] font-black uppercase tracking-tight">{isCaptain ? 'Earning' : 'My Safar'}</span>
           </Link>
 
           <div className="relative -top-4">
@@ -69,8 +78,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href="/destination-guides"
                 className="flex flex-col items-center justify-center h-16 w-16 rounded-full bg-secondary shadow-xl shadow-secondary/30 text-white transition-transform active:scale-95 border-4 border-white"
               >
-                <Gift className="h-7 w-7" />
-                <span className="text-[8px] font-black uppercase">Offers</span>
+                {isCaptain ? <Bike className="h-7 w-7" /> : <Gift className="h-7 w-7" />}
+                <span className="text-[8px] font-black uppercase">{isCaptain ? 'Rides' : 'Offers'}</span>
               </Link>
           </div>
 
@@ -82,7 +91,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <Handshake className={cn("h-6 w-6 transition-transform group-active:scale-90", pathname === '/partnership' && "fill-primary/20")} />
-            <span className="text-[10px] font-black uppercase tracking-tight">Partners</span>
+            <span className="text-[10px] font-black uppercase tracking-tight">Support</span>
           </Link>
 
           <Link
