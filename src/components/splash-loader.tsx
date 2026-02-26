@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 /**
- * Luxury Gold 3D Splash Loader for BR TRIP.
- * Features a rotating golden crystal geometry and premium royal typography.
- * Fixed: Hydration mismatch by ensuring component only renders after mount.
+ * Ultimate Royal 3D Splash Loader for BR TRIP.
+ * Features a rotating Earth, an orbiting airplane, and 3D Golden Logo.
  */
 export function SplashLoader() {
   const [show, setShow] = useState(true);
@@ -16,7 +15,7 @@ export function SplashLoader() {
   useEffect(() => {
     setMounted(true);
     // Check if splash has been shown in this session
-    const hasShown = sessionStorage.getItem('br-trip-luxury-gold-shown');
+    const hasShown = sessionStorage.getItem('br-trip-royal-shown');
     if (hasShown) {
       setShow(false);
       return;
@@ -35,42 +34,66 @@ export function SplashLoader() {
     containerRef.current.appendChild(renderer.domElement);
 
     // Royal Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const pointLight1 = new THREE.PointLight(0xffd700, 2);
-    pointLight1.position.set(10, 10, 10);
-    scene.add(pointLight1);
+    const pointLight = new THREE.PointLight(0xffffff, 2);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1);
-    pointLight2.position.set(-10, -10, 10);
-    scene.add(pointLight2);
+    // Earth
+    const earthGeometry = new THREE.SphereGeometry(2, 32, 32);
+    const earthMaterial = new THREE.MeshStandardMaterial({
+      color: 0x2233ff,
+      wireframe: true, // Wireframe for futuristic royal look
+    });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    scene.add(earth);
 
-    // Luxury Crystal Geometry (Replacing TextGeometry for stability in prototype)
-    const geometry = new THREE.IcosahedronGeometry(1.5, 0);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xDAA520, // Goldenrod / Luxury Gold
+    // Airplane (Simplified Shape for Prototype Stability)
+    const planeGroup = new THREE.Group();
+    const planeBodyGeom = new THREE.BoxGeometry(0.4, 0.1, 0.1);
+    const planeWingGeom = new THREE.BoxGeometry(0.1, 0.05, 0.6);
+    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    
+    const body = new THREE.Mesh(planeBodyGeom, planeMaterial);
+    const wings = new THREE.Mesh(planeWingGeom, planeMaterial);
+    planeGroup.add(body);
+    planeGroup.add(wings);
+    scene.add(planeGroup);
+
+    // Golden Diamond (Representing the Logo core in 3D)
+    const diamondGeom = new THREE.OctahedronGeometry(0.8, 0);
+    const diamondMat = new THREE.MeshStandardMaterial({
+      color: 0xFFD700,
       metalness: 1,
-      roughness: 0.1,
-      emissive: 0x332200,
+      roughness: 0.2,
       flatShading: true
     });
-    const crystal = new THREE.Mesh(geometry, material);
-    scene.add(crystal);
+    const diamond = new THREE.Mesh(diamondGeom, diamondMat);
+    diamond.position.y = -3.5;
+    scene.add(diamond);
 
-    // Wireframe Sparkle Overlay
-    const wireframe = new THREE.WireframeGeometry(geometry);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.2 });
-    const lines = new THREE.LineSegments(wireframe, lineMat);
-    crystal.add(lines);
+    camera.position.z = 8;
 
-    camera.position.z = 5;
-
+    let angle = 0;
     let animationId: number;
+
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      crystal.rotation.y += 0.015;
-      crystal.rotation.x += 0.005;
+
+      // Rotate Earth
+      earth.rotation.y += 0.005;
+
+      // Orbit Plane
+      angle += 0.02;
+      planeGroup.position.x = 3.5 * Math.cos(angle);
+      planeGroup.position.z = 3.5 * Math.sin(angle);
+      planeGroup.rotation.y = -angle; // Make plane look forward
+
+      // Rotate Diamond
+      diamond.rotation.y += 0.02;
+
       renderer.render(scene, camera);
     };
     animate();
@@ -93,39 +116,46 @@ export function SplashLoader() {
   }, [mounted, show]);
 
   const startApp = () => {
-    sessionStorage.setItem('br-trip-luxury-gold-shown', 'true');
+    sessionStorage.setItem('br-trip-royal-shown', 'true');
     setShow(false);
   };
 
   if (!show || !mounted) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden font-headline">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black overflow-hidden font-headline">
       {/* Three.js Canvas Container */}
       <div ref={containerRef} className="absolute inset-0" />
       
       {/* Foreground Branding */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4">
+      <div className="relative z-10 flex flex-col items-center text-center px-4 mt-40">
         <div className="animate-in fade-in zoom-in duration-1000">
-          <h1 className="text-7xl md:text-9xl font-black tracking-[20px] text-transparent bg-clip-text bg-gradient-to-b from-yellow-100 via-yellow-500 to-yellow-900 uppercase drop-shadow-[0_0_40px_rgba(255,215,0,0.6)] italic">
+          <h1 className="text-6xl md:text-8xl font-black tracking-[15px] text-transparent bg-clip-text bg-gradient-to-b from-yellow-100 via-yellow-500 to-yellow-900 uppercase drop-shadow-[0_0_30px_rgba(255,215,0,0.5)] italic">
             BR TRIP
           </h1>
-          <div className="mt-6 flex flex-col items-center space-y-2">
-            <p className="text-yellow-500 font-bold tracking-[8px] uppercase text-sm md:text-lg">
-              Explore The Royal Journey ✨
-            </p>
-            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-yellow-500 to-transparent shadow-[0_0_15px_gold]"></div>
-          </div>
+          <p className="text-yellow-500 font-bold tracking-[5px] uppercase text-xs md:text-sm mt-4">
+            Book Flights • Trains • Buses ✨
+          </p>
         </div>
 
         {/* Action Button */}
         <button 
           onClick={startApp}
-          className="mt-24 px-16 py-5 text-xl font-black italic uppercase tracking-[0.3em] rounded-full bg-gradient-to-r from-yellow-800 via-yellow-400 to-yellow-800 text-black shadow-[0_0_60px_rgba(218,165,32,0.6)] transition-all duration-500 hover:scale-110 hover:shadow-[0_0_100px_gold] active:scale-95 border-2 border-yellow-200/40"
+          className="mt-20 px-12 py-4 text-lg font-black italic uppercase tracking-[0.2em] rounded-full bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-700 text-black shadow-[0_0_50px_rgba(218,165,32,0.5)] transition-all duration-500 hover:scale-110 hover:shadow-[0_0_80px_gold] active:scale-95 border-2 border-yellow-200/30"
         >
-          ENTER KINGDOM
+          ENTER JOURNEY
         </button>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        .container {
+          animation: float 4s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
