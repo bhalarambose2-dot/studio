@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { useState, useEffect } from 'react';
 
 /**
- * 3D Splash Loader Component for BR TRIP.
- * Displays a rotating 3D wireframe globe and a welcome message.
+ * Ultra 3D Splash Loader Component for BR TRIP.
+ * Displays a rotating 3D diamond, animated background particles, and a welcome message.
  */
 export function SplashLoader() {
   const [show, setShow] = useState(true);
-  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check if splash has been shown in this session
@@ -18,48 +16,7 @@ export function SplashLoader() {
       setShow(false);
       return;
     }
-
-    if (!mountRef.current) return;
-
-    // Three.js Setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Create wireframe globe
-    const geometry = new THREE.SphereGeometry(2, 32, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
-    const globe = new THREE.Mesh(geometry, material);
-    scene.add(globe);
-
-    camera.position.z = 5;
-
-    // Animation Loop
-    const animate = () => {
-      if (!show) return;
-      requestAnimationFrame(animate);
-      globe.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    // Handle Resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-    };
-  }, [show]);
+  }, []);
 
   const startApp = () => {
     sessionStorage.setItem('br-trip-splash-shown', 'true');
@@ -69,33 +26,80 @@ export function SplashLoader() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364]">
-      {/* Three.js Canvas Container */}
-      <div id="globe" ref={mountRef} className="absolute inset-0" />
-
-      {/* Content Overlay */}
-      <div className="relative z-10 flex flex-col items-center text-center text-white backdrop-blur-[15px] bg-white/10 p-10 rounded-[20px] shadow-[0_0_20px_rgba(0,255,255,0.5)] border border-white/10 animate-in fade-in zoom-in duration-700">
-        <div className="logo text-5xl font-bold text-[#00e5ff] drop-shadow-[0_0_20px_#00e5ff] animate-glow">
+    <div className="splash-body fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-black">
+      <div className="container relative z-10 flex flex-col items-center text-center">
+        <div className="diamond-container">
+          <div className="diamond shadow-[0_0_40px_#00f0ff,0_0_80px_#0066ff]"></div>
+        </div>
+        <div className="logo-text mt-10 text-4xl font-bold tracking-[5px] text-[#00f0ff] uppercase animate-glow">
           BR TRIP
         </div>
-        <div className="tagline mt-4 text-lg tracking-[2px] font-medium">
-          Book Flights • Trains • Buses
+        <div className="tagline mt-2.5 text-white tracking-[2px]">
+          Travel Beyond Limits ✈
         </div>
         <button 
           onClick={startApp}
-          className="btn mt-6 px-10 py-3 text-lg rounded-full border-none bg-[#00e5ff] text-[#0f2027] font-bold cursor-pointer transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95 shadow-xl shadow-cyan-500/20"
+          className="btn mt-6 px-8 py-3 text-lg rounded-full border-none bg-[#00f0ff] text-black font-bold cursor-pointer transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95"
         >
-          Start Journey ✈
+          Enter
         </button>
       </div>
 
       <style jsx>{`
-        @keyframes glow {
-          from { text-shadow: 0 0 10px #00e5ff; }
-          to { text-shadow: 0 0 30px #00ffff; }
+        .splash-body {
+          perspective: 1000px;
         }
+
+        .splash-body::before {
+          content: "";
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 1px, transparent 1px);
+          background-size: 40px 40px;
+          animation: moveBg 20s linear infinite;
+          pointer-events: none;
+        }
+
+        @keyframes moveBg {
+          from { transform: translate(0, 0); }
+          to { transform: translate(-200px, -200px); }
+        }
+
+        .diamond-container {
+          perspective: 1000px;
+          margin-bottom: 20px;
+        }
+
+        .diamond {
+          width: 150px;
+          height: 150px;
+          background: linear-gradient(45deg, #00f0ff, #0066ff);
+          transform: rotateX(45deg) rotateY(45deg);
+          animation: rotate 6s infinite linear, float 3s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+          from { transform: rotateX(45deg) rotateY(0deg); }
+          to { transform: rotateX(45deg) rotateY(360deg); }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotateX(45deg); }
+          50% { transform: translateY(-20px) rotateX(45deg); }
+        }
+
+        @keyframes glow {
+          from { text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff; }
+          to { text-shadow: 0 0 30px #00f0ff, 0 0 50px #0066ff; }
+        }
+
         .animate-glow {
           animation: glow 2s infinite alternate;
+        }
+
+        .logo-text {
+          text-shadow: 0 0 20px #00f0ff, 0 0 40px #0066ff;
         }
       `}</style>
     </div>
