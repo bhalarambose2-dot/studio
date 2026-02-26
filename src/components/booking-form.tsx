@@ -75,10 +75,10 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   const calculateAmount = (travelers: number) => {
     const distance = 10; // Default estimated distance for prototype
     if (bookingType === 'bike') {
-        return 15 * distance; // Rate: ₹15/km
+        return 15 * distance; // Rate: ₹15 per kilometer (Indian Rupees)
     }
     if (bookingType === 'car') {
-        return 60 * distance; // Rate: ₹60/km
+        return 60 * distance; // Rate: ₹60 per kilometer (Indian Rupees)
     }
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
     return basePrice * travelers;
@@ -246,7 +246,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                       </div>
                     )}
                     <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-                        <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sahi Nivesh</span>
+                        <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sahi Nivesh (INR)</span>
                         <span className="text-3xl font-black italic text-primary tracking-tighter">₹{confirmedBooking.amount?.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
@@ -267,7 +267,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         <div className="space-y-8 p-4">
             <div className="text-center space-y-3">
                 <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 px-4 py-1.5 font-black text-[11px] tracking-[0.2em] uppercase">STEP 2: SCAN & CONFIRM</Badge>
-                <h3 className="text-3xl font-black italic uppercase tracking-tighter">PAY ₹{totalAmount.toLocaleString('en-IN')}</h3>
+                <h3 className="text-3xl font-black italic uppercase tracking-tighter">PAY ₹{totalAmount.toLocaleString('en-IN')} (Indian Rupees)</h3>
                 <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Sahi Nivesh • Sahi Safar Security</p>
             </div>
 
@@ -337,9 +337,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             <div className="flex items-center gap-2 text-primary mt-3 font-black">
               <div className="bg-white p-1 rounded-lg shadow-sm"><IndianRupee className="h-4 w-4" /></div>
               <p className="text-lg italic">
-                {currentRate ? `₹${currentRate}/km` : `₹${itemDetails?.price?.toLocaleString('en-IN') || '500'}`}
+                {currentRate ? `₹${currentRate} per km` : `₹${itemDetails?.price?.toLocaleString('en-IN') || '500'}`}
                 <span className="text-[11px] text-muted-foreground font-black uppercase tracking-widest opacity-60 ml-1">
-                  {currentRate ? '(Sahi Rate)' : '/ per unit'}
+                  {currentRate ? '(Sahi Indian Rate)' : '/ per unit'}
                 </span>
               </p>
             </div>

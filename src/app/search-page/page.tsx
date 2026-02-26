@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -404,7 +403,7 @@ export default function SearchCardPage() {
           <TabsContent value="bike">
             <CardContent className="p-8 md:p-12 space-y-6">
               <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
-                <p className="text-xs font-black uppercase italic text-primary">Sahi Rate: ₹15/KM</p>
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹15 Per KM</p>
                 <Badge className="bg-primary text-white text-[10px] uppercase font-black italic">Fast Delivery</Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -437,7 +436,7 @@ export default function SearchCardPage() {
                 className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
                 onClick={() => handleBookingStart('bike', bikeDrop, 15, bikePickup)}
               >
-                 <Zap className="mr-3 h-8 w-8 animate-pulse text-yellow-400" /> BOOK BIKE TAXI
+                 <Zap className="mr-3 h-8 w-8 animate-pulse text-yellow-400" /> BOOK BIKE TAXI (₹15/KM)
               </Button>
             </CardContent>
           </TabsContent>
@@ -445,7 +444,7 @@ export default function SearchCardPage() {
           <TabsContent value="car">
             <CardContent className="p-8 md:p-12 space-y-6">
                <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
-                <p className="text-xs font-black uppercase italic text-primary">Sahi Rate: ₹60/KM</p>
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹60 Per KM</p>
                 <Badge className="bg-secondary text-white text-[10px] uppercase font-black italic">Premium Ride</Badge>
               </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -478,7 +477,7 @@ export default function SearchCardPage() {
                 className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
                 onClick={() => handleBookingStart('car', carDrop, 60, carPickup)}
               >
-                <Car className="mr-3 h-8 w-8" /> SEARCH & BOOK CAB
+                <Car className="mr-3 h-8 w-8" /> SEARCH & BOOK CAB (₹60/KM)
               </Button>
             </CardContent>
           </TabsContent>
