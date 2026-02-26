@@ -1,200 +1,131 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
 
 /**
- * Ultra 3D Premium Splash Loader for BR TRIP.
- * Features a multifaceted 3D diamond, neon glow effects, and a futuristic particle background.
- * Fixed: Hydration mismatch by ensuring random values are generated only on client.
+ * Luxury Gold 3D Splash Loader for BR TRIP.
+ * Features a rotating golden crystal geometry and premium royal typography.
+ * Fixed: Hydration mismatch by ensuring component only renders after mount.
  */
 export function SplashLoader() {
   const [show, setShow] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
     // Check if splash has been shown in this session
-    const hasShown = sessionStorage.getItem('br-trip-splash-shown');
+    const hasShown = sessionStorage.getItem('br-trip-luxury-gold-shown');
     if (hasShown) {
       setShow(false);
       return;
     }
   }, []);
 
+  useEffect(() => {
+    if (!mounted || !show || !containerRef.current) return;
+
+    // Three.js Scene Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    containerRef.current.appendChild(renderer.domElement);
+
+    // Royal Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(0xffd700, 2);
+    pointLight1.position.set(10, 10, 10);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xffffff, 1);
+    pointLight2.position.set(-10, -10, 10);
+    scene.add(pointLight2);
+
+    // Luxury Crystal Geometry (Replacing TextGeometry for stability in prototype)
+    const geometry = new THREE.IcosahedronGeometry(1.5, 0);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xDAA520, // Goldenrod / Luxury Gold
+      metalness: 1,
+      roughness: 0.1,
+      emissive: 0x332200,
+      flatShading: true
+    });
+    const crystal = new THREE.Mesh(geometry, material);
+    scene.add(crystal);
+
+    // Wireframe Sparkle Overlay
+    const wireframe = new THREE.WireframeGeometry(geometry);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.2 });
+    const lines = new THREE.LineSegments(wireframe, lineMat);
+    crystal.add(lines);
+
+    camera.position.z = 5;
+
+    let animationId: number;
+    const animate = () => {
+      animationId = requestAnimationFrame(animate);
+      crystal.rotation.y += 0.015;
+      crystal.rotation.x += 0.005;
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    // Handle Window Resize
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
+      if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
+        containerRef.current.removeChild(renderer.domElement);
+      }
+    };
+  }, [mounted, show]);
+
   const startApp = () => {
-    sessionStorage.setItem('br-trip-splash-shown', 'true');
+    sessionStorage.setItem('br-trip-luxury-gold-shown', 'true');
     setShow(false);
   };
 
   if (!show || !mounted) return null;
 
   return (
-    <div className="splash-body fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#00050a]">
-      {/* Dynamic Background Particles */}
-      <div className="particles-container absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <div key={i} className={`particle particle-${i}`} />
-        ))}
-      </div>
-
-      <div className="container relative z-10 flex flex-col items-center text-center">
-        {/* The 3D Diamond / Best Logo */}
-        <div className="diamond-wrapper">
-          <div className="diamond-3d">
-            <div className="face front"></div>
-            <div className="face back"></div>
-            <div className="face right"></div>
-            <div className="face left"></div>
-            <div className="face top"></div>
-            <div className="face bottom"></div>
-          </div>
-          <div className="diamond-shadow"></div>
-        </div>
-
-        {/* Branding */}
-        <div className="branding mt-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-          <h1 className="logo-text text-5xl md:text-7xl font-black tracking-[10px] italic text-[#00f0ff] uppercase">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden font-headline">
+      {/* Three.js Canvas Container */}
+      <div ref={containerRef} className="absolute inset-0" />
+      
+      {/* Foreground Branding */}
+      <div className="relative z-10 flex flex-col items-center text-center px-4">
+        <div className="animate-in fade-in zoom-in duration-1000">
+          <h1 className="text-7xl md:text-9xl font-black tracking-[20px] text-transparent bg-clip-text bg-gradient-to-b from-yellow-100 via-yellow-500 to-yellow-900 uppercase drop-shadow-[0_0_40px_rgba(255,215,0,0.6)] italic">
             BR TRIP
           </h1>
-          <div className="tagline-wrapper mt-4">
-            <p className="tagline text-white/80 font-bold tracking-[4px] uppercase text-xs md:text-sm">
-              Travel Beyond Limits ✈
+          <div className="mt-6 flex flex-col items-center space-y-2">
+            <p className="text-yellow-500 font-bold tracking-[8px] uppercase text-sm md:text-lg">
+              Explore The Royal Journey ✨
             </p>
-            <div className="tagline-underline h-0.5 w-12 bg-[#00f0ff] mx-auto mt-2 shadow-[0_0_10px_#00f0ff]"></div>
+            <div className="h-1 w-32 bg-gradient-to-r from-transparent via-yellow-500 to-transparent shadow-[0_0_15px_gold]"></div>
           </div>
         </div>
 
         {/* Action Button */}
         <button 
           onClick={startApp}
-          className="enter-btn mt-12 px-12 py-4 text-lg font-black italic uppercase tracking-widest rounded-full bg-[#00f0ff] text-black shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all duration-500 hover:bg-white hover:scale-110 hover:shadow-[0_0_50px_#00f0ff] active:scale-95 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700"
+          className="mt-24 px-16 py-5 text-xl font-black italic uppercase tracking-[0.3em] rounded-full bg-gradient-to-r from-yellow-800 via-yellow-400 to-yellow-800 text-black shadow-[0_0_60px_rgba(218,165,32,0.6)] transition-all duration-500 hover:scale-110 hover:shadow-[0_0_100px_gold] active:scale-95 border-2 border-yellow-200/40"
         >
-          Enter Journey
+          ENTER KINGDOM
         </button>
       </div>
-
-      <style jsx>{`
-        .splash-body {
-          perspective: 2000px;
-        }
-
-        /* 3D Diamond Construction */
-        .diamond-wrapper {
-          position: relative;
-          width: 200px;
-          height: 200px;
-          transform-style: preserve-3d;
-        }
-
-        .diamond-3d {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          transform-style: preserve-3d;
-          animation: rotate-3d 8s infinite linear;
-        }
-
-        .face {
-          position: absolute;
-          width: 100px;
-          height: 100px;
-          left: 50px;
-          top: 50px;
-          background: rgba(0, 240, 255, 0.1);
-          border: 1px solid rgba(0, 240, 255, 0.5);
-          box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.2);
-          backdrop-filter: blur(2px);
-        }
-
-        .front  { transform: rotateY(0deg) translateZ(50px); }
-        .back   { transform: rotateY(180deg) translateZ(50px); }
-        .right  { transform: rotateY(90deg) translateZ(50px); }
-        .left   { transform: rotateY(-90deg) translateZ(50px); }
-        .top    { transform: rotateX(90deg) translateZ(50px); }
-        .bottom { transform: rotateX(-90deg) translateZ(50px); }
-
-        /* Diamond Prism Effect */
-        .diamond-3d::before, .diamond-3d::after {
-          content: "";
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-left: 50px solid transparent;
-          border-right: 50px solid transparent;
-          left: 50px;
-        }
-
-        .diamond-3d::before {
-          border-bottom: 80px solid rgba(0, 240, 255, 0.4);
-          top: -30px;
-          transform: translateZ(0) rotateX(15deg);
-        }
-
-        .diamond-3d::after {
-          border-top: 80px solid rgba(0, 102, 255, 0.4);
-          bottom: -30px;
-          transform: translateZ(0) rotateX(-15deg);
-        }
-
-        @keyframes rotate-3d {
-          from { transform: rotateX(-20deg) rotateY(0deg); }
-          to { transform: rotateX(-20deg) rotateY(360deg); }
-        }
-
-        .diamond-shadow {
-          position: absolute;
-          bottom: -40px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 120px;
-          height: 20px;
-          background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.3) 0%, transparent 70%);
-          border-radius: 50%;
-          filter: blur(10px);
-          animation: shadow-pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes shadow-pulse {
-          0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
-          50% { transform: translateX(-50%) scale(1.2); opacity: 0.5; }
-        }
-
-        /* Branding Glow */
-        .logo-text {
-          text-shadow: 0 0 20px #00f0ff, 0 0 40px #0066ff;
-          animation: logo-glow 2s infinite alternate;
-        }
-
-        @keyframes logo-glow {
-          from { text-shadow: 0 0 15px #00f0ff, 0 0 30px #0066ff; opacity: 0.8; }
-          to { text-shadow: 0 0 30px #00f0ff, 0 0 60px #00ffff; opacity: 1; }
-        }
-
-        /* Particle Stars */
-        .particle {
-          position: absolute;
-          background: #00f0ff;
-          border-radius: 50%;
-          opacity: 0.3;
-          pointer-events: none;
-        }
-
-        ${[...Array(20)].map((_, i) => `
-          .particle-${i} {
-            width: ${Math.floor(Math.random() * 4) + 2}px;
-            height: ${Math.floor(Math.random() * 4) + 2}px;
-            left: ${Math.floor(Math.random() * 100)}%;
-            top: ${Math.floor(Math.random() * 100)}%;
-            animation: particle-move-${i} ${Math.floor(Math.random() * 10) + 10}s infinite linear;
-          }
-          @keyframes particle-move-${i} {
-            0% { transform: translate(0, 0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translate(${Math.floor(Math.random() * 200) - 100}px, ${Math.floor(Math.random() * 200) - 100}px); opacity: 0; }
-          }
-        `).join('')}
-
-      `}</style>
     </div>
   );
 }
