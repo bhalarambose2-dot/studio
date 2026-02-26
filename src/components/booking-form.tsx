@@ -73,10 +73,14 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   }, [userProfile, user, form]);
 
   const calculateAmount = (travelers: number) => {
-    const basePrice = parseFloat(String(itemDetails?.price)) || 500;
-    if (bookingType === 'bike' || bookingType === 'car') {
-        return basePrice * 1.5; // Example logic for bike/car
+    const distance = 10; // Default estimated distance for prototype
+    if (bookingType === 'bike') {
+        return 15 * distance; // Rate: ₹15/km
     }
+    if (bookingType === 'car') {
+        return 60 * distance; // Rate: ₹60/km
+    }
+    const basePrice = parseFloat(String(itemDetails?.price)) || 500;
     return basePrice * travelers;
   };
 
@@ -135,7 +139,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             }));
         });
 
-        // Add to global bus bookings if applicable
         if (bookingType === 'bus' || bookingType === 'bike' || bookingType === 'car') {
           const globalBookingRef = collection(firestore, 'busBookings');
           addDoc(globalBookingRef, bookingDetails).catch(err => {
@@ -147,7 +150,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
           });
         }
 
-        // Add to wallet transactions
         const transactionRef = collection(firestore, 'users', user.uid, 'transactions');
         const transactionData = {
             type: 'debit',
@@ -197,7 +199,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   <Badge className="bg-primary/10 text-primary border-none font-black font-mono text-xs px-6 py-1.5 shadow-inner">BOOKING ID: {confirmedBooking.id}</Badge>
               </div>
 
-              {/* Automatic Route Map */}
               <div className="rounded-[2.5rem] overflow-hidden border-[6px] border-primary shadow-2xl h-64 relative group">
                   <iframe src={mapUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" className="w-full h-full grayscale-[0.2] contrast-[1.1]"></iframe>
                   <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xl p-4 rounded-2xl border-l-[6px] border-l-green-500 shadow-2xl">
@@ -324,6 +325,8 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     );
   }
 
+  const currentRate = bookingType === 'bike' ? 15 : bookingType === 'car' ? 60 : null;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onDetailsSubmit)} className="space-y-6 p-4">
@@ -333,7 +336,12 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             <h3 className="text-2xl font-black italic uppercase leading-tight tracking-tighter text-slate-800">{tripName}</h3>
             <div className="flex items-center gap-2 text-primary mt-3 font-black">
               <div className="bg-white p-1 rounded-lg shadow-sm"><IndianRupee className="h-4 w-4" /></div>
-              <p className="text-lg italic">₹{itemDetails?.price?.toLocaleString('en-IN') || '500'} <span className="text-[11px] text-muted-foreground font-black uppercase tracking-widest opacity-60">/ {bookingType === 'bike' || bookingType === 'car' ? 'per unit' : 'per unit'}</span></p>
+              <p className="text-lg italic">
+                {currentRate ? `₹${currentRate}/km` : `₹${itemDetails?.price?.toLocaleString('en-IN') || '500'}`}
+                <span className="text-[11px] text-muted-foreground font-black uppercase tracking-widest opacity-60 ml-1">
+                  {currentRate ? '(Sahi Rate)' : '/ per unit'}
+                </span>
+              </p>
             </div>
         </div>
 

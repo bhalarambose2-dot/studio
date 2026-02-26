@@ -52,7 +52,6 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // HYPER LOCAL JODHPUR (RAJASTHAN)
   "Paota Circle, Jodhpur, Rajasthan, India",
   "Paota Chauraha, Jodhpur, Rajasthan",
   "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
@@ -75,8 +74,6 @@ const allLocations = [
   "Mandore Garden Main Gate, Jodhpur, Rajasthan",
   "Umaid Bhawan Palace, Jodhpur, Rajasthan",
   "Kaylana Lake, Jodhpur, Rajasthan",
-  
-  // JAIPUR (RAJASTHAN)
   "Mansarovar Metro Station, Jaipur, Rajasthan",
   "C-Scheme Area, Jaipur, Rajasthan, India",
   "Vaishali Nagar, Jaipur, Rajasthan",
@@ -84,8 +81,6 @@ const allLocations = [
   "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
   "Amer Fort, Jaipur, Rajasthan",
   "Jal Mahal, Amber Road, Jaipur",
-
-  // DELHI (NCR)
   "Connaught Place, New Delhi, Delhi, India",
   "India Gate, Rajpath, New Delhi, Delhi",
   "Aerocity, IGI Airport, Delhi",
@@ -93,15 +88,11 @@ const allLocations = [
   "Saket District Centre, South Delhi, Delhi",
   "Lajpat Nagar Market, Delhi",
   "Qutub Minar, Mehrauli, New Delhi",
-
-  // MUMBAI (MAHARASHTRA)
   "Marine Drive, Nariman Point, Mumbai, Maharashtra",
   "Gateway of India, Colaba, Mumbai, Maharashtra",
   "Juhu Beach, Mumbai, Maharashtra, India",
   "Bandra West, Linking Road, Mumbai, Maharashtra",
   "Dadar Station East, Mumbai",
-
-  // OTHER MAJOR POINTS (ALL INDIA)
   "Baga Beach, Calangute, North Goa, India",
   "Kedarnath Temple Base, Uttarakhand",
   "Rishikesh, Lakshman Jhula Point, Uttarakhand",
@@ -137,7 +128,6 @@ export default function SearchCardPage() {
   const [carPickup, setCarPickup] = useState('');
   const [carDrop, setCarDrop] = useState('');
 
-  // Autocomplete Logic
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeSuggestionKey, setActiveSuggestionKey] = useState<string | null>(null);
 
@@ -364,6 +354,10 @@ export default function SearchCardPage() {
 
           <TabsContent value="bike">
             <CardContent className="p-8 md:p-12 space-y-6">
+              <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Rate: ₹15/KM</p>
+                <Badge className="bg-primary text-white text-[10px] uppercase font-black italic">Fast Delivery</Badge>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3 relative">
                   <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-2">Pickup (Automatic Mark)</Label>
@@ -392,7 +386,7 @@ export default function SearchCardPage() {
               </div>
               <Button 
                 className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
-                onClick={() => handleBookingStart('bike', bikeDrop, 150, bikePickup)}
+                onClick={() => handleBookingStart('bike', bikeDrop, 15, bikePickup)}
               >
                  <Zap className="mr-3 h-8 w-8 animate-pulse text-yellow-400" /> BOOK BIKE TAXI
               </Button>
@@ -401,6 +395,10 @@ export default function SearchCardPage() {
           
           <TabsContent value="car">
             <CardContent className="p-8 md:p-12 space-y-6">
+               <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Rate: ₹60/KM</p>
+                <Badge className="bg-secondary text-white text-[10px] uppercase font-black italic">Premium Ride</Badge>
+              </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                  <div className="space-y-3 relative">
                   <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-2">Pickup (Lock Origin)</Label>
@@ -429,7 +427,7 @@ export default function SearchCardPage() {
               </div>
               <Button 
                 className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
-                onClick={() => handleBookingStart('car', carDrop, 450, carPickup)}
+                onClick={() => handleBookingStart('car', carDrop, 60, carPickup)}
               >
                 <Car className="mr-3 h-8 w-8" /> SEARCH & BOOK CAB
               </Button>
@@ -438,7 +436,6 @@ export default function SearchCardPage() {
         </Tabs>
       </Card>
 
-      {/* Booking Dialog */}
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md rounded-[3rem] p-10 max-h-[90vh] overflow-y-auto shadow-2xl border-primary/20 bg-white/95 backdrop-blur-xl">
@@ -463,7 +460,6 @@ export default function SearchCardPage() {
         </Dialog>
       )}
       
-      {/* Map Dialogs */}
       <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
         <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden rounded-[3rem] border-[6px] border-primary shadow-[0_50px_100px_rgba(var(--primary),0.3)] bg-white">
             <DialogHeader className="p-8 bg-primary text-white flex flex-row items-center justify-between relative overflow-hidden">

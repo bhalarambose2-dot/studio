@@ -5,11 +5,14 @@ import { useState, useEffect } from 'react';
 /**
  * Ultra 3D Premium Splash Loader for BR TRIP.
  * Features a multifaceted 3D diamond, neon glow effects, and a futuristic particle background.
+ * Fixed: Hydration mismatch by ensuring random values are generated only on client.
  */
 export function SplashLoader() {
   const [show, setShow] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check if splash has been shown in this session
     const hasShown = sessionStorage.getItem('br-trip-splash-shown');
     if (hasShown) {
@@ -23,7 +26,7 @@ export function SplashLoader() {
     setShow(false);
   };
 
-  if (!show) return null;
+  if (!show || !mounted) return null;
 
   return (
     <div className="splash-body fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#00050a]">
@@ -178,16 +181,16 @@ export function SplashLoader() {
 
         ${[...Array(20)].map((_, i) => `
           .particle-${i} {
-            width: ${Math.random() * 4 + 2}px;
-            height: ${Math.random() * 4 + 2}px;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: particle-move-${i} ${Math.random() * 10 + 10}s infinite linear;
+            width: ${Math.floor(Math.random() * 4) + 2}px;
+            height: ${Math.floor(Math.random() * 4) + 2}px;
+            left: ${Math.floor(Math.random() * 100)}%;
+            top: ${Math.floor(Math.random() * 100)}%;
+            animation: particle-move-${i} ${Math.floor(Math.random() * 10) + 10}s infinite linear;
           }
           @keyframes particle-move-${i} {
             0% { transform: translate(0, 0); opacity: 0; }
             50% { opacity: 0.5; }
-            100% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px); opacity: 0; }
+            100% { transform: translate(${Math.floor(Math.random() * 200) - 100}px, ${Math.floor(Math.random() * 200) - 100}px); opacity: 0; }
           }
         `).join('')}
 
