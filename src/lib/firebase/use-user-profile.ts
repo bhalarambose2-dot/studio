@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCallback } from 'react';
@@ -14,7 +13,9 @@ export interface SavedCard {
 
 export interface UserProfile {
   fullName: string;
-  role: 'traveler' | 'admin' | 'staff';
+  email?: string;
+  phone?: string;
+  role: 'traveler' | 'admin' | 'staff' | 'bus_owner';
   kycStatus?: 'none' | 'pending' | 'verified';
   kycDocumentType?: string;
   walletBalance?: number;
@@ -41,11 +42,9 @@ export function useUserProfile(userId: string | undefined) {
 
       try {
         await setDoc(userDocRef, data, { merge: true });
-        toast({
-          title: 'Success',
-          description: 'Profile updated successfully!',
-        });
+        // Silently update for background sync, toast only if needed
       } catch (e: any) {
+        console.error("Profile update error:", e);
         toast({
           title: 'Error updating profile',
           description: e.message,
