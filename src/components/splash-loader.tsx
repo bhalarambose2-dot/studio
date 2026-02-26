@@ -6,6 +6,7 @@ import * as THREE from 'three';
 /**
  * Cinematic Royal 3D Splash Loader for BR TRIP.
  * Features a zooming Earth, an orbiting airplane, and a Golden 3D Prism Logo.
+ * Fixed for Hydration Errors using mounted state.
  */
 export function SplashLoader() {
   const [show, setShow] = useState(true);
@@ -146,7 +147,7 @@ export function SplashLoader() {
     setShow(false);
   };
 
-  if (!show || !mounted) return null;
+  if (!mounted || !show) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black overflow-hidden font-headline">

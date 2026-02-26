@@ -48,61 +48,87 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 const popularCitiesIndia = [
-  'Delhi', 'Mumbai', 'Jaipur', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Chennai', 'Kolkata', 'Kedarnath', 'Rishikesh', 'Srinagar', 'Kochi', 'Jodhpur'
+  'Jaipur', 'Jodhpur', 'Delhi', 'Mumbai', 'Udaipur', 'Shimla', 'Manali', 'Goa', 'Varanasi', 'Bengaluru', 'Kedarnath', 'Rishikesh'
 ];
 
 const allLocations = [
-  "Paota Circle, Jodhpur, Rajasthan, India",
+  // Jodhpur Locations
+  "Paota Circle, Jodhpur, Rajasthan",
   "Paota Chauraha, Jodhpur, Rajasthan",
-  "Paota C Road, BJS Colony, Jodhpur, Rajasthan",
-  "Paota B Road Market, Jodhpur, Rajasthan",
-  "Pavta Circle, Mandore Road, Jodhpur, Rajasthan",
-  "Pavta Sabji Mandi, Jodhpur, Rajasthan",
-  "Pavta B Road, Laxmi Nagar, Jodhpur, Rajasthan",
-  "Sindhi Colony, Jodhpur, Rajasthan",
-  "Solanki Dairy Farm, Jodhpur, Rajasthan",
-  "Parihar Telecom, Jodhpur, Rajasthan",
-  "Jodhpur Auto Gas, Jodhpur, Rajasthan",
-  "MDM Hospital, Shastri Nagar, Jodhpur",
-  "Ratanada Circle, Jodhpur, Rajasthan",
-  "Sardarpura 1st Road, Jodhpur, Rajasthan",
-  "Chopasni Housing Board, Sector 17, Jodhpur",
-  "Railway Station Main Gate, Jodhpur, Rajasthan",
-  "Airport Terminal, Jodhpur, Rajasthan",
+  "Paota C Road, BJS Colony, Jodhpur",
+  "Paota B Road Market, Jodhpur",
+  "Sardarpura 1st Road, Jodhpur",
+  "Sardarpura Main Market, Jodhpur",
+  "Ratanada Circle, Jodhpur",
+  "Chopasni Housing Board, Jodhpur",
+  "Basni Industrial Area, Jodhpur",
+  "Kamla Nagar, Jodhpur",
+  "Shastri Nagar, Jodhpur",
+  "MDM Hospital Road, Jodhpur",
+  "Railway Station Main Gate, Jodhpur",
+  "North Western Railway Office, Jodhpur",
+  "Airport Terminal, Jodhpur",
   "Clock Tower (Ghanta Ghar), Old City, Jodhpur",
-  "Mehrangarh Fort Parking, Jodhpur, Rajasthan",
-  "Mandore Garden Main Gate, Jodhpur, Rajasthan",
-  "Umaid Bhawan Palace, Jodhpur, Rajasthan",
-  "Kaylana Lake, Jodhpur, Rajasthan",
-  "Mansarovar Metro Station, Jaipur, Rajasthan",
-  "C-Scheme Area, Jaipur, Rajasthan, India",
-  "Vaishali Nagar, Jaipur, Rajasthan",
-  "Hawa Mahal, Badi Choupad, Jaipur, Rajasthan",
-  "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
-  "Amer Fort, Jaipur, Rajasthan",
+  "Mehrangarh Fort Parking, Jodhpur",
+  "Mandore Garden, Jodhpur",
+  "Umaid Bhawan Palace, Jodhpur",
+  "Kaylana Lake, Jodhpur",
+  "Pal Road, Jodhpur",
+  "Banar Road, Jodhpur",
+  "Jhalamand Circle, Jodhpur",
+  "Kudi Bhagtasni Housing Board, Jodhpur",
+  "Sangriya Industrial Area, Jodhpur",
+  "MIA Basni Phase 2, Jodhpur",
+  "Sojati Gate, Jodhpur",
+  "Jalori Gate, Jodhpur",
+  "Siwanchi Gate, Jodhpur",
+  "Nagori Gate, Jodhpur",
+  
+  // Jaipur Locations
+  "Mansarovar Metro Station, Jaipur",
+  "Mansarovar Plaza, Jaipur",
+  "Vaishali Nagar, Jaipur",
+  "C-Scheme, Jaipur",
+  "Malviya Nagar, Jaipur",
+  "World Trade Park (WTP), Jaipur",
+  "Raja Park, Jaipur",
+  "Bani Park, Jaipur",
+  "Sindhi Camp Bus Stand, Jaipur",
+  "Jaipur Junction Railway Station, Jaipur",
+  "Sanganer Airport Terminal, Jaipur",
+  "Hawa Mahal, Pink City, Jaipur",
+  "City Palace, Jaipur",
+  "Johri Bazaar, Jaipur",
+  "Bapu Bazaar, Jaipur",
+  "Amer Fort, Jaipur",
+  "Nahargarh Fort, Jaipur",
+  "Jaigarh Fort, Jaipur",
   "Jal Mahal, Amber Road, Jaipur",
-  "Connaught Place, New Delhi, Delhi, India",
-  "India Gate, Rajpath, New Delhi, Delhi",
-  "Aerocity, IGI Airport, Delhi",
-  "Chandni Chowk Market, Old Delhi, Delhi",
-  "Saket District Centre, South Delhi, Delhi",
-  "Lajpat Nagar Market, Delhi",
-  "Qutub Minar, Mehrauli, New Delhi",
-  "Marine Drive, Nariman Point, Mumbai, Maharashtra",
-  "Gateway of India, Colaba, Mumbai, Maharashtra",
-  "Juhu Beach, Mumbai, Maharashtra, India",
-  "Bandra West, Linking Road, Mumbai, Maharashtra",
-  "Dadar Station East, Mumbai",
-  "Baga Beach, Calangute, North Goa, India",
-  "Kedarnath Temple Base, Uttarakhand",
-  "Rishikesh, Lakshman Jhula Point, Uttarakhand",
-  "Mall Road, Shimla, Himachal Pradesh",
-  "Solang Valley, Manali, Himachal Pradesh",
-  "Fort Kochi, Kerala, India",
-  "Charminar, Hyderabad, Telangana",
-  "Victoria Memorial, Kolkata, West Bengal",
-  "Golden Temple, Amritsar, Punjab",
-  "Leh Main Market, Ladakh, India",
+  "Albert Hall Museum, Jaipur",
+  "Sitapura Industrial Area, Jaipur",
+  "Jhotwara, Jaipur",
+  "Vidhyadhar Nagar, Jaipur",
+  "Tonk Road, Jaipur",
+  "Ajmer Road, Jaipur",
+  "Agra Road, Jaipur",
+  "Sirsi Road, Jaipur",
+  "Jagatsura, Jaipur",
+  "Khatipura, Jaipur",
+  "Sodala, Jaipur",
+  "Civil Lines, Jaipur",
+  "Adarsh Nagar, Jaipur",
+  "Gandhi Nagar Railway Station, Jaipur",
+  "Durgapura, Jaipur",
+  "Pratap Nagar, Jaipur",
+  "Gopalpura Bypass, Jaipur",
+  
+  // Other Points
+  "Connaught Place, New Delhi",
+  "India Gate, New Delhi",
+  "Marine Drive, Mumbai",
+  "Gateway of India, Mumbai",
+  "Baga Beach, Goa",
+  "Kedarnath Base, Uttarakhand",
 ];
 
 export default function SearchCardPage() {
@@ -174,7 +200,7 @@ export default function SearchCardPage() {
                 <div className="flex flex-col gap-1">
                   <p className="font-black text-base text-slate-800 tracking-tight group-hover:text-primary transition-colors uppercase italic">{main}</p>
                   <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider leading-tight pr-4">
-                    {rest.join(',').trim()}
+                    {rest.join(',').trim() || 'Rajasthan Point'}
                   </p>
                 </div>
               </div>
@@ -286,7 +312,7 @@ export default function SearchCardPage() {
                   <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground ml-2">Location Search (Lock Point)</Label>
                   <div className="relative group">
                     <Input 
-                      placeholder="Type Jodhpur, Paota, Delhi..." 
+                      placeholder="Type Jodhpur, Paota, Jaipur..." 
                       value={hotelLocation}
                       onChange={(e) => handleLocationChange(e.target.value, 'hotelLocation', setHotelLocation)}
                       className="h-16 rounded-[1.5rem] border-muted pr-36 text-lg font-black italic shadow-inner bg-slate-50/50"
