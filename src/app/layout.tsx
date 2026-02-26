@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
 import { Suspense } from 'react';
 import { SplashLoader } from '@/components/splash-loader';
+import { Loader2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'BR TRIP',
@@ -26,7 +27,15 @@ export default function RootLayout({
       </head>
       <body>
         <FirebaseClientProvider>
-          <Suspense fallback={<SplashLoader />}>
+          {/* Initial 3D Splash Screen */}
+          <SplashLoader />
+          
+          <Suspense fallback={
+            <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-[9998]">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="mt-4 font-black italic text-primary uppercase tracking-widest text-xs">Sahi Safar Loading...</p>
+            </div>
+          }>
             <AppShell>{children}</AppShell>
           </Suspense>
           <Toaster />
