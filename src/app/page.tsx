@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -11,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2, Briefcase, Mail, ShieldCheck, ArrowLeft, Bike, User } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useFirebase, setDocumentNonBlocking } from '@/firebase';
@@ -24,15 +23,15 @@ import { doc, getDoc } from 'firebase/firestore';
 import { sendOtpEmail } from '@/ai/flows/send-otp-email';
 
 const signInSchema = z.object({
-  email: z.string().email('Sahi email address bharein.'),
+  email: z.string().email('Sahi email bharein.'),
   password: z.string().min(1, 'Password zaroori hai.'),
 });
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, 'Pura naam likhein.'),
-  email: z.string().email('Sahi email address bharein.'),
+  email: z.string().email('Sahi email bharein.'),
   role: z.enum(['traveler', 'admin', 'staff', 'bus_owner']),
-  password: z.string().min(8, 'Password kam se kam 8 characters ka ho.'),
+  password: z.string().min(8, 'Password kam se kam 8 digits ka ho.'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords match nahi kar rahe.",
@@ -40,7 +39,7 @@ const signUpSchema = z.object({
 });
 
 const emailOtpSchema = z.object({
-  email: z.string().email('Kripya ek valid email address bharein.'),
+  email: z.string().email('Kripya valid email bharein.'),
   otpCode: z.string().optional(),
 });
 
@@ -62,21 +61,11 @@ export default function AuthPage() {
             try {
                 const userDoc = await getDoc(doc(firestore, "users", user.uid));
                 const userData = userDoc.data();
-                
-                if (!userData) {
-                    router.push('/search');
-                    return;
-                }
-
-                if (userData.role === 'admin') {
-                    router.push('/admin');
-                } else if (userData.role === 'staff' || userData.role === 'bus_owner') {
-                    router.push('/staff');
-                } else {
-                    router.push('/search');
-                }
+                if (!userData) { router.push('/search'); return; }
+                if (userData.role === 'admin') router.push('/admin');
+                else if (userData.role === 'staff' || userData.role === 'bus_owner') router.push('/staff');
+                else router.push('/search');
             } catch (error) {
-                console.error("Redirection error:", error);
                 router.push('/search');
             }
         }
@@ -105,7 +94,7 @@ export default function AuthPage() {
       await signInWithEmailAndPassword(auth, values.email, values.password);
     } catch (error: any) {
       setIsLoading(false);
-      toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
+      toast({ title: 'Login Fail', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -114,7 +103,6 @@ export default function AuthPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const newUser = userCredential.user;
-      
       const userDocRef = doc(firestore, "users", newUser.uid);
       setDocumentNonBlocking(userDocRef, {
         id: newUser.uid,
@@ -122,14 +110,12 @@ export default function AuthPage() {
         email: values.email,
         role: values.role,
         walletBalance: 0,
-        kycStatus: 'none',
         createdAt: new Date().toISOString(),
       }, { merge: true });
-
-      toast({ title: 'Account Created', description: `Sahi Safar mein swagat hai.` });
+      toast({ title: 'Welcome!', description: `Sahi Safar mein aapka swagat hai.` });
     } catch (error: any) {
       setIsLoading(false);
-      toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
+      toast({ title: 'Signup Fail', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -140,9 +126,9 @@ export default function AuthPage() {
       setGeneratedOtp(otp);
       await sendOtpEmail({ email: values.email, otpCode: otp });
       setCurrentOtpStep('code');
-      toast({ title: 'OTP DISPATCHED! 📧', description: `Check your backend dispatch terminal.` });
+      toast({ title: 'OTP DISPATCHED! 📧', description: `Check dispatch terminal.` });
     } catch (error: any) {
-      toast({ title: 'OTP Error', description: 'OTP bhejne mein dikat aayi.', variant: 'destructive' });
+      toast({ title: 'Error', description: 'OTP bhejne mein dikat aayi.', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -150,16 +136,14 @@ export default function AuthPage() {
 
   const handleVerifyEmailOTP = async (values: EmailOTPFormValues) => {
     if (values.otpCode !== generatedOtp) {
-        toast({ title: 'Galat OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
+        toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
         return;
     }
-
     setIsLoading(true);
     try {
       const userCredential = await signInAnonymously(auth);
       const newUser = userCredential.user;
       const userDocRef = doc(firestore, "users", newUser.uid);
-      
       setDocumentNonBlocking(userDocRef, {
           id: newUser.uid,
           fullName: 'Sahi Traveler',
@@ -168,28 +152,24 @@ export default function AuthPage() {
           walletBalance: 0,
           createdAt: new Date().toISOString(),
       }, { merge: true });
-
-      toast({ title: 'LOGIN SUCCESS! ✅', description: 'Sahi Safar mein swagat hai.' });
+      toast({ title: 'LOGIN SUCCESS! ✅' });
     } catch (error: any) {
       setIsLoading(false);
-      toast({ title: 'Verification Failed', description: 'Login nahi ho saka.', variant: 'destructive' });
+      toast({ title: 'Verification Failed', variant: 'destructive' });
     }
   };
 
   if (isUserLoading) return <div className="flex items-center justify-center min-h-screen bg-white"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50">
-       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
-       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
-        
-      <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl border-white shadow-2xl relative z-10 rounded-[2.5rem] overflow-hidden">
-        <CardHeader className="text-center pb-2 pt-10">
+    <div className="relative flex items-center justify-center min-h-screen w-full bg-slate-50 p-4">
+      <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-[2.5rem] overflow-hidden">
+        <CardHeader className="text-center pt-10 pb-2">
           <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4">
             <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter text-foreground uppercase">BR TRIP</CardTitle>
-          <CardDescription className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-1 italic">Sahi Nivesh • Sahi Safar</CardDescription>
+          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase">BR TRIP</CardTitle>
+          <CardDescription className="text-muted-foreground font-black uppercase text-[10px] mt-1 italic tracking-[0.2em]">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
           <Tabs defaultValue="otp" className="w-full">
@@ -199,24 +179,58 @@ export default function AuthPage() {
               <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
 
+            <TabsContent value="otp">
+              <Form {...otpForm}>
+                <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'email' ? handleSendEmailOTP : handleVerifyEmailOTP)} className="space-y-6">
+                  {currentOtpStep === 'email' ? (
+                    <FormField control={otpForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Login via OTP (Email)</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
+                              <Input placeholder="name@email.com" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg shadow-inner" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  ) : (
+                    <FormField control={otpForm.control} name="otpCode" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
+                        <FormControl>
+                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic bg-slate-50 shadow-inner" maxLength={6} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  )}
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
+                    {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'email' ? 'SEND OTP TO EMAIL' : 'VERIFY & LOGIN'}
+                  </Button>
+                </form>
+              </Form>
+            </TabsContent>
+
             <TabsContent value="signin">
               <Form {...signInForm}>
                 <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-6">
                   <FormField control={signInForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
-                      <FormControl><Input placeholder="you@example.com" {...field} className="h-14 rounded-2xl font-medium" /></FormControl>
+                      <FormControl><Input placeholder="you@example.com" {...field} className="h-14 rounded-2xl font-medium shadow-inner" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={signInForm.control} name="password" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-14 rounded-2xl font-medium" /></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-14 rounded-2xl font-medium shadow-inner" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <LogIn className="mr-2 h-6 w-6" />}
                     Sign In
                   </Button>
@@ -230,25 +244,25 @@ export default function AuthPage() {
                   <FormField control={signUpForm.control} name="fullName" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Full Name</FormLabel>
-                      <FormControl><Input placeholder="Pura Naam" {...field} className="h-12 rounded-2xl font-medium"/></FormControl>
+                      <FormControl><Input placeholder="John Doe" {...field} className="h-12 rounded-2xl shadow-inner"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={signUpForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
-                      <FormControl><Input placeholder="you@example.com" {...field} className="h-12 rounded-2xl font-medium"/></FormControl>
+                      <FormControl><Input placeholder="you@example.com" {...field} className="h-12 rounded-2xl shadow-inner"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={signUpForm.control} name="role" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Koun ho aap? (Role)</FormLabel>
+                      <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Role</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl><SelectTrigger className="h-12 rounded-2xl font-medium"><SelectValue placeholder="Select Role" /></SelectTrigger></FormControl>
+                        <FormControl><SelectTrigger className="h-12 rounded-2xl shadow-inner"><SelectValue placeholder="Select Role" /></SelectTrigger></FormControl>
                         <SelectContent>
-                          <SelectItem value="traveler"><span className="flex items-center gap-2"><User className="h-4 w-4" /> User (Traveler)</span></SelectItem>
-                          <SelectItem value="staff"><span className="flex items-center gap-2"><Bike className="h-4 w-4" /> Captain (Partner)</span></SelectItem>
+                          <SelectItem value="traveler"><span className="flex items-center gap-2"><User className="h-4 w-4" /> Traveler</span></SelectItem>
+                          <SelectItem value="staff"><span className="flex items-center gap-2"><Bike className="h-4 w-4" /> Captain</span></SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -257,54 +271,20 @@ export default function AuthPage() {
                   <FormField control={signUpForm.control} name="password" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl font-medium"/></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={signUpForm.control} name="confirmPassword" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Confirm Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl font-medium"/></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase mt-4">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Register Now
-                  </Button>
-                </form>
-              </Form>
-            </TabsContent>
-
-            <TabsContent value="otp">
-              <Form {...otpForm}>
-                <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'email' ? handleSendEmailOTP : handleVerifyEmailOTP)} className="space-y-6">
-                  {currentOtpStep === 'email' ? (
-                    <FormField control={otpForm.control} name="email" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email for OTP</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                              <Input placeholder="name@gmail.com" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  ) : (
-                    <FormField control={otpForm.control} name="otpCode" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
-                        <FormControl>
-                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic" maxLength={6} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  )}
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl shadow-primary/20 rounded-2xl uppercase">
-                    {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'email' ? 'Send OTP' : 'Verify & Login'}
                   </Button>
                 </form>
               </Form>

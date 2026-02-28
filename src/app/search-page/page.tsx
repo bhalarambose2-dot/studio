@@ -35,7 +35,6 @@ import {
   Globe,
   MapPinned,
   CheckCircle2,
-  History,
   Navigation2,
   Briefcase
 } from 'lucide-react';
@@ -52,7 +51,7 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // Jodhpur Locations (Extensive)
+  // Jodhpur Locations (Massive)
   "Paota Circle, Jodhpur, Rajasthan",
   "Paota Chauraha, Jodhpur, Rajasthan",
   "Paota A Road, Jodhpur, Rajasthan",
@@ -64,9 +63,9 @@ const allLocations = [
   "Sardarpura 3rd Road, Jodhpur, Rajasthan",
   "Sardarpura 4th Road, Jodhpur, Rajasthan",
   "Sardarpura 5th Road, Jodhpur, Rajasthan",
-  "Sardarpura Main Market, Jodhpur, Rajasthan",
+  "Sardarpura Main Market, Jodhpur",
   "Ratanada Circle, Jodhpur, Rajasthan",
-  "Ratanada Shiv Temple, Jodhpur, Rajasthan",
+  "Ratanada Shiv Temple, Jodhpur",
   "Chopasni Housing Board Sector 1, Jodhpur",
   "Chopasni Housing Board Sector 2, Jodhpur",
   "Chopasni Housing Board Sector 3, Jodhpur",
@@ -76,10 +75,10 @@ const allLocations = [
   "Kamla Nagar, Jodhpur, Rajasthan",
   "Shastri Nagar, Jodhpur, Rajasthan",
   "MDM Hospital Road, Jodhpur, Rajasthan",
-  "Railway Station Main Gate, Jodhpur, Rajasthan",
+  "Railway Station Main Gate, Jodhpur",
   "Airport Terminal, Jodhpur, Rajasthan",
-  "Clock Tower (Ghanta Ghar), Old City, Jodhpur",
-  "Mehrangarh Fort Parking, Jodhpur, Rajasthan",
+  "Clock Tower (Ghanta Ghar), Jodhpur",
+  "Mehrangarh Fort Parking, Jodhpur",
   "Mandore Garden, Jodhpur, Rajasthan",
   "Umaid Bhawan Palace, Jodhpur, Rajasthan",
   "Kaylana Lake, Jodhpur, Rajasthan",
@@ -87,7 +86,7 @@ const allLocations = [
   "Dali Bai Temple, Pal Road, Jodhpur",
   "Jhalamand Circle, Jodhpur, Rajasthan",
   "Kudi Bhagtasni Housing Board, Jodhpur",
-  "Sangriya Industrial Area, Jodhpur, Rajasthan",
+  "Sangriya Industrial Area, Jodhpur",
   "Sojati Gate, Jodhpur, Rajasthan",
   "Jalori Gate, Jodhpur, Rajasthan",
   "Siwanchi Gate, Jodhpur, Rajasthan",
@@ -97,8 +96,8 @@ const allLocations = [
   "Vivek Vihar, Jodhpur, Rajasthan",
   "Suncity, Jodhpur, Rajasthan",
   
-  // Jaipur Locations (Extensive)
-  "Mansarovar Metro Station, Jaipur, Rajasthan",
+  // Jaipur Locations (Massive)
+  "Mansarovar Metro Station, Jaipur",
   "Mansarovar Plaza, Jaipur, Rajasthan",
   "Mansarovar Sector 1, Jaipur",
   "Mansarovar Sector 2, Jaipur",
@@ -114,10 +113,10 @@ const allLocations = [
   "Gaurav Tower (GT), Malviya Nagar, Jaipur",
   "Raja Park, Jaipur, Rajasthan",
   "Bani Park, Jaipur, Rajasthan",
-  "Sindhi Camp Bus Stand, Jaipur, Rajasthan",
+  "Sindhi Camp Bus Stand, Jaipur",
   "Jaipur Junction Railway Station, Jaipur",
-  "Sanganer Airport Terminal, Jaipur, Rajasthan",
-  "Hawa Mahal, Pink City, Jaipur, Rajasthan",
+  "Sanganer Airport Terminal, Jaipur",
+  "Hawa Mahal, Pink City, Jaipur",
   "City Palace, Jaipur, Rajasthan",
   "Johri Bazaar, Jaipur, Rajasthan",
   "Bapu Bazaar, Jaipur, Rajasthan",
@@ -126,7 +125,7 @@ const allLocations = [
   "Jaigarh Fort, Jaipur, Rajasthan",
   "Jal Mahal, Amber Road, Jaipur",
   "Albert Hall Museum, Jaipur, Rajasthan",
-  "Sitapura Industrial Area, Jaipur, Rajasthan",
+  "Sitapura Industrial Area, Jaipur",
   "Jhotwara, Jaipur, Rajasthan",
   "Vidhyadhar Nagar, Jaipur, Rajasthan",
   "Tonk Road, Jaipur, Rajasthan",
@@ -145,7 +144,7 @@ const allLocations = [
   "M.I. Road, Jaipur, Rajasthan",
   "Ramganj Bazaar, Jaipur, Rajasthan",
   
-  // Other Points
+  // National Points
   "Connaught Place, New Delhi",
   "Marine Drive, Mumbai",
   "Gateway of India, Mumbai",
@@ -195,10 +194,10 @@ export default function SearchCardPage() {
     if (activeSuggestionKey !== keyName || suggestions.length === 0) return null;
     return (
       <div className="absolute z-[100] w-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl mt-2 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
-        <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+        <div className="max-h-[400px] overflow-y-auto custom-scrollbar scroll-smooth">
           <div className="bg-primary/5 p-3 border-b flex items-center justify-center gap-2 sticky top-0 bg-white z-10">
              <LocateFixed className="h-3 w-3 text-primary animate-pulse" />
-             <p className="text-[10px] font-black uppercase text-primary tracking-widest italic">Sahi Nivesh • Automatic Mark</p>
+             <p className="text-[10px] font-black uppercase text-primary tracking-widest italic">Sahi Nivesh • Automatic Mark Locked</p>
           </div>
           {suggestions.map((loc, i) => {
             const [main, ...rest] = loc.split(',');
@@ -235,12 +234,12 @@ export default function SearchCardPage() {
 
   const detectLocation = (key: string, setter: (v: string) => void) => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
+      navigator.geolocation.getCurrentPosition(() => {
           const fallback = 'Paota Circle, Jodhpur, Rajasthan';
           setter(fallback);
           toast({
             title: "GPS LOCKED! 📡",
-            description: `Aapki location detect karke automatic lock kar di gayi hai.`,
+            description: `Aapki location detect karke automatic mark kar di gayi hai.`,
           });
       });
     }
@@ -313,16 +312,16 @@ export default function SearchCardPage() {
       <Card className="border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white/90 backdrop-blur-md">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 h-20 bg-muted/30 p-1.5">
-            <TabsTrigger value="hotel" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg">
+            <TabsTrigger value="hotel" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg transition-all">
               <Hotel className="mr-1 md:mr-2 h-4 w-4 text-primary"/>Hotel
             </TabsTrigger>
-            <TabsTrigger value="bus" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg">
+            <TabsTrigger value="bus" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg transition-all">
               <Bus className="mr-1 md:mr-2 h-4 w-4 text-primary"/>Bus
             </TabsTrigger>
-            <TabsTrigger value="bike" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg">
+            <TabsTrigger value="bike" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg transition-all">
               <Bike className="mr-1 md:mr-2 h-4 w-4 text-primary"/>Bike
             </TabsTrigger>
-            <TabsTrigger value="car" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg">
+            <TabsTrigger value="car" className="text-[10px] md:text-xs font-black italic uppercase rounded-2xl data-[state=active]:bg-white data-[state=active]:shadow-lg transition-all">
               <Car className="mr-1 md:mr-2 h-4 w-4 text-primary"/>Cab
             </TabsTrigger>
           </TabsList>
@@ -360,7 +359,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button 
-                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95 group"
+                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95 group bg-primary hover:bg-primary/90"
                 onClick={() => handleBookingStart('hotel', hotelLocation, 1200)}
               >
                 <Search className="mr-3 h-8 w-8 group-hover:rotate-12 transition-transform" /> SEARCH & BOOK HOTEL
@@ -392,7 +391,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button 
-                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
+                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95 bg-primary hover:bg-primary/90"
                 onClick={() => handleBookingStart('bus', busTo, 850, busFrom)}
               >
                 <Bus className="mr-3 h-8 w-8" /> SEARCH & BOOK BUS
@@ -403,8 +402,8 @@ export default function SearchCardPage() {
           <TabsContent value="bike">
             <CardContent className="p-8 md:p-12 space-y-6">
               <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
-                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹15 Per KM</p>
-                <Badge className="bg-primary text-white text-[10px] uppercase font-black italic">Fast Delivery</Badge>
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹15 Per Kilometer</p>
+                <Badge className="bg-primary text-white text-[10px] uppercase font-black italic">Fast Safar</Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3 relative">
@@ -433,7 +432,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button 
-                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
+                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95 bg-primary hover:bg-primary/90"
                 onClick={() => handleBookingStart('bike', bikeDrop, 15, bikePickup)}
               >
                  <Zap className="mr-3 h-8 w-8 animate-pulse text-yellow-400" /> BOOK BIKE TAXI (₹15/KM)
@@ -444,7 +443,7 @@ export default function SearchCardPage() {
           <TabsContent value="car">
             <CardContent className="p-8 md:p-12 space-y-6">
                <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between mb-2">
-                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹60 Per KM</p>
+                <p className="text-xs font-black uppercase italic text-primary">Sahi Indian Rate: ₹60 Per Kilometer</p>
                 <Badge className="bg-secondary text-white text-[10px] uppercase font-black italic">Premium Ride</Badge>
               </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -474,7 +473,7 @@ export default function SearchCardPage() {
                 </div>
               </div>
               <Button 
-                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95"
+                className="w-full h-20 text-2xl font-black italic uppercase tracking-[0.1em] shadow-2xl shadow-primary/30 rounded-[2rem] transition-transform active:scale-95 bg-primary hover:bg-primary/90"
                 onClick={() => handleBookingStart('car', carDrop, 60, carPickup)}
               >
                 <Car className="mr-3 h-8 w-8" /> SEARCH & BOOK CAB (₹60/KM)
@@ -495,7 +494,7 @@ export default function SearchCardPage() {
                 CONFIRM TRIP
               </DialogTitle>
               <DialogDescription className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest mt-2">
-                Sahi Nivesh • Booking Final Step
+                Sahi Nivesh • Sahi Safar • Final Step
               </DialogDescription>
             </DialogHeader>
             <BookingForm 
@@ -509,11 +508,11 @@ export default function SearchCardPage() {
       )}
       
       <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
-        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden rounded-[3rem] border-[6px] border-primary shadow-[0_50px_100px_rgba(var(--primary),0.3)] bg-white">
+        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden rounded-[3rem] border-[6px] border-primary shadow-2xl bg-white">
             <DialogHeader className="p-8 bg-primary text-white flex flex-row items-center justify-between relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://picsum.photos/seed/map/800/200')] bg-cover bg-center pointer-events-none" />
                 <div className="flex items-center gap-6 relative z-10">
-                    <div className="bg-white text-primary p-4 rounded-3xl shadow-2xl animate-float"><Route className="h-8 w-8" /></div>
+                    <div className="bg-white text-primary p-4 rounded-3xl shadow-2xl"><Route className="h-8 w-8" /></div>
                     <div>
                         <DialogTitle className="text-3xl font-black italic tracking-tighter uppercase">{mapMode === 'directions' ? 'LIVE ROUTE GUIDE' : 'AUTOMATIC MARK LOCKED'}</DialogTitle>
                         <DialogDescription className="text-white/90 font-black uppercase text-[10px] tracking-[0.3em] flex items-center gap-2">
@@ -521,13 +520,13 @@ export default function SearchCardPage() {
                         </DialogDescription>
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setIsRouteMapOpen(false)} className="text-white hover:bg-white/20 rounded-full h-12 w-12 transition-transform hover:rotate-90 active:scale-90"><X className="h-8 w-8" /></Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsRouteMapOpen(false)} className="text-white hover:bg-white/20 rounded-full h-12 w-12 transition-transform hover:rotate-90"><X className="h-8 w-8" /></Button>
             </DialogHeader>
             <div className="flex-1 w-full h-full relative bg-slate-100">
-                <iframe src={mapUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" className="w-full h-full grayscale-[0.2] contrast-[1.1]"></iframe>
-                <div className="absolute top-8 left-8 bg-white/95 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border-l-[6px] border-l-green-500 max-w-sm animate-in fade-in slide-in-from-left-8 duration-500">
+                <iframe src={mapUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen={true} loading="lazy" className="w-full h-full grayscale-[0.2]"></iframe>
+                <div className="absolute top-8 left-8 bg-white/95 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border-l-[6px] border-l-green-500 max-w-sm">
                     <Badge className="bg-green-100 text-green-700 border-none font-black text-[10px] uppercase mb-3 px-4 py-1">POINT VERIFIED</Badge>
-                    <p className="text-sm font-black text-slate-800 leading-tight italic">Humne automatic algorithms ke saath "{targetPlace || 'Location'}" ko lock kar diya hai. Aapka safar yahan se sidha aur surakshit rahega.</p>
+                    <p className="text-sm font-black text-slate-800 leading-tight italic">Algorithm locked: "{targetPlace || 'Location'}". Aapka safar yahan se surakshit rahega.</p>
                 </div>
             </div>
         </DialogContent>

@@ -42,7 +42,7 @@ export function useUserProfile(userId: string | undefined) {
 
       try {
         await setDoc(userDocRef, data, { merge: true });
-        // Silently update for background sync, toast only if needed
+        // Silently update for background sync
       } catch (e: any) {
         console.error("Profile update error:", e);
         toast({
