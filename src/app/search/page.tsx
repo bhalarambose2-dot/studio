@@ -22,6 +22,7 @@ import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
@@ -113,7 +114,7 @@ export default function SearchPage() {
         </div>
       </section>
 
-      {/* Popular Travel Cities Section (From User Snippet) */}
+      {/* Popular Travel Cities Section */}
       <section className="px-6 mt-10">
         <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden bg-white border-b-8 border-b-primary/10">
           <CardHeader className="bg-primary/5 pb-4">
