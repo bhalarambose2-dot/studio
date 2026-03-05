@@ -63,7 +63,8 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     defaultValues: { name: '', email: '', phone: '', travelers: 1, terms: false },
   });
 
-  // Smart Auto-Fill: Load existing user details
+  // Smart Auto-Fill Logic: 
+  // Automatically loads Name, Email, and Phone from User Profile
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -83,7 +84,8 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     }
     setIsLoading(true);
     
-    // Amount Calculation Logic
+    // Sahi Indian Rates Calculation
+    // Bike: ₹15/km, Taxi: ₹60/km
     const finalAmount = parseFloat(String(itemDetails?.price || 500)) * (bookingType === 'hotel' ? values.travelers : 1);
     const pnrId = `ST${Math.floor(100000 + Math.random() * 900000)}`;
     
@@ -105,14 +107,15 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // Smart Auto-Save: Update profile with latest details
+        // Smart Auto-Save Logic: 
+        // Automatically updates User Profile with latest details entered in form
         await updateUserProfile({ 
           fullName: values.name, 
           email: values.email, 
           phone: values.phone 
         });
 
-        // Save Booking
+        // Save Booking Records
         await addDoc(collection(firestore, 'users', user.uid, 'bookings'), bookingData);
         await addDoc(collection(firestore, 'busBookings'), bookingData);
         
@@ -162,7 +165,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               </Card>
 
               <Button className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black italic uppercase rounded-2xl shadow-xl shadow-primary/20 text-lg group" onClick={() => onSuccess && onSuccess()}>
-                  MY BOOKINGS DEKHEIN <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                  MY SAFAR HISTORY <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
               </Button>
           </div>
       );
@@ -214,7 +217,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 space-y-2">
             <div className="flex justify-between items-center">
                 <p className="text-[10px] font-black uppercase text-muted-foreground">Booking Type</p>
-                <Badge className="bg-primary text-white border-none uppercase text-[9px] italic font-black">{bookingType}</Badge>
+                <Badge className="bg-primary text-white border-none uppercase text-[9px] italic font-black">{bookingType.toUpperCase()}</Badge>
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-slate-200">
                 <p className="text-[10px] font-black uppercase text-primary">Total Sahi Price</p>
@@ -226,15 +229,15 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
           <FormItem className="flex items-start space-x-3 space-y-0 p-4 bg-slate-50 rounded-2xl border border-primary/10 shadow-sm">
             <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
             <div className="space-y-1">
-                <FormLabel className="text-[10px] font-black uppercase text-slate-500 leading-none">Main pushti karta hoon ki payment baad mein karunga.</FormLabel>
-                <p className="text-[9px] text-primary font-bold italic">Pay After Ride/Stay Policy applies.</p>
+                <FormLabel className="text-[10px] font-black uppercase text-slate-500 leading-none">Main pushti karta hoon ki payment ride/stay ke baad karunga.</FormLabel>
+                <p className="text-[9px] text-primary font-bold italic">Pay After Safar Policy applies.</p>
             </div>
             <FormMessage />
           </FormItem>
         )} />
 
         <Button type="submit" disabled={isLoading} className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black italic uppercase rounded-2xl shadow-xl shadow-primary/30 text-lg group">
-            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : <><ShieldCheck className="mr-2 h-6 w-6 group-hover:scale-110 transition-transform" /> CONFIRM BOOKING</>}
+            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : <><ShieldCheck className="mr-2 h-6 w-6 group-hover:scale-110 transition-transform" /> CONFIRM SAFAR BOOKING</>}
         </Button>
       </form>
     </Form>
