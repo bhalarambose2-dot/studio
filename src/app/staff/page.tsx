@@ -1,11 +1,10 @@
-
 'use client';
 
 import { useState } from 'react';
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, ClipboardList, CheckCircle2, User, Phone, MapPin, Bus, Power, Bell, Navigation, IndianRupee } from "lucide-react";
+import { Loader2, ClipboardList, CheckCircle2, User, Phone, MapPin, Bus, Power, Bell, Navigation, IndianRupee, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -27,7 +26,7 @@ export default function CaptainDashboardPage() {
   };
 
   const boardingQuery = useMemoFirebase(() => {
-    return query(collection(firestore, 'busBookings'), orderBy('bookingDate', 'desc'));
+    return query(collection(firestore, 'busBookings'), orderBy('timestamp', 'desc'));
   }, [firestore]);
 
   const { data: bookings, isLoading } = useCollection(boardingQuery);
@@ -42,8 +41,8 @@ export default function CaptainDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto space-y-8 pb-24">
-      <header className="bg-white p-8 rounded-[3rem] shadow-xl border flex flex-col md:flex-row justify-between items-center gap-6">
+    <div className="container mx-auto space-y-8 pb-24 max-w-6xl">
+      <header className="bg-white p-8 rounded-[3rem] shadow-xl border flex flex-col md:flex-row justify-between items-center gap-6 mt-4">
         <div className="flex items-center gap-6">
             <div className={`p-4 rounded-[2rem] shadow-lg transition-colors ${isOnline ? 'bg-green-500 text-white animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
                 <Power className="h-10 w-10" />
@@ -73,19 +72,21 @@ export default function CaptainDashboardPage() {
                     <Bell className="text-primary animate-ring" />
                     New Ride Requests
                 </h2>
-                <Badge variant="outline" className="border-primary/20 text-primary font-black uppercase text-[10px]">{bookings?.length || 0} Waiting</Badge>
+                <Badge variant="outline" className="border-primary/20 text-primary font-black uppercase text-[10px]">{bookings?.length || 0} Total Requests</Badge>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {bookings && bookings.length > 0 ? (
                     bookings.map((b: any) => (
-                        <Card key={b.id} className="border-none shadow-2xl hover:shadow-primary/5 transition-all overflow-hidden rounded-[2.5rem] bg-white group">
+                        <Card key={b.id} className="border-none shadow-2xl hover:shadow-primary/5 transition-all overflow-hidden rounded-[2.5rem] bg-white group border-b-4 border-b-primary/10">
                             <CardHeader className="bg-primary/5 pb-3 flex flex-row justify-between items-center">
                                 <div className="flex items-center gap-2">
                                     <div className="bg-white p-2 rounded-xl shadow-sm"><IndianRupee className="h-4 w-4 text-primary" /></div>
                                     <span className="font-black italic text-lg text-primary">₹{b.amount}</span>
                                 </div>
-                                <Badge className="bg-green-100 text-green-700 border-none uppercase text-[10px] font-black">Ready to Pick</Badge>
+                                <Badge className={`${b.status.includes('Paid') ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'} border-none uppercase text-[10px] font-black`}>
+                                    {b.status.includes('Paid') ? 'PAID' : 'PAY AFTER RIDE'}
+                                </Badge>
                             </CardHeader>
                             <CardContent className="p-6 space-y-5">
                                 <div className="flex items-center gap-4">
@@ -117,13 +118,20 @@ export default function CaptainDashboardPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-3 pt-2">
-                                    <button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-black text-[10px] uppercase h-12 rounded-xl transition-all">REJECT</button>
-                                    <button className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black text-[10px] uppercase h-12 rounded-xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 group">
-                                        <CheckCircle2 className="h-4 w-4 group-hover:scale-125 transition-transform" />
-                                        ACCEPT RIDE
-                                    </button>
-                                </div>
+                                {!b.status.includes('Paid') ? (
+                                    <div className="flex gap-3 pt-2">
+                                        <button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-black text-[10px] uppercase h-12 rounded-xl transition-all">REJECT</button>
+                                        <button className="flex-[2] bg-primary hover:bg-primary/90 text-white font-black text-[10px] uppercase h-12 rounded-xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 group">
+                                            <CheckCircle2 className="h-4 w-4 group-hover:scale-125 transition-transform" />
+                                            ACCEPT RIDE
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="bg-green-50 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 text-green-700 font-black text-xs uppercase italic">
+                                        <CheckCircle2 className="h-4 w-4" />
+                                        Safar Complete & Paid
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     ))

@@ -10,20 +10,18 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Loader2, 
   CheckCircle2, 
-  CreditCard, 
   IndianRupee, 
   ChevronRight, 
   User as UserIcon, 
   Mail, 
-  Phone 
+  Phone,
+  Clock
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
 import { useFirebase } from '@/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import Image from 'next/image';
 import { Badge } from './ui/badge';
-import { Label } from './ui/label';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
 
 const bookingSchema = z.object({
@@ -48,14 +46,10 @@ interface BookingFormProps {
 export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSuccess }: BookingFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'details' | 'payment' | 'success'>('details');
-  const [txnId, setTxnId] = useState('');
-  const [formData, setFormData] = useState<BookingFormValues | null>(null);
+  const [step, setStep] = useState<'details' | 'success'>('details');
   const [confirmedBooking, setConfirmedBooking] = useState<any>(null);
   const { firestore, user } = useFirebase();
   const { userProfile, updateUserProfile } = useUserProfile(user?.uid);
-
-  const upiId = "8769930595-2@ybl";
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -81,79 +75,64 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   }, [userProfile, user, form]);
 
   const calculateAmount = (travelers: number) => {
-    const distance = 10;
+    const distance = 10; // Default distance for prototype
     if (bookingType === 'bike') return 15 * distance; 
     if (bookingType === 'car') return 60 * distance;
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
     return basePrice * travelers;
   };
 
-  const onDetailsSubmit = (values: BookingFormValues) => {
-    setFormData(values);
-    setStep('payment');
-  };
-
-  const handleFinalConfirm = async () => {
-    if (!user || !formData) return;
-
-    if (txnId.length !== 12) {
-      toast({ title: 'Invalid UTR', description: 'Kripya 12-digit ka transaction ID bharein.', variant: 'destructive' });
-      return;
+  const onDetailsSubmit = async (values: BookingFormValues) => {
+    if (!user) {
+        toast({ title: 'Sign In Required', description: 'Kripya booking se pehle login karein.', variant: 'destructive' });
+        return;
     }
 
     setIsLoading(true);
     
-    const amount = calculateAmount(formData.travelers);
+    const amount = calculateAmount(values.travelers);
     const ticketId = `BT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
     const bookingData = { 
         id: ticketId,
         userId: user.uid,
         tripName: tripName,
-        customerName: formData.name,
-        customerEmail: formData.email,
-        customerPhone: formData.phone,
-        travelers: formData.travelers,
+        customerName: values.name,
+        customerEmail: values.email,
+        customerPhone: values.phone,
+        travelers: values.travelers,
         bookingType: bookingType,
         amount: amount,
-        txnId: txnId,
         pickup: itemDetails?.pickup || 'Current Location',
-        status: 'Confirmed',
+        status: 'Confirmed (Pay After Ride)',
         bookingDate: new Date().toISOString(), 
         timestamp: serverTimestamp(),
     };
     
     try {
+        // Save user profile details for next time
         await updateUserProfile({
-            fullName: formData.name,
-            email: formData.email,
-            phone: formData.phone
+            fullName: values.name,
+            email: values.email,
+            phone: values.phone
         });
 
+        // Add to user's private bookings
         const bookingsRef = collection(firestore, 'users', user.uid, 'bookings');
         await addDoc(bookingsRef, bookingData);
 
+        // Add to global manifest for staff/admin
         const globalRef = collection(firestore, 'busBookings');
         await addDoc(globalRef, bookingData);
-
-        const txnRef = collection(firestore, 'users', user.uid, 'transactions');
-        await addDoc(txnRef, {
-            type: 'debit',
-            amount: amount,
-            reference: txnId,
-            description: `${bookingType.toUpperCase()} Safar: ${tripName}`,
-            timestamp: serverTimestamp(),
-            status: 'completed'
-        });
         
         setConfirmedBooking(bookingData);
         setStep('success');
         setIsLoading(false);
-        toast({ title: 'PAYMENT VERIFIED! ✅', description: `Aapka safar lock ho gaya hai!` });
+        toast({ title: 'BOOKING CONFIRMED! ✅', description: `Aapka safar lock ho gaya hai. Payment ride ke baad karein.` });
 
     } catch (error: any) {
         setIsLoading(false);
-        toast({ title: 'Booking Error', description: 'Data save nahi ho saka.', variant: 'destructive' });
+        toast({ title: 'Booking Error', description: 'Data save nahi ho saka. Kripya phir se koshish karein.', variant: 'destructive' });
     }
   };
 
@@ -164,75 +143,30 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   <div className="mx-auto bg-green-100 text-green-600 p-5 rounded-full w-fit mb-4 shadow-xl">
                       <CheckCircle2 className="h-14 w-14" />
                   </div>
-                  <h3 className="text-4xl font-black italic tracking-tighter uppercase text-green-600">Ticket Locked!</h3>
-                  <Badge className="bg-primary/10 text-primary border-none font-black font-mono text-xs px-6 py-1.5 uppercase">ID: {confirmedBooking.id}</Badge>
+                  <h3 className="text-4xl font-black italic tracking-tighter uppercase text-green-600">Safar Locked!</h3>
+                  <Badge className="bg-primary/10 text-primary border-none font-black font-mono text-xs px-6 py-1.5 uppercase">Ticket ID: {confirmedBooking.id}</Badge>
               </div>
 
-              <div className="bg-muted/30 p-8 rounded-[2.5rem] space-y-4 shadow-inner">
+              <div className="bg-muted/30 p-8 rounded-[2.5rem] space-y-4 shadow-inner border-2 border-dashed border-primary/10">
                   <div className="flex justify-between items-center">
                       <span className="text-[10px] font-black uppercase text-muted-foreground">Passenger</span>
                       <span className="font-black text-sm italic">{confirmedBooking.customerName}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-black uppercase text-muted-foreground">Phone</span>
-                      <span className="font-black text-sm italic">{confirmedBooking.customerPhone}</span>
+                      <span className="text-[10px] font-black uppercase text-muted-foreground">Estimate</span>
+                      <span className="text-xl font-black italic text-primary">₹{confirmedBooking.amount}</span>
                   </div>
-                  <div className="flex justify-between items-center pt-4 border-t">
-                      <span className="text-[10px] font-black uppercase text-muted-foreground">Total Paid</span>
-                      <span className="text-2xl font-black italic text-primary">₹{confirmedBooking.amount}</span>
+                  <div className="pt-4 border-t flex items-center gap-2 text-primary font-black uppercase text-[9px] italic justify-center text-center">
+                      <Clock className="h-3 w-3" />
+                      <span>Ride complete hone ke baad payment karein</span>
                   </div>
               </div>
 
-              <Button className="w-full h-16 font-black italic uppercase rounded-2xl shadow-xl" onClick={() => onSuccess && onSuccess()}>
+              <Button className="w-full h-16 font-black italic uppercase rounded-2xl shadow-xl bg-primary hover:bg-primary/90" onClick={() => onSuccess && onSuccess()}>
                   DONE & GO HOME
               </Button>
           </div>
       );
-  }
-
-  if (step === 'payment' && formData) {
-    const totalAmount = calculateAmount(formData.travelers);
-    const upiUrl = `upi://pay?pa=${upiId}&pn=BR%20Trip&am=${totalAmount}&cu=INR`;
-
-    return (
-        <div className="space-y-8 p-4">
-            <div className="text-center space-y-3">
-                <h3 className="text-3xl font-black italic uppercase tracking-tighter">Pay ₹{totalAmount} Indian Rupees</h3>
-                <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Scan QR & Enter 12-Digit UTR below</p>
-            </div>
-
-            <div className="flex justify-center p-8 bg-white rounded-[3rem] border-[6px] border-primary shadow-2xl">
-                <Image 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`}
-                    alt="Payment QR"
-                    width={220}
-                    height={220}
-                    unoptimized
-                />
-            </div>
-
-            <div className="space-y-5">
-                <div className="space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-primary">UPI Reference (UTR ID)</Label>
-                    <Input 
-                        placeholder="E.g. 401234567890"
-                        value={txnId}
-                        maxLength={12}
-                        onChange={(e) => setTxnId(e.target.value.replace(/\D/g, ''))}
-                        className="font-mono text-center tracking-[0.4em] h-16 text-2xl font-black border-primary/40 rounded-2xl shadow-inner bg-slate-50"
-                    />
-                </div>
-
-                <div className="flex gap-4 pt-2">
-                    <Button variant="outline" className="flex-1 h-14 font-black italic rounded-2xl" onClick={() => setStep('details')} disabled={isLoading}>BACK</Button>
-                    <Button className="flex-1 h-14 font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90" disabled={txnId.length !== 12 || isLoading} onClick={handleFinalConfirm}>
-                        {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : <CreditCard className="h-6 w-6 mr-3" />}
-                        CONFIRM SAFAR
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
   }
 
   const ratePerKm = bookingType === 'bike' ? 15 : bookingType === 'car' ? 60 : null;
@@ -241,11 +175,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onDetailsSubmit)} className="space-y-6 p-4">
         <div className="bg-primary/5 p-6 rounded-[2rem] border-[3px] border-dashed border-primary/20">
-            <p className="text-[11px] font-black text-primary uppercase mb-1 italic">Booking Details</p>
+            <p className="text-[11px] font-black text-primary uppercase mb-1 italic">Sahi Safar Details</p>
             <h3 className="text-2xl font-black italic uppercase leading-tight tracking-tighter">{tripName}</h3>
             <div className="flex items-center gap-2 text-primary mt-2 font-black italic">
               <IndianRupee className="h-4 w-4" />
-              <p>{ratePerKm ? `₹${ratePerKm} per kilometer (Indian Rupees)` : `₹${itemDetails?.price || '500'} per person`}</p>
+              <p>{ratePerKm ? `₹${ratePerKm} Per Kilometer (Indian Rupees)` : `₹${itemDetails?.price || '500'} per person`}</p>
             </div>
         </div>
 
@@ -321,15 +255,17 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border-[2px] border-dashed p-4 shadow-sm bg-muted/20 border-primary/10">
               <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel className="text-[10px] font-black italic uppercase">Main sabhi details sahi hone ki pushti karta hoon.</FormLabel>
+                <FormLabel className="text-[10px] font-black italic uppercase leading-tight">Main pushti karta hoon ki ride ke baad payment karunga.</FormLabel>
                 <FormMessage />
               </div>
             </FormItem>
           )}
         />
 
-        <Button type="submit" className="w-full font-black italic text-xl h-16 shadow-[0_20px_40px_rgba(var(--primary),0.3)] rounded-[1.8rem] uppercase tracking-widest transition-transform active:scale-95 group">
-            PROCEED TO PAYMENT <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+        <Button type="submit" disabled={isLoading} className="w-full font-black italic text-xl h-16 shadow-[0_20px_40px_rgba(var(--primary),0.3)] rounded-[1.8rem] uppercase tracking-widest transition-transform active:scale-95 group bg-primary hover:bg-primary/90">
+            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : (
+                <>CONFIRM BOOKING <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" /></>
+            )}
         </Button>
       </form>
     </Form>
