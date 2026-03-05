@@ -70,13 +70,13 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     },
   });
 
-  // Auto-fill from profile when available
+  // Auto-fill from profile and current user
   useEffect(() => {
-    if (userProfile) {
+    if (userProfile || user) {
       form.reset({
-        name: userProfile.fullName || '',
-        email: userProfile.email || user?.email || '',
-        phone: userProfile.phone || '',
+        name: userProfile?.fullName || user?.displayName || '',
+        email: userProfile?.email || user?.email || '',
+        phone: userProfile?.phone || '',
         travelers: 1,
         terms: false,
       });
@@ -127,7 +127,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // Smart Save: Update profile with latest details
+        // Smart Save: Always sync current booking details back to user profile for future auto-fill
         await updateUserProfile({
             fullName: formData.name,
             email: formData.email,

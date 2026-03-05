@@ -172,46 +172,12 @@ export default function AuthPage() {
           <CardDescription className="text-muted-foreground font-black uppercase text-[10px] mt-1 italic tracking-[0.2em]">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
-          <Tabs defaultValue="otp" className="w-full">
+          <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-2xl mb-8">
               <TabsTrigger value="signin" className="rounded-xl font-black uppercase text-[10px]">Email</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-xl font-black uppercase text-[10px]">Join</TabsTrigger>
               <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
-
-            <TabsContent value="otp">
-              <Form {...otpForm}>
-                <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'email' ? handleSendEmailOTP : handleVerifyEmailOTP)} className="space-y-6">
-                  {currentOtpStep === 'email' ? (
-                    <FormField control={otpForm.control} name="email" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Login via OTP (Email)</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                              <Input placeholder="name@email.com" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg shadow-inner" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  ) : (
-                    <FormField control={otpForm.control} name="otpCode" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
-                        <FormControl>
-                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic bg-slate-50 shadow-inner" maxLength={6} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  )}
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
-                    {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'email' ? 'SEND OTP TO EMAIL' : 'VERIFY & LOGIN'}
-                  </Button>
-                </form>
-              </Form>
-            </TabsContent>
 
             <TabsContent value="signin">
               <Form {...signInForm}>
@@ -285,6 +251,40 @@ export default function AuthPage() {
                   <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase mt-4 bg-primary hover:bg-primary/90">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Register Now
+                  </Button>
+                </form>
+              </Form>
+            </TabsContent>
+
+            <TabsContent value="otp">
+              <Form {...otpForm}>
+                <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'email' ? handleSendEmailOTP : handleVerifyEmailOTP)} className="space-y-6">
+                  {currentOtpStep === 'email' ? (
+                    <FormField control={otpForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Login via OTP (Email)</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
+                              <Input placeholder="name@email.com" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg shadow-inner" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  ) : (
+                    <FormField control={otpForm.control} name="otpCode" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
+                        <FormControl>
+                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic bg-slate-50 shadow-inner" maxLength={6} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  )}
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
+                    {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'email' ? 'SEND OTP TO EMAIL' : 'VERIFY & LOGIN'}
                   </Button>
                 </form>
               </Form>
