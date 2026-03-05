@@ -4,18 +4,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useUser, useFirebase } from "@/firebase";
+import { useUser, useFirebase, useCollection, useMemoFirebase } from "@/firebase";
 import { useUserProfile } from "@/lib/firebase/use-user-profile";
 import { useEffect, useState } from "react";
-import { Camera, ShieldCheck, BadgeCheck, Clock, Wallet, Briefcase, LogOut, ChevronRight, Settings } from "lucide-react";
+import { 
+  Camera, 
+  ShieldCheck, 
+  BadgeCheck, 
+  Clock, 
+  Wallet, 
+  Briefcase, 
+  LogOut, 
+  ChevronRight, 
+  Settings, 
+  History, 
+  Bike, 
+  Bus 
+} from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
+import { collection, query, orderBy, limit } from "firebase/firestore";
 
 export default function ProfilePage() {
-    const { user, auth } = useFirebase();
+    const { user, auth, firestore } = useFirebase();
     const { userProfile, updateUserProfile } = useUserProfile(user?.uid);
     const [name, setName] = useState('');
     const router = useRouter();
@@ -37,6 +52,18 @@ export default function ProfilePage() {
             router.push('/');
         });
     };
+
+    // Fetch recent bookings for "Recent Safar" section
+    const recentBookingsQuery = useMemoFirebase(() => {
+      if (!user) return null;
+      return query(
+        collection(firestore, 'users', user.uid, 'bookings'),
+        orderBy('timestamp', 'desc'),
+        limit(3)
+      );
+    }, [firestore, user]);
+
+    const { data: recentBookings } = useCollection(recentBookingsQuery);
 
     if (!user || !userProfile) {
         return (
@@ -110,6 +137,43 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+
+            {/* Recent Safar Section - Moved here from Home Page */}
+            {recentBookings && recentBookings.length > 0 && (
+              <div className="space-y-4 px-2">
+                <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2 ml-2">
+                  <History className="h-5 w-5 text-primary" />
+                  Recent Safar
+                </h3>
+                <div className="space-y-3">
+                  {recentBookings.map((b) => (
+                    <Link key={b.id} href="/manage-bookings">
+                      <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white hover:bg-slate-50 transition-colors">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="bg-primary/10 p-2 rounded-xl text-primary">
+                              {b.bookingType === 'bike' ? <Bike className="h-5 w-5" /> : <Bus className="h-5 w-5" />}
+                            </div>
+                            <div>
+                              <p className="font-black italic uppercase text-[10px] text-slate-800 leading-none">{b.tripName}</p>
+                              <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">
+                                {b.bookingDate && (typeof b.bookingDate === 'string' 
+                                  ? b.bookingDate 
+                                  : b.bookingDate.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }))}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs font-black text-primary italic">₹{b.amount}</p>
+                            <Badge className="bg-green-100 text-green-700 text-[8px] h-4 font-black px-2 border-none uppercase">CONFIRMED</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 px-2">
@@ -210,5 +274,3 @@ export default function ProfilePage() {
         </div>
     );
 }
-
-import { Separator } from "@/components/ui/separator";

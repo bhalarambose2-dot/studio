@@ -1,7 +1,5 @@
-
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   Wallet, 
@@ -9,26 +7,20 @@ import {
   Train, 
   Bus, 
   Bike,
-  Map as MapIcon,
-  Globe,
-  ChevronRight,
-  TrendingUp,
-  History,
-  Navigation
+  Navigation,
+  TrendingUp
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirebase } from '@/firebase';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
 
 export default function SearchPage() {
-  const { user, firestore } = useFirebase();
+  const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
@@ -43,18 +35,6 @@ export default function SearchPage() {
     { title: "FLAT ₹100 OFF", sub: "ON TRAINS", color: "bg-blue-600", icon: Train },
     { title: "SAHI RATE", sub: "₹15/KM BIKE", color: "bg-orange-500", icon: Bike },
   ];
-
-  // Fetch recent bookings for "My Recent Safar" section
-  const recentBookingsQuery = useMemoFirebase(() => {
-    if (!user) return null;
-    return query(
-      collection(firestore, 'users', user.uid, 'bookings'),
-      orderBy('timestamp', 'desc'),
-      limit(3)
-    );
-  }, [firestore, user]);
-
-  const { data: recentBookings } = useCollection(recentBookingsQuery);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F4F7FA] -mt-8 -mx-4 md:-mx-8">
@@ -144,45 +124,6 @@ export default function SearchPage() {
         </ScrollArea>
       </section>
 
-      {/* Recent Safar Section */}
-      {recentBookings && recentBookings.length > 0 && (
-        <section className="px-6 mt-4">
-          <div className="flex items-center justify-between mb-4 px-2">
-            <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2">
-              <History className="h-5 w-5 text-primary" />
-              Recent Safar
-            </h3>
-          </div>
-          <div className="space-y-4">
-            {recentBookings.map((b) => (
-              <Link key={b.id} href="/manage-bookings">
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white hover:bg-slate-50 transition-colors mb-4">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="bg-primary/10 p-2 rounded-xl text-primary">
-                        {b.bookingType === 'bike' ? <Bike className="h-5 w-5" /> : <Bus className="h-5 w-5" />}
-                      </div>
-                      <div>
-                        <p className="font-black italic uppercase text-xs text-slate-800">{b.tripName}</p>
-                        <p className="text-[9px] font-bold text-muted-foreground uppercase">
-                          {b.bookingDate && (typeof b.bookingDate === 'string' 
-                            ? b.bookingDate 
-                            : b.bookingDate.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }))}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-primary italic">₹{b.amount}</p>
-                      <Badge className="bg-green-100 text-green-700 text-[8px] h-4 font-black px-2 border-none">CONFIRMED</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Bottom Banner */}
       <section className="px-6 mt-8 pb-32">
         <div className="relative h-32 w-full rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
@@ -202,4 +143,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
