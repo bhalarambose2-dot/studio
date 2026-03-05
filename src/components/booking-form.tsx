@@ -21,7 +21,8 @@ import {
   Hotel as HotelIcon,
   ShieldCheck,
   Bike,
-  Car
+  Car,
+  Globe
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
@@ -29,7 +30,7 @@ import { useFirebase } from '@/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { Badge } from './ui/badge';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
-import { Card, CardContent } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Pura naam likhein.'),
@@ -63,8 +64,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     defaultValues: { name: '', email: '', phone: '', travelers: 1, terms: false },
   });
 
-  // Smart Auto-Fill Logic: 
-  // Automatically loads Name, Email, and Phone from User Profile
+  // Smart Auto-Fill Logic
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -84,8 +84,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     }
     setIsLoading(true);
     
-    // Sahi Indian Rates Calculation
-    // Bike: ₹15/km, Taxi: ₹60/km
     const finalAmount = parseFloat(String(itemDetails?.price || 500)) * (bookingType === 'hotel' ? values.travelers : 1);
     const pnrId = `ST${Math.floor(100000 + Math.random() * 900000)}`;
     
@@ -107,15 +105,12 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // Smart Auto-Save Logic: 
-        // Automatically updates User Profile with latest details entered in form
         await updateUserProfile({ 
           fullName: values.name, 
           email: values.email, 
           phone: values.phone 
         });
 
-        // Save Booking Records
         await addDoc(collection(firestore, 'users', user.uid, 'bookings'), bookingData);
         await addDoc(collection(firestore, 'busBookings'), bookingData);
         
@@ -161,6 +156,27 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                           <p className="text-xs font-black uppercase text-slate-500">Total Amount</p>
                           <p className="text-2xl font-black italic text-primary">₹{confirmedBooking.amount}</p>
                       </div>
+                  </CardContent>
+              </Card>
+
+              {/* India Map Card - Now shown after booking */}
+              <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
+                  <CardHeader className="bg-primary/5 pb-2">
+                    <CardTitle className="text-sm font-black italic uppercase tracking-tighter flex items-center gap-2">
+                        <Globe className="h-4 w-4 text-primary" /> EXPLORE YOUR SAFAR ROUTE
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4">
+                    <div className="rounded-2xl overflow-hidden border-2 border-slate-100 shadow-inner h-48">
+                        <iframe
+                            src={`https://www.google.com/maps?q=${encodeURIComponent(confirmedBooking.tripName || 'India')}&output=embed`}
+                            width="100%"
+                            height="100%"
+                            style={{ border: 0 }}
+                            loading="lazy"
+                        ></iframe>
+                    </div>
+                    <p className="text-[10px] font-bold text-muted-foreground mt-2 uppercase text-center italic">Live Tracking & Route Map</p>
                   </CardContent>
               </Card>
 
@@ -243,3 +259,4 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     </Form>
   );
 }
+

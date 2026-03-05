@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -113,40 +114,6 @@ export default function SearchPage() {
         </div>
       </section>
 
-      {/* Popular Travel Cities Section */}
-      <section className="px-6 mt-10">
-        <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden bg-white border-b-8 border-b-primary/10">
-          <CardHeader className="bg-primary/5 pb-4">
-            <div className="flex items-center gap-3">
-              <Globe className="h-6 w-6 text-primary" />
-              <CardTitle className="text-xl font-black italic uppercase tracking-tighter text-slate-800">Explore India Map</CardTitle>
-            </div>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-primary">Sahi Indian Travel Routes</CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="rounded-3xl overflow-hidden border-4 border-slate-50 shadow-inner">
-              <iframe
-                src="https://www.google.com/maps?q=India&output=embed"
-                width="100%"
-                height="300"
-                style={{ border: 0 }}
-                loading="lazy"
-              ></iframe>
-            </div>
-            
-            <div className="bg-slate-50 p-6 rounded-[2rem] border border-dashed border-primary/20 text-center">
-              <h3 className="text-sm font-black uppercase text-muted-foreground tracking-widest mb-3">Popular Travel Cities</h3>
-              <p className="text-xs font-bold text-slate-600 mb-6 italic">Delhi | Mumbai | Jaipur | Jodhpur | Goa | Kedarnath</p>
-              <Link href="/search-page">
-                <Button className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-black italic uppercase rounded-2xl shadow-xl shadow-primary/20 text-lg group">
-                  BOOK TRIP <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
       {/* Popular Deals Section */}
       <section className="px-6 mt-10">
         <div className="flex items-center justify-between mb-4 px-2">
@@ -235,3 +202,4 @@ export default function SearchPage() {
     </div>
   );
 }
+
