@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,8 @@ import {
   Bus, 
   Bike,
   Navigation,
-  TrendingUp
+  TrendingUp,
+  History
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,13 +20,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
+import { Badge } from "@/components/ui/badge";
 
 export default function SearchPage() {
   const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel Booking', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
+    { name: 'Hotel photo', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
     { name: 'Train Tickets', icon: Train, href: '/search-page?tab=train', color: 'bg-blue-800' },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -138,7 +139,7 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* Recent Safar Section - Moved here from Home Page */}
+            {/* Recent Safar Section */}
             {recentBookings && recentBookings.length > 0 && (
               <div className="space-y-4 px-2">
                 <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2 ml-2">
