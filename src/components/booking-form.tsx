@@ -24,8 +24,6 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import Image from 'next/image';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
 
 const bookingSchema = z.object({

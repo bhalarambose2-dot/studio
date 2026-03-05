@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 /**
  * Cinematic Royal 3D Splash Loader for BR TRIP.
- * Features a zooming Earth, an orbiting airplane, and a Golden 3D Prism Logo.
+ * Features a zooming Earth, an orbiting airplane, and a Golden 3D Text Logo.
  * Fixed for Hydration Errors using mounted state and ambiguous CSS warnings.
  */
 export function SplashLoader() {
