@@ -15,7 +15,9 @@ import {
   User as UserIcon, 
   Mail, 
   Phone,
-  Clock
+  Clock,
+  MapPin,
+  Navigation
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
@@ -30,7 +32,7 @@ const bookingSchema = z.object({
   phone: z.string().min(10, 'Valid mobile number bharein.'),
   travelers: z.coerce.number().min(1, 'Kam se kam 1 traveler.'),
   terms: z.literal(true, {
-    errorMap: () => ({ message: 'Terms accept karna zaroori hai.' }),
+    errorMap: () => ({ message: 'Main pushti karta hoon ki ride ke baad payment karunga.' }),
   }),
 });
 
@@ -62,6 +64,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     },
   });
 
+  // Smart Auto-fill logic
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -75,7 +78,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   }, [userProfile, user, form]);
 
   const calculateAmount = (travelers: number) => {
-    const distance = 10; // Default distance for prototype
+    const distance = 10; // Simulated distance for prototype
     if (bookingType === 'bike') return 15 * distance; 
     if (bookingType === 'car') return 60 * distance;
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
@@ -93,46 +96,45 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     const amount = calculateAmount(values.travelers);
     const ticketId = `BT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
+    // Equivalent to your bookRide function logic but enhanced
     const bookingData = { 
         id: ticketId,
         userId: user.uid,
-        tripName: tripName,
+        tripName: tripName, // This is the "Drop" location
+        pickup: itemDetails?.pickup || 'Current Location',
         customerName: values.name,
         customerEmail: values.email,
         customerPhone: values.phone,
         travelers: values.travelers,
         bookingType: bookingType,
         amount: amount,
-        pickup: itemDetails?.pickup || 'Current Location',
         status: 'Confirmed (Pay After Ride)',
         bookingDate: new Date().toISOString(), 
         timestamp: serverTimestamp(),
     };
     
     try {
-        // Save user profile details for next time
+        // Smart Saving: Save user details to profile for next time
         await updateUserProfile({
             fullName: values.name,
             email: values.email,
             phone: values.phone
         });
 
-        // Add to user's private bookings
-        const bookingsRef = collection(firestore, 'users', user.uid, 'bookings');
-        await addDoc(bookingsRef, bookingData);
+        // Add to user's private history
+        await addDoc(collection(firestore, 'users', user.uid, 'bookings'), bookingData);
 
-        // Add to global manifest for staff/admin
-        const globalRef = collection(firestore, 'busBookings');
-        await addDoc(globalRef, bookingData);
+        // Add to global ride manifest (staff/admin view)
+        await addDoc(collection(firestore, 'busBookings'), bookingData);
         
         setConfirmedBooking(bookingData);
         setStep('success');
         setIsLoading(false);
-        toast({ title: 'BOOKING CONFIRMED! ✅', description: `Aapka safar lock ho gaya hai. Payment ride ke baad karein.` });
+        toast({ title: 'RIDE REQUESTED! ✅', description: `Aapka safar book ho gaya hai. Payment ride ke baad karein.` });
 
     } catch (error: any) {
         setIsLoading(false);
-        toast({ title: 'Booking Error', description: 'Data save nahi ho saka. Kripya phir se koshish karein.', variant: 'destructive' });
+        toast({ title: 'Booking Error', description: 'Kripya phir se koshish karein.', variant: 'destructive' });
     }
   };
 
@@ -144,7 +146,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                       <CheckCircle2 className="h-14 w-14" />
                   </div>
                   <h3 className="text-4xl font-black italic tracking-tighter uppercase text-green-600">Safar Locked!</h3>
-                  <Badge className="bg-primary/10 text-primary border-none font-black font-mono text-xs px-6 py-1.5 uppercase">Ticket ID: {confirmedBooking.id}</Badge>
+                  <Badge className="bg-primary/10 text-primary border-none font-black font-mono text-[10px] px-6 py-1.5 uppercase">ID: {confirmedBooking.id}</Badge>
               </div>
 
               <div className="bg-muted/30 p-8 rounded-[2.5rem] space-y-4 shadow-inner border-2 border-dashed border-primary/10">
@@ -175,11 +177,20 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onDetailsSubmit)} className="space-y-6 p-4">
         <div className="bg-primary/5 p-6 rounded-[2rem] border-[3px] border-dashed border-primary/20">
-            <p className="text-[11px] font-black text-primary uppercase mb-1 italic">Sahi Safar Details</p>
-            <h3 className="text-2xl font-black italic uppercase leading-tight tracking-tighter">{tripName}</h3>
-            <div className="flex items-center gap-2 text-primary mt-2 font-black italic">
+            <p className="text-[11px] font-black text-primary uppercase mb-1 italic">Route Details</p>
+            <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <p className="text-xs font-bold">{itemDetails?.pickup || 'Current Location'}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Navigation className="h-4 w-4 text-secondary" />
+                    <p className="text-sm font-black italic uppercase">{tripName}</p>
+                </div>
+            </div>
+            <div className="flex items-center gap-2 text-primary mt-4 font-black italic">
               <IndianRupee className="h-4 w-4" />
-              <p>{ratePerKm ? `₹${ratePerKm} Per Kilometer (Indian Rupees)` : `₹${itemDetails?.price || '500'} per person`}</p>
+              <p className="text-lg">{ratePerKm ? `₹${ratePerKm}/KM (Sahi Indian Rate)` : `₹${itemDetails?.price || '500'} per person`}</p>
             </div>
         </div>
 
@@ -193,7 +204,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   <FormControl>
                     <div className="relative">
                         <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
-                        <Input placeholder="Full Name" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
+                        <Input placeholder="Pura Naam" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -206,11 +217,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase text-muted-foreground ml-1">Email Address</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase text-muted-foreground ml-1">Email Address (Change if needed)</FormLabel>
                   <FormControl>
                     <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
-                        <Input placeholder="name@example.com" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
+                        <Input placeholder="name@email.com" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -223,11 +234,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase text-muted-foreground ml-1">Mobile Number (WhatsApp)</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase text-muted-foreground ml-1">Mobile Number (Automatic Save)</FormLabel>
                   <FormControl>
                     <div className="relative">
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/40" />
-                        <Input placeholder="+91 00000 00000" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
+                        <Input placeholder="10-digit mobile" {...field} className="h-14 pl-10 rounded-xl border-primary/20 shadow-inner font-bold italic" />
                     </div>
                   </FormControl>
                   <FormMessage />

@@ -67,6 +67,18 @@ export default function SearchPage() {
     { title: "Rajasthan Road Trip: Book Bus & Save Big!", date: "Limited period offer", type: "Bus", image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1080" }
   ];
 
+  // Helper to safely format dates from either String or Firestore Timestamp
+  const formatDate = (date: any) => {
+    if (!date) return 'N/A';
+    if (typeof date === 'string') {
+        return new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    if (date.toDate) {
+        return date.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    return 'Invalid Date';
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-transparent -mt-8 -mx-4 md:-mx-8">
       {/* Top Header Section */}
@@ -200,60 +212,6 @@ export default function SearchPage() {
         </div>
       </section>
 
-      {/* Offers Section */}
-      <section className="mt-16 space-y-8">
-        <div className="px-4 flex items-center justify-between">
-          <h2 className="text-3xl font-black italic tracking-tighter uppercase text-slate-800">Hot Deals For You</h2>
-        </div>
-
-        <ScrollArea className="w-full px-4">
-          <div className="flex gap-4 pb-4">
-            {['All', 'Hotels', 'Bus', 'Trains', 'Cabs'].map((tab) => (
-              <Button 
-                key={tab} 
-                onClick={() => setActiveOfferTab(tab)}
-                variant={activeOfferTab === tab ? "default" : "outline"}
-                className={cn(
-                    "rounded-2xl font-black uppercase text-xs h-12 px-8 tracking-widest italic transition-all shadow-sm",
-                    activeOfferTab === tab ? "shadow-lg shadow-primary/20 scale-105" : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
-                )}
-              >
-                {tab}
-              </Button>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-
-        <ScrollArea className="w-full px-4">
-          <div className="flex gap-8 pb-12">
-            {offers.map((offer, idx) => (
-              <Card key={idx} className="min-w-[340px] border-none shadow-2xl rounded-[3rem] overflow-hidden bg-white group hover:shadow-primary/5 transition-all hover:translate-y-[-5px]">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <Image src={offer.image} alt={offer.title} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" data-ai-hint="travel offer" />
-                  <div className="absolute top-6 left-6">
-                     <Badge className="bg-white/95 backdrop-blur-md text-primary border-none font-black text-[10px] italic uppercase px-4 py-1.5 rounded-full shadow-lg">{offer.type}</Badge>
-                  </div>
-                </div>
-                <CardContent className="p-8 space-y-4">
-                  <h3 className="font-black text-xl italic leading-tight uppercase line-clamp-2 tracking-tight">{offer.title}</h3>
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-50">
-                    <div className="flex items-center gap-2 text-[10px] text-destructive font-black uppercase italic tracking-wider">
-                      <Clock className="h-4 w-4 animate-spin-slow" />
-                      {offer.date}
-                    </div>
-                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all shadow-inner">
-                        <ChevronRight className="h-5 w-5" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-      </section>
-
       {/* Recent History Shortcut */}
       {recentBookings && recentBookings.length > 0 && (
         <section className="px-4 mt-12 pb-20">
@@ -275,10 +233,7 @@ export default function SearchPage() {
                                     <p className="text-lg font-black uppercase tracking-tighter italic leading-none mb-1">{b.tripName}</p>
                                     <div className="flex items-center gap-2">
                                       <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">
-                                        {b.bookingDate && (typeof b.bookingDate === 'string' 
-                                          ? new Date(b.bookingDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-                                          : b.bookingDate.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }))
-                                        }
+                                        {formatDate(b.bookingDate)}
                                       </p>
                                       <Badge variant="outline" className="text-[8px] h-4 font-black px-2 py-0 border-slate-200 text-slate-400">{b.bookingType}</Badge>
                                     </div>
