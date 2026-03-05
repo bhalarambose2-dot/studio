@@ -25,7 +25,7 @@ export default function OwnerDashboardPage() {
   const bookingsQuery = useMemoFirebase(() => {
     return query(
       collection(firestore, 'busBookings'),
-      orderBy('bookingDate', 'desc')
+      orderBy('timestamp', 'desc')
     );
   }, [firestore]);
 
@@ -148,8 +148,8 @@ export default function OwnerDashboardPage() {
                             <div className="text-[10px] text-muted-foreground font-medium">{booking.customerPhone}</div>
                           </TableCell>
                           <TableCell>
-                            <div className="font-mono text-[11px] bg-muted px-1 rounded inline-block">{booking.busNumber}</div>
-                            <div className="text-[10px] italic text-muted-foreground mt-1">{booking.busName}</div>
+                            <div className="font-mono text-[11px] bg-muted px-1 rounded inline-block">{booking.busNumber || 'BR-TRIP'}</div>
+                            <div className="text-[10px] italic text-muted-foreground mt-1">{booking.tripName}</div>
                           </TableCell>
                           <TableCell>
                             <Badge className="bg-primary/10 text-primary border-none font-mono text-xs">{booking.seatNumber || 'N/A'}</Badge>
@@ -157,7 +157,10 @@ export default function OwnerDashboardPage() {
                           <TableCell className="font-medium">{booking.travelers}</TableCell>
                           <TableCell className="font-black text-primary">₹{booking.amount}</TableCell>
                           <TableCell className="text-[11px] text-muted-foreground">
-                            {booking.bookingDate?.toDate().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                            {booking.bookingDate && (typeof booking.bookingDate === 'string' 
+                              ? new Date(booking.bookingDate).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+                              : booking.bookingDate.toDate().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }))
+                            }
                           </TableCell>
                           <TableCell className="text-right">
                             <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none uppercase text-[10px] font-black">

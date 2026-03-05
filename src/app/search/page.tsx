@@ -54,7 +54,7 @@ export default function SearchPage() {
     if (!user) return null;
     return query(
         collection(firestore, 'users', user.uid, 'bookings'),
-        orderBy('bookingDate', 'desc'),
+        orderBy('timestamp', 'desc'),
         limit(5)
     );
   }, [firestore, user]);
@@ -254,7 +254,7 @@ export default function SearchPage() {
         </ScrollArea>
       </section>
 
-      {/* Recent History Shortcut - MOVED TO BOTTOM */}
+      {/* Recent History Shortcut */}
       {recentBookings && recentBookings.length > 0 && (
         <section className="px-4 mt-12 pb-20">
             <div className="flex items-center justify-between mb-8">
@@ -274,7 +274,12 @@ export default function SearchPage() {
                                 <div>
                                     <p className="text-lg font-black uppercase tracking-tighter italic leading-none mb-1">{b.tripName}</p>
                                     <div className="flex items-center gap-2">
-                                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{b.bookingDate?.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                                        {b.bookingDate && (typeof b.bookingDate === 'string' 
+                                          ? new Date(b.bookingDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                                          : b.bookingDate.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }))
+                                        }
+                                      </p>
                                       <Badge variant="outline" className="text-[8px] h-4 font-black px-2 py-0 border-slate-200 text-slate-400">{b.bookingType}</Badge>
                                     </div>
                                 </div>
