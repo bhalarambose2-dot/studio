@@ -1,33 +1,26 @@
+
 'use client';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
-  Bell, 
   Wallet, 
-  ChevronRight, 
   Hotel, 
   Train, 
   Bus, 
-  History,
-  Bike,
-  Star,
-  Zap,
-  Ticket,
-  MapPin
+  Bike
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirebase } from '@/firebase';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { cn } from '@/lib/utils';
+import images from '../lib/placeholder-images.json';
 
 export default function SearchPage() {
-  const { firestore, user } = useFirebase();
+  const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
@@ -120,7 +113,7 @@ export default function SearchPage() {
       <section className="px-6 mt-4 pb-24">
         <div className="relative h-24 w-full rounded-xl overflow-hidden shadow-lg">
            <Image 
-            src="https://images.unsplash.com/photo-1557426282-08695039fc27?q=80&w=1080" 
+            src={images.citySkyline} 
             alt="Skyline" 
             fill 
             className="object-cover" 
@@ -132,5 +125,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
-import { cn } from '@/lib/utils';

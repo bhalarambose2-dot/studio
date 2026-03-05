@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -9,11 +10,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Building2, Handshake, Loader2, Star, ShieldCheck, TrendingUp, MessageCircle, BarChart3, Coins } from "lucide-react";
+import { Handshake, Loader2, ShieldCheck, TrendingUp, MessageCircle, BarChart3, Coins } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
+import images from '../lib/placeholder-images.json';
 
 const partnershipSchema = z.object({
   fullName: z.string().min(2, 'Full name is required.'),
@@ -59,7 +61,7 @@ export default function PartnershipPage() {
       {/* Hero Section */}
       <section className="relative h-64 md:h-96 w-full rounded-[3rem] overflow-hidden flex items-center justify-center text-center p-6 shadow-2xl">
         <Image 
-          src="https://images.unsplash.com/photo-1557426282-08695039fc27?q=80&w=2070&auto=format&fit=crop"
+          src={images.partnershipHandshake}
           alt="Partnership handshake"
           data-ai-hint="partnership handshake"
           fill
