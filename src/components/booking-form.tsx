@@ -70,7 +70,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     },
   });
 
-  // Auto-fill from profile and current user
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -84,7 +83,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   }, [userProfile, user, form]);
 
   const calculateAmount = (travelers: number) => {
-    const distance = 10; // Default estimate for prototype
+    const distance = 10;
     if (bookingType === 'bike') return 15 * distance; 
     if (bookingType === 'car') return 60 * distance;
     const basePrice = parseFloat(String(itemDetails?.price)) || 500;
@@ -127,7 +126,6 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     };
     
     try {
-        // Smart Save: Always sync current booking details back to user profile for future auto-fill
         await updateUserProfile({
             fullName: formData.name,
             email: formData.email,
@@ -135,20 +133,13 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
         });
 
         const bookingsRef = collection(firestore, 'users', user.uid, 'bookings');
-        addDoc(bookingsRef, bookingData).catch(err => {
-            errorEmitter.emit('permission-error', new FirestorePermissionError({
-                path: bookingsRef.path,
-                operation: 'create',
-                requestResourceData: bookingData
-            }));
-        });
+        await addDoc(bookingsRef, bookingData);
 
-        // Global feed for admin/staff
         const globalRef = collection(firestore, 'busBookings');
-        addDoc(globalRef, bookingData);
+        await addDoc(globalRef, bookingData);
 
         const txnRef = collection(firestore, 'users', user.uid, 'transactions');
-        addDoc(txnRef, {
+        await addDoc(txnRef, {
             type: 'debit',
             amount: amount,
             reference: txnId,

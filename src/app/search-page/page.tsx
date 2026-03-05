@@ -51,7 +51,6 @@ const popularCitiesIndia = [
 ];
 
 const allLocations = [
-  // Jodhpur Locations (Massive)
   "Paota Circle, Jodhpur, Rajasthan",
   "Paota Chauraha, Jodhpur, Rajasthan",
   "Paota A Road, Jodhpur, Rajasthan",
@@ -95,8 +94,6 @@ const allLocations = [
   "Dangiyawas, Jodhpur, Rajasthan",
   "Vivek Vihar, Jodhpur, Rajasthan",
   "Suncity, Jodhpur, Rajasthan",
-  
-  // Jaipur Locations (Massive)
   "Mansarovar Metro Station, Jaipur",
   "Mansarovar Plaza, Jaipur, Rajasthan",
   "Mansarovar Sector 1, Jaipur",
@@ -143,8 +140,6 @@ const allLocations = [
   "Jawahar Circle, Jaipur, Rajasthan",
   "M.I. Road, Jaipur, Rajasthan",
   "Ramganj Bazaar, Jaipur, Rajasthan",
-  
-  // National Points
   "Connaught Place, New Delhi",
   "Marine Drive, Mumbai",
   "Gateway of India, Mumbai",
