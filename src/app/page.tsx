@@ -123,19 +123,19 @@ export default function AuthPage() {
   const handleSendOTP = async (values: OTPFormValues) => {
     setIsLoading(true);
     try {
+      // 1. Generate 6-digit OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
-      // If it looks like an email, send simulated email
+      // 2. Dispatch OTP (Simulated for Prototype)
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
-        // Simulated Phone Dispatch
-        console.log(`[BR TRIP - SMS DISPATCH] OTP: ${otp} TO: ${values.emailOrPhone}`);
+        console.log(`\n[BR TRIP OTP DISPATCH]\nTO: ${values.emailOrPhone}\nCODE: ${otp}\n`);
       }
       
       setCurrentOtpStep('code');
-      toast({ title: 'OTP DISPATCHED! 📲', description: `Check terminal for code.` });
+      toast({ title: 'OTP DISPATCHED! 📲', description: `Sahi code terminal mein ya email par check karein.` });
     } catch (error: any) {
       toast({ title: 'Error', description: 'OTP bhejne mein dikat aayi.', variant: 'destructive' });
     } finally {
@@ -144,18 +144,22 @@ export default function AuthPage() {
   };
 
   const handleVerifyOTP = async (values: OTPFormValues) => {
+    // 1. Verify user input with generated code
     if (values.otpCode !== generatedOtp) {
         toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
         return;
     }
+    
     setIsLoading(true);
     try {
+      // 2. Login Successfully (Anonymous for Quick Demo)
       const userCredential = await signInAnonymously(auth);
       const newUser = userCredential.user;
       const userDocRef = doc(firestore, "users", newUser.uid);
       
       const isEmail = values.emailOrPhone.includes('@');
       
+      // 3. Save details for Auto-Fill System
       setDocumentNonBlocking(userDocRef, {
           id: newUser.uid,
           fullName: 'Sahi Traveler',
@@ -165,7 +169,8 @@ export default function AuthPage() {
           walletBalance: 0,
           createdAt: new Date().toISOString(),
       }, { merge: true });
-      toast({ title: 'LOGIN SUCCESS! ✅' });
+      
+      toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'Sahi Safar mein aapka swagat hai.' });
     } catch (error: any) {
       setIsLoading(false);
       toast({ title: 'Verification Failed', variant: 'destructive' });
@@ -181,7 +186,7 @@ export default function AuthPage() {
           <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4">
             <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase">BR TRIP</CardTitle>
+          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary">BR TRIP</CardTitle>
           <CardDescription className="text-muted-foreground font-black uppercase text-[10px] mt-1 italic tracking-[0.2em]">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
@@ -223,7 +228,7 @@ export default function AuthPage() {
                   <FormField control={signUpForm.control} name="fullName" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Full Name</FormLabel>
-                      <FormControl><Input placeholder="John Doe" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
+                      <FormControl><Input placeholder="Jaise: Rajesh Kumar" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -275,7 +280,7 @@ export default function AuthPage() {
                   {currentOtpStep === 'input' ? (
                     <FormField control={otpForm.control} name="emailOrPhone" render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Login via OTP (Email/Phone)</FormLabel>
+                        <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email / Mobile Number</FormLabel>
                         <FormControl>
                           <div className="relative">
                               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
@@ -299,6 +304,9 @@ export default function AuthPage() {
                   <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'input' ? 'SEND OTP' : 'VERIFY & LOGIN'}
                   </Button>
+                  {currentOtpStep === 'code' && (
+                    <Button variant="ghost" className="w-full font-bold text-xs uppercase opacity-60" onClick={() => setCurrentOtpStep('input')}>Back to Change Number</Button>
+                  )}
                 </form>
               </Form>
             </TabsContent>
