@@ -11,26 +11,26 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Loader2, 
   CheckCircle2, 
-  IndianRupee, 
   ChevronRight, 
   User as UserIcon, 
   Mail, 
   Phone,
-  Clock,
-  MapPin,
-  Hotel as HotelIcon,
   ShieldCheck,
-  Bike,
-  Car,
-  Globe
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Checkbox } from './ui/checkbox';
 import { useFirebase } from '@/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { Badge } from './ui/badge';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import dynamic from 'next/dynamic';
+
+// Dynamic import of Leaflet components for SSR compatibility
+const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Pura naam likhein.'),
@@ -58,13 +58,19 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   const [confirmedBooking, setConfirmedBooking] = useState<any>(null);
   const { firestore, user } = useFirebase();
   const { userProfile, updateUserProfile } = useUserProfile(user?.uid);
+  const [L, setL] = useState<any>(null);
+
+  useEffect(() => {
+    import('leaflet').then(mod => {
+      setL(mod.default);
+    });
+  }, []);
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: { name: '', email: '', phone: '', travelers: 1, terms: false },
   });
 
-  // Smart Auto-Fill Logic
   useEffect(() => {
     if (userProfile || user) {
       form.reset({
@@ -159,24 +165,37 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* India Map Card - Now shown after booking */}
+              {/* Leaflet India Map */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
-                  <CardHeader className="bg-primary/5 pb-2">
-                    <CardTitle className="text-sm font-black italic uppercase tracking-tighter flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-primary" /> EXPLORE YOUR SAFAR ROUTE
+                  <CardHeader className="bg-primary/5 pb-2 text-left">
+                    <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
+                        BR TRIP CITIES MAP
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="rounded-2xl overflow-hidden border-2 border-slate-100 shadow-inner h-48">
-                        <iframe
-                            src={`https://www.google.com/maps?q=${encodeURIComponent(confirmedBooking.tripName || 'India')}&output=embed`}
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            loading="lazy"
-                        ></iframe>
+                  <CardContent className="p-0">
+                    <div className="h-[300px] w-full relative z-0">
+                      {typeof window !== 'undefined' && L && (
+                        <MapContainer 
+                          center={[26.9124, 75.7873]} 
+                          zoom={6} 
+                          style={{ height: '100%', width: '100%' }}
+                          scrollWheelZoom={false}
+                        >
+                          <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                          />
+                          {/* Jaipur Marker */}
+                          <Marker position={[26.9124, 75.7873]} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] })}>
+                            <Popup>Jaipur City</Popup>
+                          </Marker>
+                          {/* Jodhpur Marker */}
+                          <Marker position={[26.2389, 73.0243]} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] })}>
+                            <Popup>Jodhpur City</Popup>
+                          </Marker>
+                        </MapContainer>
+                      )}
                     </div>
-                    <p className="text-[10px] font-bold text-muted-foreground mt-2 uppercase text-center italic">Live Tracking & Route Map</p>
                   </CardContent>
               </Card>
 
@@ -259,4 +278,3 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
     </Form>
   );
 }
-

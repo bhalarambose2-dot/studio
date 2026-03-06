@@ -10,7 +10,6 @@ import {
   Bike,
   Navigation,
   TrendingUp,
-  History
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
