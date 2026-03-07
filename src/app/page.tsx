@@ -123,12 +123,12 @@ export default function AuthPage() {
   const handleSendOTP = async (values: OTPFormValues) => {
     setIsLoading(true);
     try {
-      // 1. Generate 6-digit OTP
+      // Logic matching requested snippet
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
-      // 2. Dispatch OTP (Simulated for Prototype)
       alert("Your OTP is: " + otp);
+      
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
@@ -145,7 +145,7 @@ export default function AuthPage() {
   };
 
   const handleVerifyOTP = async (values: OTPFormValues) => {
-    // 1. Verify user input with generated code
+    // Logic matching requested snippet
     if (values.otpCode !== generatedOtp) {
         toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
         return;
@@ -153,14 +153,12 @@ export default function AuthPage() {
     
     setIsLoading(true);
     try {
-      // 2. Login Successfully (Anonymous for Quick Demo)
       const userCredential = await signInAnonymously(auth);
       const newUser = userCredential.user;
       const userDocRef = doc(firestore, "users", newUser.uid);
       
       const isEmail = values.emailOrPhone.includes('@');
       
-      // 3. Save details for Auto-Fill System
       setDocumentNonBlocking(userDocRef, {
           id: newUser.uid,
           fullName: 'Sahi Traveler',

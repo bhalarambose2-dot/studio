@@ -61,9 +61,11 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
   const [L, setL] = useState<any>(null);
 
   useEffect(() => {
-    import('leaflet').then(mod => {
-      setL(mod.default);
-    });
+    if (typeof window !== 'undefined') {
+        import('leaflet').then(mod => {
+            setL(mod.default);
+        });
+    }
   }, []);
 
   const form = useForm<BookingFormValues>({
@@ -165,7 +167,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* Leaflet India Map - Added unique key to prevent re-initialization error */}
+              {/* Leaflet India Map - Key added to force re-render and prevent 'Map already initialized' */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
@@ -173,10 +175,10 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <div className="h-[300px] w-full relative z-0">
+                    <div key={`map-container-${confirmedBooking.id}`} className="h-[300px] w-full relative z-0">
                       {typeof window !== 'undefined' && L && confirmedBooking && (
                         <MapContainer 
-                          key={`map-${confirmedBooking.id}`}
+                          key={`map-instance-${confirmedBooking.id}`}
                           center={[26.9124, 75.7873]} 
                           zoom={6} 
                           style={{ height: '100%', width: '100%' }}
