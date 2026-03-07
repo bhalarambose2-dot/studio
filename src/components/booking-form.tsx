@@ -165,7 +165,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* Leaflet India Map - Restoration as requested */}
+              {/* Leaflet India Map - Added unique key to prevent re-initialization error */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
@@ -174,8 +174,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="h-[300px] w-full relative z-0">
-                      {typeof window !== 'undefined' && L && (
+                      {typeof window !== 'undefined' && L && confirmedBooking && (
                         <MapContainer 
+                          key={`map-${confirmedBooking.id}`}
                           center={[26.9124, 75.7873]} 
                           zoom={6} 
                           style={{ height: '100%', width: '100%' }}
