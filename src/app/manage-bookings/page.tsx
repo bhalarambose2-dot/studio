@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
-import { collection, orderBy, query, Timestamp, addDoc, serverTimestamp, updateDoc, doc } from "firebase/firestore";
+import { collection, orderBy, query, Timestamp, addDoc, serverTimestamp, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { 
     Briefcase, 
     Loader2, 
@@ -19,7 +20,8 @@ import {
     QrCode, 
     CheckCircle2, 
     AlertCircle,
-    X
+    X,
+    Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +47,11 @@ interface TripBooking {
     drop?: string;
 }
 
-function BookingCard({ booking, onPay }: { booking: TripBooking, onPay: (b: TripBooking) => void }) {
+function BookingCard({ booking, onPay, onDelete }: { 
+    booking: TripBooking, 
+    onPay: (b: TripBooking) => void,
+    onDelete: (b: TripBooking) => void 
+}) {
     const Icon = {
         hotel: Hotel,
         bus: Bus,
@@ -56,14 +62,21 @@ function BookingCard({ booking, onPay }: { booking: TripBooking, onPay: (b: Trip
     const isPendingPayment = booking.status.includes('Pending') || booking.status.includes('Confirm (Pay');
 
     return (
-        <Card className="border-none shadow-lg overflow-hidden group hover:shadow-xl transition-all rounded-[2rem] bg-white border-b-4 border-b-primary/10">
+        <Card className="border-none shadow-lg overflow-hidden group hover:shadow-xl transition-all rounded-[2rem] bg-white border-b-4 border-b-primary/10 relative">
+            <button 
+                onClick={() => onDelete(booking)}
+                className="absolute top-4 right-4 z-10 p-2 bg-white/80 rounded-full text-destructive hover:bg-destructive hover:text-white transition-all shadow-sm"
+                title="Cancel Safar"
+            >
+                <Trash2 className="h-4 w-4" />
+            </button>
             <CardHeader className="bg-primary/5 pb-3">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start mr-8">
                     <CardTitle className="flex items-center gap-2 text-xl font-black italic uppercase tracking-tighter text-slate-800">
                         <div className="bg-primary text-white p-2 rounded-xl shadow-lg">
                             <Icon className="h-5 w-5" />
                         </div>
-                        <span className="truncate max-w-[150px]">{booking.tripName}</span>
+                        <span className="truncate max-w-[120px]">{booking.tripName}</span>
                     </CardTitle>
                     <Badge className={`${isPendingPayment ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'} border-none font-black text-[10px] uppercase shadow-inner`}>
                         {booking.status}
@@ -141,6 +154,18 @@ export default function ManageBookingsPage() {
 
   const { data: bookings, isLoading } = useCollection<TripBooking>(bookingsQuery);
 
+  const handleDeleteSafar = async (booking: TripBooking) => {
+    if (!user) return;
+    if (confirm(`Kya aap "${booking.tripName}" ka safar cancel karna chahte hain?`)) {
+        try {
+            await deleteDoc(doc(firestore, 'users', user.uid, 'bookings', (booking as any).id));
+            toast({ title: 'Safar Cancelled 🗑️', description: 'Aapki booking delete kar di gayi hai.' });
+        } catch (e) {
+            toast({ title: 'Error', description: 'Booking delete karne mein dikat aayi.', variant: 'destructive' });
+        }
+    }
+  }
+
   const handleVerifyPayment = async () => {
     if (txnId.length !== 12) {
         toast({ title: 'Invalid UTR', description: 'Kripya 12-digit ka transaction ID bharein.', variant: 'destructive' });
@@ -155,9 +180,6 @@ export default function ManageBookingsPage() {
     try {
         if (!user || !selectedForPayment) return;
 
-        // In a real app, we'd update the specific document. 
-        // For prototype, we'll find the document in the list or use its internal firestore id if available.
-        // Since useCollection adds an 'id' field which is the doc ID:
         const bookingRef = doc(firestore, 'users', user.uid, 'bookings', (selectedForPayment as any).id);
         await updateDoc(bookingRef, {
             status: 'Confirmed & Paid',
@@ -217,6 +239,7 @@ export default function ManageBookingsPage() {
                     key={(booking as any).id} 
                     booking={booking} 
                     onPay={setSelectedForPayment} 
+                    onDelete={handleDeleteSafar}
                 />
             ))}
         </div>

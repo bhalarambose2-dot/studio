@@ -17,7 +17,7 @@ import {
   Phone,
   ShieldCheck,
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Checkbox } from './ui/checkbox';
 import { useFirebase } from '@/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -165,7 +165,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* Leaflet India Map */}
+              {/* Leaflet India Map - Restoration as requested */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">

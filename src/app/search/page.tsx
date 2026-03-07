@@ -1,7 +1,6 @@
 
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { 
   Wallet, 
   Hotel, 
@@ -19,7 +18,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
-import { Badge } from "@/components/ui/badge";
 
 export default function SearchPage() {
   const { user } = useFirebase();

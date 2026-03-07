@@ -128,6 +128,7 @@ export default function AuthPage() {
       setGeneratedOtp(otp);
       
       // 2. Dispatch OTP (Simulated for Prototype)
+      alert("Your OTP is: " + otp);
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
@@ -135,7 +136,7 @@ export default function AuthPage() {
       }
       
       setCurrentOtpStep('code');
-      toast({ title: 'OTP DISPATCHED! 📲', description: `Sahi code terminal mein ya email par check karein.` });
+      toast({ title: 'OTP DISPATCHED! 📲', description: `Sahi code screen par ya terminal mein dekhein.` });
     } catch (error: any) {
       toast({ title: 'Error', description: 'OTP bhejne mein dikat aayi.', variant: 'destructive' });
     } finally {
