@@ -167,7 +167,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* Interactive Leaflet Map - Unique key prevents "Map already initialized" error */}
+              {/* Unique key based on confirmedBooking.id prevents "Map container already initialized" error */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
@@ -188,11 +188,9 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                           />
-                          {/* Jaipur Marker */}
                           <Marker position={[26.9124, 75.7873]} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] })}>
                             <Popup>Jaipur City</Popup>
                           </Marker>
-                          {/* Jodhpur Marker */}
                           <Marker position={[26.2389, 73.0243]} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] })}>
                             <Popup>Jodhpur City</Popup>
                           </Marker>

@@ -27,8 +27,7 @@ export default function AdminDashboardPage() {
   }, [firestore]);
 
   const usersQuery = useMemoFirebase(() => {
-    // Sort by createdAt descending to see newest users first
-    return query(collection(firestore, 'users'), orderBy('createdAt', 'desc'), limit(10));
+    return query(collection(firestore, 'users'), orderBy('lastLogin', 'desc'), limit(20));
   }, [firestore]);
 
   const { data: bookings, isLoading: isBookingsLoading } = useCollection(bookingsQuery);
@@ -70,7 +69,7 @@ export default function AdminDashboardPage() {
         <Card className="border-none shadow-lg">
             <CardContent className="p-6">
                 <Users className="h-5 w-5 text-primary mb-2" />
-                <p className="text-xs font-black uppercase text-muted-foreground">Total Users</p>
+                <p className="text-xs font-black uppercase text-muted-foreground">Recent Users</p>
                 <p className="text-3xl font-black">{users?.length || 0}</p>
             </CardContent>
         </Card>
@@ -124,25 +123,26 @@ export default function AdminDashboardPage() {
 
         <Card className="border-none shadow-xl">
             <CardHeader>
-                <CardTitle className="font-black text-xl uppercase italic">RECENT LOGINS & USERS</CardTitle>
-                <CardDescription>Live list of recently joined accounts.</CardDescription>
+                <CardTitle className="font-black text-xl uppercase italic">STAFF & USERS TRACKING</CardTitle>
+                <CardDescription>Live list of recently active accounts.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {users?.map((u: any) => (
                     <div key={u.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg group hover:bg-primary/5 transition-colors">
                         <div className="flex items-center gap-3">
                             <UserCircle className="h-8 w-8 text-primary/40 group-hover:text-primary/60 transition-colors" />
-                            <div>
-                                <p className="text-sm font-bold leading-none">{u.fullName}</p>
-                                <p className="text-[10px] text-muted-foreground mt-1">{u.email || u.phone}</p>
+                            <div className="overflow-hidden">
+                                <p className="text-sm font-bold leading-none truncate">{u.fullName}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1 truncate">{u.email || u.phone}</p>
                                 {u.lastLogin && (
                                     <p className="text-[9px] text-primary font-bold mt-0.5 flex items-center gap-1">
-                                        <Clock className="h-2 w-2" /> {new Date(u.lastLogin).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                                        <Clock className="h-2 w-2" /> 
+                                        {new Date(u.lastLogin).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
                                     </p>
                                 )}
                             </div>
                         </div>
-                        <Badge variant="outline" className="text-[10px] uppercase font-black tracking-tighter border-primary/20 text-primary italic">
+                        <Badge variant="outline" className="text-[10px] uppercase font-black tracking-tighter border-primary/20 text-primary italic shrink-0">
                             {u.role}
                         </Badge>
                     </div>

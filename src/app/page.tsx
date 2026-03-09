@@ -20,7 +20,7 @@ import {
   signInWithEmailAndPassword,
   signInAnonymously
 } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { sendOtpEmail } from '@/ai/flows/send-otp-email';
 
 const signInSchema = z.object({
@@ -93,7 +93,7 @@ export default function AuthPage() {
     setIsLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      // Update last login
+      // Update last login in Firestore so admin can see
       const userDocRef = doc(firestore, "users", userCredential.user.uid);
       updateDocumentNonBlocking(userDocRef, { lastLogin: new Date().toISOString() });
     } catch (error: any) {
@@ -130,6 +130,7 @@ export default function AuthPage() {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
+      // Jo user ne manga: alert("Your OTP is: " + otp);
       alert("Your OTP is: " + otp);
       
       if (values.emailOrPhone.includes('@')) {
@@ -156,6 +157,8 @@ export default function AuthPage() {
     
     setIsLoading(true);
     try {
+      // Logic for OTP verification successful
+      alert("Login Successful");
       const userCredential = await signInAnonymously(auth);
       const newUser = userCredential.user;
       const userDocRef = doc(firestore, "users", newUser.uid);
@@ -173,7 +176,6 @@ export default function AuthPage() {
           lastLogin: new Date().toISOString(),
       }, { merge: true });
       
-      alert("Login Successful");
       toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'Sahi Safar mein aapka swagat hai.' });
     } catch (error: any) {
       setIsLoading(false);
