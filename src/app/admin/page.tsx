@@ -5,7 +5,7 @@ import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, ShieldAlert, Users, IndianRupee, TrendingUp, Ticket, UserCircle } from "lucide-react";
+import { Loader2, ShieldAlert, Users, IndianRupee, TrendingUp, Ticket, UserCircle, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -23,11 +23,12 @@ export default function AdminDashboardPage() {
   }, [userProfile, isUserLoading, router]);
 
   const bookingsQuery = useMemoFirebase(() => {
-    return query(collection(firestore, 'busBookings'), orderBy('bookingDate', 'desc'), limit(10));
+    return query(collection(firestore, 'busBookings'), orderBy('timestamp', 'desc'), limit(10));
   }, [firestore]);
 
   const usersQuery = useMemoFirebase(() => {
-    return query(collection(firestore, 'users'), limit(5));
+    // Sort by createdAt descending to see newest users first
+    return query(collection(firestore, 'users'), orderBy('createdAt', 'desc'), limit(10));
   }, [firestore]);
 
   const { data: bookings, isLoading: isBookingsLoading } = useCollection(bookingsQuery);
@@ -70,14 +71,14 @@ export default function AdminDashboardPage() {
             <CardContent className="p-6">
                 <Users className="h-5 w-5 text-primary mb-2" />
                 <p className="text-xs font-black uppercase text-muted-foreground">Total Users</p>
-                <p className="text-3xl font-black">{users?.length}+</p>
+                <p className="text-3xl font-black">{users?.length || 0}</p>
             </CardContent>
         </Card>
         <Card className="border-none shadow-lg">
             <CardContent className="p-6">
                 <Ticket className="h-5 w-5 text-primary mb-2" />
                 <p className="text-xs font-black uppercase text-muted-foreground">Total Bookings</p>
-                <p className="text-3xl font-black">{bookings?.length}</p>
+                <p className="text-3xl font-black">{bookings?.length || 0}</p>
             </CardContent>
         </Card>
          <Card className="border-none shadow-lg">
@@ -92,7 +93,7 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-2 border-none shadow-xl">
             <CardHeader>
-                <CardTitle className="font-black text-xl">LIVE BOOKING FEED</CardTitle>
+                <CardTitle className="font-black text-xl uppercase italic">LIVE BOOKING FEED</CardTitle>
                 <CardDescription>Recent transactions across all routes.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
@@ -109,10 +110,10 @@ export default function AdminDashboardPage() {
                         {bookings?.map((b: any) => (
                             <TableRow key={b.id}>
                                 <TableCell className="font-medium">{b.customerName}</TableCell>
-                                <TableCell className="text-xs">{b.busName}</TableCell>
+                                <TableCell className="text-xs">{b.tripName}</TableCell>
                                 <TableCell className="font-bold">₹{b.amount}</TableCell>
                                 <TableCell className="text-right">
-                                    <Badge className="bg-green-100 text-green-700 uppercase text-[10px]">SUCCESS</Badge>
+                                    <Badge className="bg-green-100 text-green-700 uppercase text-[10px] border-none font-black italic">SUCCESS</Badge>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -123,20 +124,25 @@ export default function AdminDashboardPage() {
 
         <Card className="border-none shadow-xl">
             <CardHeader>
-                <CardTitle className="font-black text-xl">STAFF & USERS</CardTitle>
-                <CardDescription>Recently joined accounts.</CardDescription>
+                <CardTitle className="font-black text-xl uppercase italic">RECENT LOGINS & USERS</CardTitle>
+                <CardDescription>Live list of recently joined accounts.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {users?.map((u: any) => (
-                    <div key={u.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
+                    <div key={u.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg group hover:bg-primary/5 transition-colors">
                         <div className="flex items-center gap-3">
-                            <UserCircle className="h-8 w-8 text-primary/40" />
+                            <UserCircle className="h-8 w-8 text-primary/40 group-hover:text-primary/60 transition-colors" />
                             <div>
                                 <p className="text-sm font-bold leading-none">{u.fullName}</p>
-                                <p className="text-[10px] text-muted-foreground mt-1">{u.email}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1">{u.email || u.phone}</p>
+                                {u.lastLogin && (
+                                    <p className="text-[9px] text-primary font-bold mt-0.5 flex items-center gap-1">
+                                        <Clock className="h-2 w-2" /> {new Date(u.lastLogin).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                )}
                             </div>
                         </div>
-                        <Badge variant="outline" className="text-[10px] uppercase font-black tracking-tighter">
+                        <Badge variant="outline" className="text-[10px] uppercase font-black tracking-tighter border-primary/20 text-primary italic">
                             {u.role}
                         </Badge>
                     </div>

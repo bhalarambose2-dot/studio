@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useFirebase, setDocumentNonBlocking } from '@/firebase';
+import { useFirebase, setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
@@ -92,7 +92,10 @@ export default function AuthPage() {
   const handleSignIn = async (values: SignInFormValues) => {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      // Update last login
+      const userDocRef = doc(firestore, "users", userCredential.user.uid);
+      updateDocumentNonBlocking(userDocRef, { lastLogin: new Date().toISOString() });
     } catch (error: any) {
       setIsLoading(false);
       toast({ title: 'Login Fail', description: error.message, variant: 'destructive' });
@@ -112,6 +115,7 @@ export default function AuthPage() {
         role: values.role,
         walletBalance: 0,
         createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
       }, { merge: true });
       toast({ title: 'Welcome!', description: `Sahi Safar mein aapka swagat hai.` });
     } catch (error: any) {
@@ -123,14 +127,11 @@ export default function AuthPage() {
   const handleSendOTP = async (values: OTPFormValues) => {
     setIsLoading(true);
     try {
-      // Snippet matching logic: generate 6 digit code
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
-      // Request snippet: alert the OTP
       alert("Your OTP is: " + otp);
       
-      // Internal logging for developer visibility
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
@@ -147,7 +148,6 @@ export default function AuthPage() {
   };
 
   const handleVerifyOTP = async (values: OTPFormValues) => {
-    // Snippet matching logic: verify input matches generated
     if (values.otpCode !== generatedOtp) {
         alert("Wrong OTP");
         toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
@@ -170,6 +170,7 @@ export default function AuthPage() {
           role: 'traveler',
           walletBalance: 0,
           createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
       }, { merge: true });
       
       alert("Login Successful");
