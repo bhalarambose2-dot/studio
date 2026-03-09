@@ -123,12 +123,14 @@ export default function AuthPage() {
   const handleSendOTP = async (values: OTPFormValues) => {
     setIsLoading(true);
     try {
-      // Logic matching requested snippet
+      // Snippet matching logic: generate 6 digit code
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
       
+      // Request snippet: alert the OTP
       alert("Your OTP is: " + otp);
       
+      // Internal logging for developer visibility
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
@@ -145,8 +147,9 @@ export default function AuthPage() {
   };
 
   const handleVerifyOTP = async (values: OTPFormValues) => {
-    // Logic matching requested snippet
+    // Snippet matching logic: verify input matches generated
     if (values.otpCode !== generatedOtp) {
+        alert("Wrong OTP");
         toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
         return;
     }
@@ -169,6 +172,7 @@ export default function AuthPage() {
           createdAt: new Date().toISOString(),
       }, { merge: true });
       
+      alert("Login Successful");
       toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'Sahi Safar mein aapka swagat hai.' });
     } catch (error: any) {
       setIsLoading(false);

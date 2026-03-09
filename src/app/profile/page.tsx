@@ -140,14 +140,14 @@ export default function ProfilePage() {
             </div>
 
             {/* Recent Safar Section */}
-            {recentBookings && recentBookings.length > 0 && (
-              <div className="space-y-4 px-2">
-                <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2 ml-2">
-                  <History className="h-5 w-5 text-primary" />
-                  Recent Safar
-                </h3>
-                <div className="space-y-3">
-                  {recentBookings.map((b) => (
+            <div className="space-y-4 px-2">
+              <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2 ml-2">
+                <History className="h-5 w-5 text-primary" />
+                Recent Safar
+              </h3>
+              <div className="space-y-3">
+                {recentBookings && recentBookings.length > 0 ? (
+                  recentBookings.map((b) => (
                     <Link key={b.id} href="/manage-bookings">
                       <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white hover:bg-slate-50 transition-colors">
                         <CardContent className="p-4 flex items-center justify-between">
@@ -171,10 +171,14 @@ export default function ProfilePage() {
                         </CardContent>
                       </Card>
                     </Link>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6 bg-muted/20 rounded-2xl border border-dashed">
+                    <p className="text-xs text-muted-foreground font-bold uppercase">Abhi tak koi safar nahi kiya</p>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 px-2">

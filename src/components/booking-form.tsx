@@ -167,7 +167,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
                   </CardContent>
               </Card>
 
-              {/* Leaflet India Map - Key added to force re-render and prevent 'Map already initialized' */}
+              {/* Interactive Leaflet Map - Unique key prevents "Map already initialized" error */}
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
