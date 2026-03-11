@@ -191,6 +191,7 @@ export default function AuthPage() {
       
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <CardHeader className="text-center pt-10 pb-2">
+          {/* Brand Logo Added Here */}
           <div className="mx-auto mb-4 group hover:scale-110 transition-transform cursor-pointer">
             <Image 
               src={images.haloraLogo} 
