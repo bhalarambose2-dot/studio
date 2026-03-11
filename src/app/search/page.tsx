@@ -9,6 +9,9 @@ import {
   Navigation,
   TrendingUp,
   Map as MapIcon,
+  Star,
+  MapPin,
+  ChevronRight
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,6 +21,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
+import { popularDestinations } from '../popularDestinations';
+import { Badge } from '@/components/ui/badge';
 
 export default function SearchPage() {
   const { user } = useFirebase();
@@ -121,6 +126,45 @@ export default function SearchPage() {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
+      </section>
+
+      {/* Top Rated Safars (Book Trip content) */}
+      <section className="px-6 mt-6">
+        <div className="flex items-center justify-between mb-4 px-2">
+          <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2">
+            <Star className="h-5 w-5 text-primary" />
+            Top Rated Safars
+          </h3>
+          <Link href="/destination-guides" className="text-primary text-[10px] font-black uppercase tracking-widest hover:underline">See More</Link>
+        </div>
+        <div className="space-y-4">
+          {popularDestinations.slice(0, 4).map((dest, i) => (
+            <Link key={i} href={`/search-page?tab=hotel&location=${dest.city}`}>
+              <Card className="border-none shadow-lg overflow-hidden rounded-[2rem] bg-white hover:bg-slate-50 transition-all group flex items-center">
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden">
+                  <Image 
+                    src={dest.image} 
+                    alt={dest.name} 
+                    fill 
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    data-ai-hint={dest.hint}
+                  />
+                </div>
+                <CardContent className="p-4 flex-grow flex flex-col justify-center">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-black text-sm uppercase italic tracking-tight text-slate-800 leading-tight">{dest.name}</h4>
+                      <p className="text-[9px] text-muted-foreground font-bold flex items-center gap-1 uppercase mt-1">
+                        <MapPin className="h-2 w-2 text-primary" /> {dest.city}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-[9px] font-black border-primary/20 text-primary uppercase italic">₹{dest.price}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* Bottom Banner */}

@@ -139,7 +139,7 @@ export default function ProfilePage() {
                 </div>
             </div>
 
-            {/* Recent Safar Section */}
+            {/* Recent Safar Section (Restored here) */}
             <div className="space-y-4 px-2">
               <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2 ml-2">
                 <History className="h-5 w-5 text-primary" />
