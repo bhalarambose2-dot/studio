@@ -148,7 +148,7 @@ export default function OwnerDashboardPage() {
                             <div className="text-[10px] text-muted-foreground font-medium">{booking.customerPhone}</div>
                           </TableCell>
                           <TableCell>
-                            <div className="font-mono text-[11px] bg-muted px-1 rounded inline-block">{booking.busNumber || 'BR-TRIP'}</div>
+                            <div className="font-mono text-[11px] bg-muted px-1 rounded inline-block">{booking.busNumber || 'HALORA'}</div>
                             <div className="text-[10px] italic text-muted-foreground mt-1">{booking.tripName}</div>
                           </TableCell>
                           <TableCell>

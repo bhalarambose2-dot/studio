@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
@@ -292,7 +291,7 @@ export default function ManageBookingsPage() {
                             </div>
                         )}
                         <Image 
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`upi://pay?pa=8769930595-2@ybl&pn=BR%20Trip&am=${selectedForPayment.amount}&cu=INR`)}`}
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`upi://pay?pa=8769930595-2@ybl&pn=HALORA&am=${selectedForPayment.amount}&cu=INR`)}`}
                             alt="Payment QR"
                             width={200}
                             height={200}

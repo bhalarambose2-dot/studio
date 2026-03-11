@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -69,7 +68,7 @@ export default function PartnershipPage() {
         />
         <div className="relative z-10 max-w-3xl text-white space-y-4">
           <Badge className="bg-primary text-white border-none font-black px-4 py-1 mb-2">SAHI NIVESH (RIGHT INVEST)</Badge>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic">Partner With BR TRIP</h1>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic">Partner With HALORA</h1>
           <p className="text-lg md:text-xl font-medium opacity-90 max-w-2xl mx-auto">India ke sabse tezi se badhte travel network ka hissa banein. Apne business ko digital banayein aur sahi nivesh se growth payein.</p>
         </div>
       </section>
@@ -88,7 +87,7 @@ export default function PartnershipPage() {
             <ShieldCheck className="h-8 w-8" />
           </div>
           <h3 className="font-black text-xl italic uppercase">Secure Platform</h3>
-          <p className="text-sm text-muted-foreground font-medium">BR TRIP ke bharosemand brand ke saath jud kar apne business ki credibility badhayein. Aapka data aur transactions secure hain.</p>
+          <p className="text-sm text-muted-foreground font-medium">HALORA ke bharosemand brand ke saath jud kar apne business ki credibility badhayein. Aapka data aur transactions secure hain.</p>
         </Card>
         <Card className="border-none shadow-xl bg-primary/5 p-8 text-center space-y-4 border-b-4 border-b-accent">
           <div className="mx-auto bg-accent text-white p-4 rounded-3xl w-fit shadow-lg shadow-accent/20">
@@ -102,7 +101,7 @@ export default function PartnershipPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         <div className="space-y-8">
           <div className="space-y-4">
-            <h2 className="text-4xl font-black tracking-tight italic">Kyon Chunein BR TRIP?</h2>
+            <h2 className="text-4xl font-black tracking-tight italic">Kyon Chunein HALORA?</h2>
             <p className="text-muted-foreground text-lg leading-relaxed font-medium">Hum sirf ek platform nahi, aapke growth partner hain. Hamara mission hai travel industry ko digital banana aur har partner ko ek bada platform dena.</p>
           </div>
           

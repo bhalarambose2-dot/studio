@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -116,7 +115,7 @@ export default function AuthPage() {
         createdAt: new Date().toISOString(),
         lastLogin: new Date().toISOString(),
       }, { merge: true });
-      toast({ title: 'Welcome!', description: `Sahi Safar mein aapka swagat hai.` });
+      toast({ title: 'Welcome!', description: `HALORA mein aapka swagat hai.` });
     } catch (error: any) {
       setIsLoading(false);
       toast({ title: 'Signup Fail', description: error.message, variant: 'destructive' });
@@ -134,7 +133,7 @@ export default function AuthPage() {
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       } else {
-        console.log(`\n[BR TRIP OTP DISPATCH]\nTO: ${values.emailOrPhone}\nCODE: ${otp}\n`);
+        console.log(`\n[HALORA OTP DISPATCH]\nTO: ${values.emailOrPhone}\nCODE: ${otp}\n`);
       }
       
       setCurrentOtpStep('code');
@@ -172,7 +171,7 @@ export default function AuthPage() {
           lastLogin: new Date().toISOString(),
       }, { merge: true });
       
-      toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'Sahi Safar mein aapka swagat hai.' });
+      toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'HALORA mein aapka swagat hai.' });
     } catch (error: any) {
       setIsLoading(false);
       toast({ title: 'Verification Failed', variant: 'destructive' });
@@ -188,7 +187,7 @@ export default function AuthPage() {
           <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4">
             <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary">BR TRIP</CardTitle>
+          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary">HALORA</CardTitle>
           <CardDescription className="text-muted-foreground font-black uppercase text-[10px] mt-1 italic tracking-[0.2em]">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">

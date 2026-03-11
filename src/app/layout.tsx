@@ -8,8 +8,8 @@ import { SplashLoader } from '@/components/splash-loader';
 import { Loader2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'BR TRIP',
-  description: 'Your next adventure across India starts here.',
+  title: 'HALORA',
+  description: 'Your next adventure across India starts here with HALORA.',
 };
 
 export default function RootLayout({

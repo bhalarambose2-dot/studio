@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -169,7 +168,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white mt-4">
                   <CardHeader className="bg-primary/5 pb-2 text-left">
                     <CardTitle className="text-sm font-black italic uppercase tracking-tighter">
-                        BR TRIP CITIES MAP
+                        HALORA CITIES MAP
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">

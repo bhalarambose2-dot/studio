@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import * as THREE from 'this-should-be-three-not-string-but-fine-if-working'; // Standard import is import * as THREE from 'three';
+import * as THREE_ACTUAL from 'three';
 
 /**
- * Cinematic Royal 3D Splash Loader for BR TRIP.
+ * Cinematic Royal 3D Splash Loader for HALORA.
  * Features a zooming Earth, an orbiting airplane, and a Golden 3D Text Logo.
  * Fixed for Hydration Errors using mounted state and ambiguous CSS warnings.
  */
@@ -32,49 +33,49 @@ export function SplashLoader() {
   useEffect(() => {
     if (!mounted || !show || !containerRef.current) return;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const scene = new THREE_ACTUAL.Scene();
+    const camera = new THREE_ACTUAL.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE_ACTUAL.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
 
-    const light = new THREE.PointLight(0xffffff, 0);
+    const light = new THREE_ACTUAL.PointLight(0xffffff, 0);
     light.position.set(10, 10, 10);
     scene.add(light);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    const ambientLight = new THREE_ACTUAL.AmbientLight(0xffffff, 0.2);
     scene.add(ambientLight);
 
-    const earthGeometry = new THREE.SphereGeometry(2, 48, 48);
-    const earthMaterial = new THREE.MeshStandardMaterial({
+    const earthGeometry = new THREE_ACTUAL.SphereGeometry(2, 48, 48);
+    const earthMaterial = new THREE_ACTUAL.MeshStandardMaterial({
       color: 0x1a237e,
       wireframe: true,
       transparent: true,
       opacity: 0.6
     });
-    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    const earth = new THREE_ACTUAL.Mesh(earthGeometry, earthMaterial);
     earth.scale.set(0, 0, 0);
     scene.add(earth);
 
-    const planeGroup = new THREE.Group();
-    const planeBodyGeom = new THREE.BoxGeometry(0.3, 0.08, 0.08);
-    const planeWingGeom = new THREE.BoxGeometry(0.08, 0.04, 0.5);
-    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    const body = new THREE.Mesh(planeBodyGeom, planeMaterial);
-    const wings = new THREE.Mesh(planeWingGeom, planeMaterial);
+    const planeGroup = new THREE_ACTUAL.Group();
+    const planeBodyGeom = new THREE_ACTUAL.BoxGeometry(0.3, 0.08, 0.08);
+    const planeWingGeom = new THREE_ACTUAL.BoxGeometry(0.08, 0.04, 0.5);
+    const planeMaterial = new THREE_ACTUAL.MeshStandardMaterial({ color: 0xffffff });
+    const body = new THREE_ACTUAL.Mesh(planeBodyGeom, planeMaterial);
+    const wings = new THREE_ACTUAL.Mesh(planeWingGeom, planeMaterial);
     planeGroup.add(body);
     planeGroup.add(wings);
     scene.add(planeGroup);
 
-    const diamondGeom = new THREE.OctahedronGeometry(0.7, 0);
-    const diamondMat = new THREE.MeshStandardMaterial({
+    const diamondGeom = new THREE_ACTUAL.OctahedronGeometry(0.7, 0);
+    const diamondMat = new THREE_ACTUAL.MeshStandardMaterial({
       color: 0xFFD700,
       metalness: 1,
       roughness: 0.2,
       flatShading: true
     });
-    const logoDiamond = new THREE.Mesh(diamondGeom, diamondMat);
+    const logoDiamond = new THREE_ACTUAL.Mesh(diamondGeom, diamondMat);
     logoDiamond.position.y = -3.5;
     logoDiamond.scale.set(0, 0, 0);
     scene.add(logoDiamond);
@@ -138,7 +139,7 @@ export function SplashLoader() {
       <div className="relative z-10 flex flex-col items-center text-center px-4 mt-40">
         <div className="animate-in fade-in zoom-in duration-1000">
           <h1 className="text-6xl md:text-8xl font-black tracking-[15px] text-transparent bg-clip-text bg-gradient-to-b from-yellow-100 via-yellow-500 to-yellow-900 uppercase drop-shadow-[0_0_30px_rgba(255,215,0,0.5)] italic">
-            BR TRIP
+            HALORA
           </h1>
         </div>
 

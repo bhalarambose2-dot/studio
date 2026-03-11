@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -41,10 +40,10 @@ const sendOtpEmailFlow = ai.defineFlow(
     // Simulated Dispatch Log - This is the "Email Server"
     // No code is logged to the browser or console.
     console.log(`\n\n====================================================`);
-    console.log(`[BR TRIP - PRIVATE CUSTOMER CARE EMAIL DISPATCH]`);
+    console.log(`[HALORA - PRIVATE CUSTOMER CARE EMAIL DISPATCH]`);
     console.log(`STATUS: DISPATCHED TO INBOX`);
     console.log(`TO: ${input.email}`);
-    console.log(`SUBJECT: Sahi Safar Security Code`);
+    console.log(`SUBJECT: HALORA Security Code`);
     console.log(`----------------------------------------------------`);
     console.log(`CONFIDENTIAL OTP CODE: ${input.otpCode}`);
     console.log(`----------------------------------------------------`);

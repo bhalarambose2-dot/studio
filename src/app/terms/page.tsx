@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,7 @@ export default function TermsPage() {
 
                         <h2>1. Introduction</h2>
                         <p>
-                            Welcome to BR Trip. These Terms and Conditions govern your use of our website and services. By accessing or using our service, you agree to be bound by these terms.
+                            Welcome to HALORA. These Terms and Conditions govern your use of our website and services. By accessing or using our service, you agree to be bound by these terms.
                         </p>
 
                         <h2>2. Bookings and Payments</h2>
@@ -39,7 +38,7 @@ export default function TermsPage() {
 
                         <h2>5. Limitation of Liability</h2>
                         <p>
-                            BR Trip acts as an agent for third-party suppliers, such as airlines and hotels. We are not liable for any acts, errors, omissions, or negligence of any such suppliers. Our liability is limited to the amount paid for the booking.
+                            HALORA acts as an agent for third-party suppliers, such as airlines and hotels. We are not liable for any acts, errors, omissions, or negligence of any such suppliers. Our liability is limited to the amount paid for the booking.
                         </p>
 
                         <h2>6. Governing Law</h2>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { 
@@ -51,7 +50,7 @@ export default function SearchPage() {
                 <Navigation className="h-6 w-6 text-white rotate-45" />
              </div>
              <div>
-                <h1 className="text-white text-2xl font-black tracking-tighter italic uppercase leading-none">BR Trip</h1>
+                <h1 className="text-white text-2xl font-black tracking-tighter italic uppercase leading-none">HALORA</h1>
                 <p className="text-white/60 text-[8px] font-black uppercase tracking-[0.3em] mt-1">Sahi Safar • Sahi Nivesh</p>
              </div>
           </div>
@@ -186,4 +185,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
