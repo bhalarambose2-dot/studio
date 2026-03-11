@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, use } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -58,7 +58,10 @@ const RAJASTHAN_LOCATIONS = [
   "Bassi, Jaipur", "Jamwa Ramgarh, Jaipur", "Achrol, Jaipur", "Kukas, Jaipur", "Chandwaji, Jaipur", "Paota, Jaipur"
 ];
 
-export default function SearchCardPage() {
+export default function SearchCardPage({ searchParams: searchParamsProp }: { searchParams: Promise<any> }) {
+  // Unwrap searchParams to satisfy Next.js 15 requirement
+  use(searchParamsProp);
+  
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') || 'hotel';
   const router = useRouter();

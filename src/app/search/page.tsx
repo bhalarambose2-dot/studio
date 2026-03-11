@@ -1,3 +1,4 @@
+
 'use client';
 
 import { 
@@ -22,8 +23,12 @@ import { cn } from '@/lib/utils';
 import images from '../lib/placeholder-images.json';
 import { popularDestinations } from '../popularDestinations';
 import { Badge } from '@/components/ui/badge';
+import { use } from 'react';
 
-export default function SearchPage() {
+export default function SearchPage({ searchParams }: { searchParams: Promise<any> }) {
+  // Unwrap searchParams to satisfy Next.js 15 requirement
+  use(searchParams);
+  
   const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
@@ -127,7 +132,7 @@ export default function SearchPage() {
         </ScrollArea>
       </section>
 
-      {/* Top Rated Safars (Book Trip content) */}
+      {/* Top Rated Safars */}
       <section className="px-6 mt-6">
         <div className="flex items-center justify-between mb-4 px-2">
           <h3 className="text-xl font-black italic uppercase tracking-tighter text-slate-800 flex items-center gap-2">
