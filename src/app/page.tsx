@@ -20,7 +20,7 @@ import {
   signInWithEmailAndPassword,
   signInAnonymously
 } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { sendOtpEmail } from '@/ai/flows/send-otp-email';
 
 const signInSchema = z.object({
@@ -201,7 +201,7 @@ export default function AuthPage() {
         <CardContent className="p-8">
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-2xl mb-8">
-              <TabsTrigger value="signin" className="rounded-xl font-black uppercase text-[10px]">Email</TabsTrigger>
+              <TabsTrigger value="signin" className="rounded-xl font-black uppercase text-[10px]">Sign in</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-xl font-black uppercase text-[10px]">Sign up</TabsTrigger>
               <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
