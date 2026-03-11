@@ -22,6 +22,8 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { sendOtpEmail } from '@/ai/flows/send-otp-email';
+import Image from 'next/image';
+import images from './lib/placeholder-images.json';
 
 const signInSchema = z.object({
   email: z.string().email('Sahi email bharein.'),
@@ -189,8 +191,15 @@ export default function AuthPage() {
       
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <CardHeader className="text-center pt-10 pb-2">
-          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4 group hover:scale-110 transition-transform cursor-pointer">
-            <Briefcase className="h-10 w-10 text-primary" />
+          <div className="mx-auto mb-4 group hover:scale-110 transition-transform cursor-pointer">
+            <Image 
+              src={images.haloraLogo} 
+              alt="HALORA Logo" 
+              width={100} 
+              height={100} 
+              className="rounded-3xl shadow-lg border-4 border-white"
+              data-ai-hint="transport logo"
+            />
           </div>
           <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary flex items-center justify-center gap-2">
             HALORA
