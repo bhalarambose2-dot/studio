@@ -24,7 +24,7 @@ export default function SearchPage() {
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel photo', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
+    { name: 'Add hotel image', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
     { name: 'Train Tickets', icon: Train, href: '/search-page?tab=train', color: 'bg-blue-800' },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },
