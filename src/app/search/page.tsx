@@ -8,6 +8,7 @@ import {
   Bike,
   Navigation,
   TrendingUp,
+  Map as MapIcon,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -26,6 +27,7 @@ export default function SearchPage() {
     { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },
+    { name: 'Book Trip', icon: MapIcon, href: '/search-page', color: 'bg-orange-600' },
   ];
 
   const deals = [
