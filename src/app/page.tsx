@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User, Phone } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User, Phone, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useFirebase, setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
@@ -181,13 +181,20 @@ export default function AuthPage() {
   if (isUserLoading) return <div className="flex items-center justify-center min-h-screen bg-white"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-full bg-slate-50 p-4">
-      <Card className="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-[2.5rem] overflow-hidden border-none">
+    <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0d1b2a] p-4 overflow-hidden">
+      {/* Cinematic Moon Light Background Lighting */}
+      <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+      
+      <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <CardHeader className="text-center pt-10 pb-2">
-          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4">
+          <div className="mx-auto bg-primary/10 p-4 rounded-3xl w-fit mb-4 group hover:scale-110 transition-transform cursor-pointer">
             <Briefcase className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary">HALORA</CardTitle>
+          <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary flex items-center justify-center gap-2">
+            HALORA
+            <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
+          </CardTitle>
           <CardDescription className="text-muted-foreground font-black uppercase text-[10px] mt-1 italic tracking-[0.2em]">Sahi Nivesh • Sahi Safar</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
@@ -198,24 +205,24 @@ export default function AuthPage() {
               <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="signin">
+            <TabsContent value="signin" className="animate-in fade-in slide-in-from-left-4 duration-300">
               <Form {...signInForm}>
                 <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-6">
                   <FormField control={signInForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
-                      <FormControl><Input placeholder="you@example.com" {...field} className="h-14 rounded-2xl font-medium shadow-inner border-none bg-slate-50" /></FormControl>
+                      <FormControl><Input placeholder="you@example.com" {...field} className="h-14 rounded-2xl font-medium shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={signInForm.control} name="password" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-14 rounded-2xl font-medium shadow-inner border-none bg-slate-50" /></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-14 rounded-2xl font-medium shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90 active:scale-95 transition-all">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <LogIn className="mr-2 h-6 w-6" />}
                     Sign In
                   </Button>
@@ -223,20 +230,20 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="signup">
+            <TabsContent value="signup" className="animate-in fade-in slide-in-from-right-4 duration-300">
               <Form {...signUpForm}>
                 <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
                   <FormField control={signUpForm.control} name="fullName" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Full Name</FormLabel>
-                      <FormControl><Input placeholder="Jaise: Rajesh Kumar" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
+                      <FormControl><Input placeholder="Jaise: Rajesh Kumar" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={signUpForm.control} name="email" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Email</FormLabel>
-                      <FormControl><Input placeholder="you@example.com" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
+                      <FormControl><Input placeholder="you@example.com" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -244,10 +251,10 @@ export default function AuthPage() {
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Role</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl><SelectTrigger className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"><SelectValue placeholder="Select Role" /></SelectTrigger></FormControl>
-                        <SelectContent>
-                          <SelectItem value="traveler"><span className="flex items-center gap-2"><User className="h-4 w-4" /> Traveler</span></SelectItem>
-                          <SelectItem value="staff"><span className="flex items-center gap-2"><Bike className="h-4 w-4" /> Captain</span></SelectItem>
+                        <FormControl><SelectTrigger className="h-12 rounded-2xl shadow-inner border-none bg-slate-50 focus:ring-primary/20"><SelectValue placeholder="Select Role" /></SelectTrigger></FormControl>
+                        <SelectContent className="rounded-2xl">
+                          <SelectItem value="traveler" className="rounded-xl"><span className="flex items-center gap-2"><User className="h-4 w-4" /> Traveler</span></SelectItem>
+                          <SelectItem value="staff" className="rounded-xl"><span className="flex items-center gap-2"><Bike className="h-4 w-4" /> Captain</span></SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -256,18 +263,18 @@ export default function AuthPage() {
                   <FormField control={signUpForm.control} name="password" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                    <FormField control={signUpForm.control} name="confirmPassword" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-[10px] uppercase font-black text-muted-foreground ml-1">Confirm Password</FormLabel>
-                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50"/></FormControl>
+                      <FormControl><Input type="password" placeholder="••••••••" {...field} className="h-12 rounded-2xl shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase mt-4 bg-primary hover:bg-primary/90">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase mt-4 bg-primary hover:bg-primary/90 active:scale-95 transition-all">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : <UserPlus className="mr-2 h-6 w-6" />}
                     Register Now
                   </Button>
@@ -275,7 +282,7 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="otp">
+            <TabsContent value="otp" className="animate-in fade-in zoom-in-95 duration-300">
               <Form {...otpForm}>
                 <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'input' ? handleSendOTP : handleVerifyOTP)} className="space-y-6">
                   {currentOtpStep === 'input' ? (
@@ -285,7 +292,7 @@ export default function AuthPage() {
                         <FormControl>
                           <div className="relative">
                               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                              <Input placeholder="E.g. 9876543210 or email" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg shadow-inner border-none bg-slate-50" />
+                              <Input placeholder="E.g. 9876543210 or email" {...field} className="h-14 pl-12 rounded-2xl font-black italic text-lg shadow-inner border-none bg-slate-50 focus-visible:ring-primary/20" />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -296,17 +303,17 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel className="text-[10px] uppercase font-black text-muted-foreground text-center block">Enter 6-Digit Code</FormLabel>
                         <FormControl>
-                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic bg-slate-50 shadow-inner border-none" maxLength={6} />
+                          <Input placeholder="XXXXXX" {...field} className="h-16 rounded-2xl font-black text-center text-3xl tracking-[0.5em] italic bg-slate-50 shadow-inner border-none focus-visible:ring-primary/20" maxLength={6} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                   )}
-                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90">
+                  <Button type="submit" disabled={isLoading} className="w-full h-16 text-lg font-black italic shadow-xl rounded-2xl uppercase bg-primary hover:bg-primary/90 active:scale-95 transition-all">
                     {isLoading ? <Loader2 className="mr-2 animate-spin h-6 w-6" /> : currentOtpStep === 'input' ? 'SEND OTP' : 'VERIFY & LOGIN'}
                   </Button>
                   {currentOtpStep === 'code' && (
-                    <Button variant="ghost" className="w-full font-bold text-xs uppercase opacity-60" onClick={() => setCurrentOtpStep('input')}>Back to Change Number</Button>
+                    <Button variant="ghost" className="w-full font-bold text-xs uppercase opacity-60 hover:bg-transparent" onClick={() => setCurrentOtpStep('input')}>Back to Change Number</Button>
                   )}
                 </form>
               </Form>
