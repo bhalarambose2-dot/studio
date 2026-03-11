@@ -32,7 +32,7 @@ export default function SearchPage() {
     { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },
-    { name: 'Book Trip', icon: MapIcon, href: '/search-page', color: 'bg-orange-600' },
+    { name: 'Book Trip', icon: MapIcon, href: '/destination-guides', color: 'bg-orange-600' },
   ];
 
   const deals = [
@@ -138,7 +138,7 @@ export default function SearchPage() {
           <Link href="/destination-guides" className="text-primary text-[10px] font-black uppercase tracking-widest hover:underline">See More</Link>
         </div>
         <div className="space-y-4">
-          {popularDestinations.slice(0, 4).map((dest, i) => (
+          {popularDestinations.slice(0, 8).map((dest, i) => (
             <Link key={i} href={`/search-page?tab=hotel&location=${dest.city}`}>
               <Card className="border-none shadow-lg overflow-hidden rounded-[2rem] bg-white hover:bg-slate-50 transition-all group flex items-center">
                 <div className="relative h-24 w-24 shrink-0 overflow-hidden">
@@ -186,3 +186,4 @@ export default function SearchPage() {
     </div>
   );
 }
+
