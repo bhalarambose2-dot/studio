@@ -36,7 +36,6 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
     { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },
-    { name: 'Book Trip', icon: MapIcon, href: '/destination-guides', color: 'bg-orange-600' },
   ];
 
   const deals = [
@@ -75,7 +74,7 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 gap-4 mt-8 relative z-10">
+        <div className="grid grid-cols-3 gap-4 mt-8 relative z-10">
           {categories.map((cat) => (
             <Link key={cat.name} href={cat.href}>
               <Card className="border-none shadow-2xl overflow-hidden bg-white/10 backdrop-blur-md group active:scale-95 transition-all border border-white/10 rounded-[2rem]">
@@ -92,7 +91,7 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
                       <div className="bg-white/20 backdrop-blur-md w-fit p-1.5 rounded-lg mb-2">
                         <cat.icon className="h-4 w-4 text-white" />
                       </div>
-                      <span className="text-white text-xs font-black uppercase italic tracking-widest">{cat.name}</span>
+                      <span className="text-white text-[10px] font-black uppercase italic tracking-widest leading-none">{cat.name}</span>
                     </div>
                   </div>
                 </CardContent>

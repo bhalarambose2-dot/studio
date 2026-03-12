@@ -134,7 +134,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
         </Button>
         <div>
           <h1 className="text-white text-2xl font-black italic uppercase tracking-tighter italic">
-            {activeTab === 'hotel' ? 'Sahi Hotel Stay' : activeTab === 'bus' ? 'Sahi Bus Safar' : activeTab === 'book_trip' ? 'Sahi India Trip' : 'Sahi Safar Ride'}
+            {activeTab === 'hotel' ? 'Sahi Hotel Stay' : activeTab === 'bus' ? 'Sahi Bus Safar' : 'Sahi Safar Ride'}
           </h1>
           <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Rajasthan's No. 1 Travel Network</p>
         </div>
@@ -147,7 +147,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
               <TabsList className="flex w-max min-w-full bg-slate-50 p-1">
                  <TabsTrigger value="hotel" className="rounded-2xl text-[9px] font-black uppercase tracking-tighter px-4 py-2"><Hotel className="h-3 w-3 mr-1"/> Hotel</TabsTrigger>
                  <TabsTrigger value="bus" className="rounded-2xl text-[9px] font-black uppercase tracking-tighter px-4 py-2"><Bus className="h-3 w-3 mr-1"/> Bus</TabsTrigger>
-                 <TabsTrigger value="book_trip" className="rounded-2xl text-[9px] font-black uppercase tracking-tighter px-4 py-2 bg-orange-500 data-[state=active]:bg-orange-600 data-[state=active]:text-white"><MapIcon className="h-3 w-3 mr-1"/> Book Trip</TabsTrigger>
                  <TabsTrigger value="bike" className="rounded-2xl text-[9px] font-black uppercase tracking-tighter px-4 py-2"><Bike className="h-3 w-3 mr-1"/> Bike</TabsTrigger>
                  <TabsTrigger value="taxi" className="rounded-2xl text-[9px] font-black uppercase tracking-tighter px-4 py-2"><Car className="h-3 w-3 mr-1"/> Taxi</TabsTrigger>
               </TabsList>
@@ -254,87 +253,12 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                   </Button>
                </div>
             </TabsContent>
-
-            {/* Book Trip Tab (Only India - Negative Detailed Theme) */}
-            <TabsContent value="book_trip" className="p-0">
-               <div className="bg-[#0d1b2a] text-white p-6 space-y-6">
-                  <header className="flex items-center justify-between border-l-4 border-primary pl-4">
-                    <div>
-                      <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                        <History className="h-5 w-5 text-primary" /> Rajasthan Heritage
-                      </h2>
-                      <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Sahi Indian Rates • 2D/2N Packages</p>
-                    </div>
-                    <Badge className="bg-primary/20 text-primary border-none text-[9px] font-black italic px-3">INDIA ONLY</Badge>
-                  </header>
-
-                  <div className="space-y-6">
-                    {popularDestinations.map((hotel, i) => (
-                      <Card key={i} className="overflow-hidden border-none shadow-2xl bg-white/5 backdrop-blur-md rounded-[2.5rem] group hover:bg-white/10 transition-all duration-500 border-b-4 border-primary/20">
-                        <div className="flex flex-col">
-                          <div className="relative h-48 overflow-hidden">
-                            <video 
-                              autoPlay 
-                              muted 
-                              loop 
-                              playsInline
-                              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                            >
-                              <source src={hotel.videoUrl} type="video/mp4" />
-                            </video>
-                            <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-[8px] font-black uppercase italic tracking-widest shadow-xl">
-                              {hotel.tag}
-                            </div>
-                            <div className="absolute bottom-3 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/10">
-                                <Clock className="h-3 w-3 text-primary" />
-                                <span className="text-[9px] font-black italic text-white">{hotel.duration}</span>
-                            </div>
-                          </div>
-                          <CardContent className="p-6 space-y-4">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h3 className="font-black text-xl italic uppercase tracking-tighter text-white group-hover:text-primary transition-colors">{hotel.name}</h3>
-                                <div className="flex items-center text-[10px] font-black uppercase text-white/40 tracking-widest mt-1">
-                                  <MapPin className="w-3 h-3 mr-1 text-primary" /> {hotel.city}, Rajasthan
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded-lg">
-                                <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                                <span className="text-[10px] font-black">{hotel.rating}</span>
-                              </div>
-                            </div>
-                            <p className="text-[11px] text-white/60 font-medium italic line-clamp-2">
-                              {hotel.description}
-                            </p>
-                            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                              <div>
-                                <p className="text-[9px] font-black uppercase text-primary tracking-widest">Per Person</p>
-                                <p className="text-2xl font-black italic text-white">₹{hotel.price.toLocaleString('en-IN')}</p>
-                              </div>
-                              <Button 
-                                className="h-12 px-6 font-black italic uppercase rounded-xl shadow-xl shadow-primary/30 text-sm transition-all active:scale-95 group bg-primary hover:bg-primary/90" 
-                                onClick={() => handleBookingStart('hotel', hotel)}
-                              >
-                                BOOK SAFAR <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                  <div className="py-10 text-center opacity-30 border-t border-white/10">
-                    <Navigation className="h-10 w-10 mx-auto text-primary mb-2" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em]">Bharat Ka Sahi Safar</p>
-                  </div>
-               </div>
-            </TabsContent>
           </Tabs>
         </Card>
       </div>
 
       {/* Results Section (Standard Results) */}
-      {searchResults.length > 0 && activeTab !== 'book_trip' && (
+      {searchResults.length > 0 && (
         <section className="px-4 space-y-4">
           <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2 px-2">
             <Navigation className="h-5 w-5 text-primary" />
