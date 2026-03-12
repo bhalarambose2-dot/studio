@@ -7,13 +7,11 @@ import {
   Bus, 
   Bike,
   Navigation,
-  TrendingUp,
   Star,
   MapPin,
   Briefcase,
   Globe,
   ShieldCheck,
-  ChevronRight
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,7 +20,6 @@ import { useUserProfile } from '@/lib/firebase/use-user-profile';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import images from '../lib/placeholder-images.json';
 import { popularDestinations } from '../popularDestinations';
 import { Badge } from '@/components/ui/badge';
 import { use } from 'react';
@@ -144,13 +141,15 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
             <Link key={i} href={`/search-page?tab=hotel&location=${dest.city}`}>
               <Card className="border-none shadow-xl overflow-hidden rounded-[2.5rem] bg-white hover:bg-slate-50 transition-all group flex items-center border-b-4 border-primary/10">
                 <div className="relative h-28 w-28 shrink-0 overflow-hidden">
-                  <Image 
-                    src={dest.image} 
-                    alt={dest.name} 
-                    fill 
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    data-ai-hint={dest.hint}
-                  />
+                  <video 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                  >
+                    <source src={dest.videoUrl} type="video/mp4" />
+                  </video>
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                 </div>
                 <CardContent className="p-6 flex-grow flex flex-col justify-center">

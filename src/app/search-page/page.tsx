@@ -21,20 +21,14 @@ import {
   MapPin, 
   Bike, 
   ChevronRight,
-  IndianRupee,
   ChevronLeft,
   Loader2,
   Navigation,
   ArrowRightLeft,
-  Map as MapIcon,
-  Star,
-  Clock,
-  History
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 import { popularDestinations } from '../popularDestinations';
 import { newSeasonDestinations } from '../newSeasonDestinations';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -133,7 +127,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <div>
-          <h1 className="text-white text-2xl font-black italic uppercase tracking-tighter italic">
+          <h1 className="text-white text-2xl font-black italic uppercase tracking-tighter">
             {activeTab === 'hotel' ? 'Sahi Hotel Stay' : activeTab === 'bus' ? 'Sahi Bus Safar' : 'Sahi Safar Ride'}
           </h1>
           <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Rajasthan's No. 1 Travel Network</p>
@@ -267,8 +261,16 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
           <div className="space-y-4">
             {searchResults.map((hotel, i) => (
               <Card key={i} className="border-none shadow-xl overflow-hidden rounded-3xl bg-white flex group hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => handleBookingStart('hotel', hotel)}>
-                 <div className="relative w-32 h-32 shrink-0">
-                    <Image src={hotel.image} alt={hotel.name} fill className="object-cover" data-ai-hint={hotel.name.toLowerCase()} />
+                 <div className="relative w-32 h-32 shrink-0 overflow-hidden">
+                    <video 
+                      autoPlay 
+                      muted 
+                      loop 
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    >
+                      <source src={hotel.videoUrl} type="video/mp4" />
+                    </video>
                     <div className="absolute top-2 left-2 bg-primary text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase italic">Top Stay</div>
                  </div>
                  <CardContent className="p-4 flex-grow flex flex-col justify-between">
