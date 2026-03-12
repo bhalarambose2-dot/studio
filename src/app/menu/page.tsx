@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet, History } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet, History, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -51,6 +52,19 @@ export default function MenuPage() {
             )}
           </div>
         </CardHeader>
+      </Card>
+
+      <Card className="bg-orange-500 text-white border-none shadow-md overflow-hidden">
+        <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                <Smartphone className="h-6 w-6" />
+                <div>
+                    <p className="text-xs font-black uppercase">Install HALORA App</p>
+                    <p className="text-[10px] opacity-80">Add to Home Screen for best experience</p>
+                </div>
+            </div>
+            <Badge className="bg-white text-orange-600 border-none text-[9px] font-black italic">PROD LIVE</Badge>
+        </CardContent>
       </Card>
 
       <div className="grid grid-cols-1 gap-4">
