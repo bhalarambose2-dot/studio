@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -30,7 +29,7 @@ export default function DestinationGuidesPage() {
 
   return (
     <div className="min-h-screen bg-[#0d1b2a] text-white -mx-4 md:-mx-8 -mt-8 pb-32">
-      {/* Cinematic Header with Optimized Image */}
+      {/* Cinematic Header */}
       <section className="relative h-[450px] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
         <Image 
           src={images.citySkyline}
