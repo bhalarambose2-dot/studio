@@ -54,9 +54,21 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentOtpStep, setCurrentOtpStep] = useState<'input' | 'code'>('input');
   const [generatedOtp, setGeneratedOtp] = useState<string | null>(null);
+  const [stars, setStars] = useState<{ left: string; top: string; delay: string; size: string }[]>([]);
   const { toast } = useToast();
   const router = useRouter();
   const { auth, firestore, user, isUserLoading } = useFirebase();
+
+  useEffect(() => {
+    // Generate stars for the background
+    const newStars = Array.from({ length: 100 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 3}s`,
+      size: `${Math.random() * 2 + 1}px`,
+    }));
+    setStars(newStars);
+  }, []);
 
   useEffect(() => {
     const checkRedirect = async () => {
@@ -185,6 +197,22 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0d1b2a] p-4 overflow-hidden">
+      {/* Animated Twinkling Stars */}
+      {stars.map((star, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-white animate-twinkle pointer-events-none opacity-40"
+          style={{
+            left: star.left,
+            top: star.top,
+            width: star.size,
+            height: star.size,
+            animationDelay: star.delay,
+            animationDuration: '3s',
+          }}
+        />
+      ))}
+
       {/* Cinematic Moon Light Background Lighting */}
       <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
@@ -332,6 +360,17 @@ export default function AuthPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <style jsx global>{`
+        @keyframes twinkle {
+          0% { opacity: 0.2; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+          100% { opacity: 0.2; transform: scale(0.8); }
+        }
+        .animate-twinkle {
+          animation: twinkle infinite ease-in-out;
+        }
+      `}</style>
     </div>
   );
 }
