@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User, Phone, Sparkles } from 'lucide-react';
+import { LogIn, UserPlus, Loader2, Navigation, Phone, Sparkles, User, Bike, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useFirebase, setDocumentNonBlocking } from '@/firebase';
@@ -60,7 +60,7 @@ export default function AuthPage() {
   const { auth, firestore, user, isUserLoading } = useFirebase();
 
   useEffect(() => {
-    const newStars = Array.from({ length: 120 }).map(() => ({
+    const newStars = Array.from({ length: 80 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       delay: `${Math.random() * 1}s`,
@@ -107,7 +107,6 @@ export default function AuthPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const userDocRef = doc(firestore, "users", userCredential.user.uid);
-      // Ensure the document is updated with the latest login time
       setDocumentNonBlocking(userDocRef, { 
         lastLogin: new Date().toISOString() 
       }, { merge: true });
@@ -215,7 +214,6 @@ export default function AuthPage() {
               width={100} 
               height={100} 
               className="rounded-3xl shadow-lg border-4 border-white"
-              data-ai-hint="transport logo"
             />
           </div>
           <CardTitle className="text-4xl font-black italic tracking-tighter uppercase text-primary flex items-center justify-center gap-2">
@@ -348,6 +346,10 @@ export default function AuthPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <div className="fixed bottom-4 text-white/20 text-[10px] font-black uppercase tracking-widest z-0 pointer-events-none">
+        HALORA v1.0.0-PROD • PROJECT PUBLIC
+      </div>
 
       <style jsx global>{`
         @keyframes twinkle {
