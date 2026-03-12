@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -61,10 +60,10 @@ export default function AuthPage() {
 
   useEffect(() => {
     // Generate stars for the background
-    const newStars = Array.from({ length: 100 }).map(() => ({
+    const newStars = Array.from({ length: 120 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 3}s`,
+      delay: `${Math.random() * 1}s`,
       size: `${Math.random() * 2 + 1}px`,
     }));
     setStars(newStars);
@@ -193,7 +192,7 @@ export default function AuthPage() {
     }
   };
 
-  if (isUserLoading) return <div className="flex items-center justify-center min-h-screen bg-white"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+  if (isUserLoading) return <div className="flex items-center justify-center min-h-screen bg-[#0d1b2a]"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0d1b2a] p-4 overflow-hidden">
@@ -208,7 +207,7 @@ export default function AuthPage() {
             width: star.size,
             height: star.size,
             animationDelay: star.delay,
-            animationDuration: '3s',
+            animationDuration: '1.5s',
           }}
         />
       ))}
@@ -217,7 +216,7 @@ export default function AuthPage() {
       <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
       
-      <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
         <CardHeader className="text-center pt-10 pb-2">
           {/* Brand Logo Added Here */}
           <div className="mx-auto mb-4 group hover:scale-110 transition-transform cursor-pointer">
@@ -244,7 +243,7 @@ export default function AuthPage() {
               <TabsTrigger value="otp" className="rounded-xl font-black uppercase text-[10px]">OTP Login</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="signin" className="animate-in fade-in slide-in-from-left-4 duration-300">
+            <TabsContent value="signin" className="animate-in fade-in slide-in-from-left-2 duration-200">
               <Form {...signInForm}>
                 <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-6">
                   <FormField control={signInForm.control} name="email" render={({ field }) => (
@@ -269,7 +268,7 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="signup" className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <TabsContent value="signup" className="animate-in fade-in slide-in-from-right-2 duration-200">
               <Form {...signUpForm}>
                 <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
                   <FormField control={signUpForm.control} name="fullName" render={({ field }) => (
@@ -321,7 +320,7 @@ export default function AuthPage() {
               </Form>
             </TabsContent>
 
-            <TabsContent value="otp" className="animate-in fade-in zoom-in-95 duration-300">
+            <TabsContent value="otp" className="animate-in fade-in zoom-in-95 duration-200">
               <Form {...otpForm}>
                 <form onSubmit={otpForm.handleSubmit(currentOtpStep === 'input' ? handleSendOTP : handleVerifyOTP)} className="space-y-6">
                   {currentOtpStep === 'input' ? (
@@ -364,7 +363,7 @@ export default function AuthPage() {
       <style jsx global>{`
         @keyframes twinkle {
           0% { opacity: 0.2; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.2); }
+          50% { opacity: 1; transform: scale(1.1); }
           100% { opacity: 0.2; transform: scale(0.8); }
         }
         .animate-twinkle {

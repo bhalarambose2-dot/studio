@@ -25,7 +25,7 @@ export function SplashLoader() {
     const newStars = Array.from({ length: 150 }).map(() => ({
       left: `${Math.random() * 100}vw`,
       top: `${Math.random() * 100}vh`,
-      delay: `${Math.random() * 2}s`,
+      delay: `${Math.random() * 1.5}s`,
     }));
     setStars(newStars);
   }, []);
@@ -43,7 +43,7 @@ export function SplashLoader() {
       {stars.map((star, i) => (
         <div
           key={i}
-          className="absolute w-[2px] height-[2px] bg-white rounded-full animate-twinkle"
+          className="absolute w-[2px] h-[2px] bg-white rounded-full animate-twinkle"
           style={{
             left: star.left,
             top: star.top,
@@ -68,7 +68,7 @@ export function SplashLoader() {
 
       {/* Title & Entry Button */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-        <div className="space-y-6 animate-in fade-in zoom-in duration-1000">
+        <div className="space-y-6 animate-in fade-in zoom-in duration-500">
           <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase drop-shadow-2xl">
             Welcome To <br />
             <span className="text-primary-foreground bg-primary px-6 py-2 rounded-3xl">HALORA</span>
@@ -80,7 +80,7 @@ export function SplashLoader() {
           <div className="pt-10">
             <button 
               onClick={startApp}
-              className="px-12 py-4 text-lg font-black italic uppercase tracking-[0.2em] rounded-full bg-white text-primary shadow-[0_0_50px_rgba(255,255,255,0.3)] transition-all hover:scale-110 active:scale-95 border-none"
+              className="px-12 py-4 text-lg font-black italic uppercase tracking-[0.2em] rounded-full bg-white text-primary shadow-[0_0_50px_rgba(255,255,255,0.3)] transition-all hover:scale-110 active:scale-95 border-none cursor-pointer"
             >
               START JOURNEY
             </button>
@@ -90,7 +90,7 @@ export function SplashLoader() {
 
       <style jsx>{`
         @keyframes twinkle {
-          from { opacity: 0.3; }
+          from { opacity: 0.2; }
           to { opacity: 1; }
         }
         @keyframes fly {
@@ -99,17 +99,17 @@ export function SplashLoader() {
         }
         @keyframes jump {
           0% { transform: translate(-50%, 0); }
-          50% { transform: translate(-50%, -30px); }
+          50% { transform: translate(-50%, -25px); }
           100% { transform: translate(-50%, 0); }
         }
         .animate-twinkle {
-          animation: twinkle 2s infinite alternate;
+          animation: twinkle 1s infinite alternate;
         }
         .animate-fly {
-          animation: fly 12s linear infinite;
+          animation: fly 6s linear infinite;
         }
         .animate-jump {
-          animation: jump 2s infinite ease-in-out;
+          animation: jump 1s infinite ease-in-out;
         }
       `}</style>
     </div>
