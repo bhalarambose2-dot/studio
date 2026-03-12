@@ -1,33 +1,34 @@
+
 import images from './lib/placeholder-images.json';
 
 export const popularDestinations = [
   { 
     name: 'Pink City Heritage Stay', 
     city: 'Jaipur', 
-    image: images.hotelJaipur, 
-    hint: 'jaipur palace', 
+    image: images.luxuryHotel, 
+    hint: 'luxury hotel pool', 
     price: 7500,
     rating: 4.9,
     duration: '2 Days / 2 Nights',
-    description: 'Experience the royal life of Jaipur. Includes Amber Fort tour, traditional Rajasthani dinner, and 2 nights stay in a boutique heritage hotel.',
+    description: 'Experience the royal life of Jaipur with our premium pool-side stay. Includes Amber Fort tour and traditional Rajasthani dinner.',
     tag: 'Rajasthan Special'
   },
   { 
     name: 'Blue City Sun City Resort', 
     city: 'Jodhpur', 
-    image: images.hotelUdaipur, 
-    hint: 'jodhpur mehrangarh', 
+    image: images.hotelJaipur, 
+    hint: 'jodhpur resort', 
     price: 8200,
     rating: 4.8,
     duration: '2 Days / 2 Nights',
-    description: 'Explore the majestic Mehrangarh Fort and Umaid Bhawan. 2 nights stay with breakfast and a guided city walking tour included.',
+    description: 'Explore the majestic Mehrangarh Fort. 2 nights stay with breakfast and a guided city walking tour included.',
     tag: 'Rajasthan Special'
   },
   { 
     name: 'Lake City Romance Stay', 
     city: 'Udaipur', 
     image: images.hotelUdaipur, 
-    hint: 'udaipur lake', 
+    hint: 'udaipur luxury', 
     price: 8900,
     rating: 4.9,
     duration: '2 Days / 2 Nights',
@@ -38,29 +39,29 @@ export const popularDestinations = [
     name: 'Golden Sands Safari', 
     city: 'Jaisalmer', 
     image: images.hotelJaipur, 
-    hint: 'jaisalmer desert', 
+    hint: 'jaisalmer hotel', 
     price: 9500,
     rating: 4.9,
     duration: '2 Days / 2 Nights',
-    description: 'A magical 2 nights stay in luxury tents. Includes desert camel safari, folk dance performances, and traditional meals.',
+    description: 'A magical 2 nights stay in luxury tents. Includes desert camel safari and folk dance performances.',
     tag: 'Rajasthan Special'
   },
   { 
     name: 'Pushkar Sacred Stay', 
     city: 'Pushkar', 
     image: images.hotelVaranasi, 
-    hint: 'pushkar lake', 
+    hint: 'pushkar resort', 
     price: 5900,
     rating: 4.7,
     duration: '2 Days / 2 Nights',
-    description: 'Spiritual retreat for 2 nights. Explore the Brahma temple and sacred lake. Best budget package for groups.',
+    description: 'Spiritual retreat for 2 nights. Explore the Brahma temple and sacred lake. Best budget package.',
     tag: 'Rajasthan Special'
   },
   { 
     name: 'Bikaner Camel Kingdom', 
     city: 'Bikaner', 
     image: images.hotelJaipur, 
-    hint: 'bikaner fort', 
+    hint: 'bikaner stay', 
     price: 6800,
     rating: 4.6,
     duration: '2 Days / 2 Nights',
