@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LogIn, UserPlus, Loader2, Briefcase, Mail, Bike, User, Phone, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useFirebase, setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { useFirebase, setDocumentNonBlocking } from '@/firebase';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
@@ -59,7 +60,6 @@ export default function AuthPage() {
   const { auth, firestore, user, isUserLoading } = useFirebase();
 
   useEffect(() => {
-    // Generate stars for the background
     const newStars = Array.from({ length: 120 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
@@ -107,7 +107,10 @@ export default function AuthPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const userDocRef = doc(firestore, "users", userCredential.user.uid);
-      updateDocumentNonBlocking(userDocRef, { lastLogin: new Date().toISOString() });
+      // Ensure the document is updated with the latest login time
+      setDocumentNonBlocking(userDocRef, { 
+        lastLogin: new Date().toISOString() 
+      }, { merge: true });
     } catch (error: any) {
       setIsLoading(false);
       toast({ title: 'Login Fail', description: error.message, variant: 'destructive' });
@@ -141,15 +144,10 @@ export default function AuthPage() {
     try {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
-      
       alert("Your OTP is: " + otp);
-      
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
-      } else {
-        console.log(`\n[HALORA OTP DISPATCH]\nTO: ${values.emailOrPhone}\nCODE: ${otp}\n`);
       }
-      
       setCurrentOtpStep('code');
       toast({ title: 'OTP DISPATCHED! 📲', description: `Sahi code screen par ya terminal mein dekhein.` });
     } catch (error: any) {
@@ -161,19 +159,15 @@ export default function AuthPage() {
 
   const handleVerifyOTP = async (values: OTPFormValues) => {
     if (values.otpCode !== generatedOtp) {
-        alert("Wrong OTP");
         toast({ title: 'Wrong OTP ❌', description: 'Kripya sahi code bharein.', variant: 'destructive' });
         return;
     }
-    
     setIsLoading(true);
     try {
       const userCredential = await signInAnonymously(auth);
       const newUser = userCredential.user;
       const userDocRef = doc(firestore, "users", newUser.uid);
-      
       const isEmail = values.emailOrPhone.includes('@');
-      
       setDocumentNonBlocking(userDocRef, {
           id: newUser.uid,
           fullName: 'Sahi Traveler',
@@ -184,7 +178,6 @@ export default function AuthPage() {
           createdAt: new Date().toISOString(),
           lastLogin: new Date().toISOString(),
       }, { merge: true });
-      
       toast({ title: 'LOGIN SUCCESSFUL! ✅', description: 'HALORA mein aapka swagat hai.' });
     } catch (error: any) {
       setIsLoading(false);
@@ -196,7 +189,6 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0d1b2a] p-4 overflow-hidden">
-      {/* Animated Twinkling Stars */}
       {stars.map((star, i) => (
         <div
           key={i}
@@ -211,14 +203,11 @@ export default function AuthPage() {
           }}
         />
       ))}
-
-      {/* Cinematic Moon Light Background Lighting */}
       <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
       
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border-none relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
         <CardHeader className="text-center pt-10 pb-2">
-          {/* Brand Logo Added Here */}
           <div className="mx-auto mb-4 group hover:scale-110 transition-transform cursor-pointer">
             <Image 
               src={images.haloraLogo} 
@@ -367,7 +356,7 @@ export default function AuthPage() {
           100% { opacity: 0.2; transform: scale(0.8); }
         }
         .animate-twinkle {
-          animation: twinkle infinite ease-in-out;
+          animation: twinkle 1.5s infinite ease-in-out;
         }
       `}</style>
     </div>
