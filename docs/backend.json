@@ -1,42 +1,48 @@
+
 {
   "entities": {
     "User": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
-      "description": "Represents a user. Roles can be 'traveler', 'admin', 'staff', or 'bus_owner'.",
+      "description": "Represents a customer or staff member. Roles define access levels.",
       "properties": {
         "id": { "type": "string" },
         "fullName": { "type": "string" },
         "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
         "role": { "type": "string", "enum": ["traveler", "admin", "staff", "bus_owner"] },
         "walletBalance": { "type": "number" },
         "kycStatus": { "type": "string", "enum": ["none", "pending", "verified"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "fullName", "email", "role"]
     },
     "Booking": {
       "title": "Booking",
       "type": "object",
-      "description": "A unified booking record for any service type.",
+      "description": "Detailed record of a customer's trip booking (Hotel, Bus, or Ride).",
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
         "tripName": { "type": "string" },
         "customerName": { "type": "string" },
         "customerPhone": { "type": "string" },
-        "bookingType": { "type": "string", "enum": ["hotel", "bus", "bike", "car"] },
+        "bookingType": { "type": "string", "enum": ["hotel", "bus", "bike", "taxi"] },
         "amount": { "type": "number" },
         "status": { "type": "string" },
-        "bookingDate": { "type": "string", "format": "date-time" },
+        "bookingDate": { "type": "string" },
+        "timestamp": { "type": "object" },
+        "pickup": { "type": "string" },
+        "drop": { "type": "string" },
         "seatNumber": { "type": "string" }
       }
     },
     "Transaction": {
       "title": "Transaction",
       "type": "object",
-      "description": "Wallet and booking financial records.",
+      "description": "Financial record for wallet credits or booking payments.",
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
@@ -44,12 +50,13 @@
         "amount": { "type": "number" },
         "reference": { "type": "string" },
         "description": { "type": "string" },
-        "timestamp": { "type": "string", "format": "date-time" }
+        "timestamp": { "type": "object" },
+        "status": { "type": "string" }
       }
     }
   },
   "auth": {
-    "providers": ["password", "phone"]
+    "providers": ["password", "otp", "anonymous"]
   },
   "firestore": {
     "structure": [
@@ -58,7 +65,7 @@
         "definition": {
           "entityName": "User",
           "schema": { "$ref": "#/backend/entities/User" },
-          "description": "User profiles."
+          "description": "Main customer profile data."
         }
       },
       {
@@ -66,7 +73,7 @@
         "definition": {
           "entityName": "Booking",
           "schema": { "$ref": "#/backend/entities/Booking" },
-          "description": "Private booking history for a user."
+          "description": "Private trip history for the customer."
         }
       },
       {
@@ -74,15 +81,15 @@
         "definition": {
           "entityName": "Transaction",
           "schema": { "$ref": "#/backend/entities/Transaction" },
-          "description": "User wallet transaction history."
+          "description": "Wallet and payment history for the customer."
         }
       },
       {
         "path": "/busBookings/{bookingId}",
         "definition": {
-          "entityName": "BusBooking",
+          "entityName": "GlobalBooking",
           "schema": { "$ref": "#/backend/entities/Booking" },
-          "description": "Global records for bus operations."
+          "description": "Global records accessible by Admin and Captains for operations."
         }
       }
     ]
