@@ -4,7 +4,6 @@
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Briefcase, Search, Star, Clock, ShieldCheck, ChevronRight, History } from "lucide-react";
-import Image from "next/image";
 import { popularDestinations } from '../popularDestinations';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,6 @@ export default function DestinationGuidesPage() {
               <Card key={hotel.name} className="overflow-hidden border-none shadow-[0_0_50px_rgba(0,0,0,0.6)] bg-white/5 backdrop-blur-md rounded-[3rem] group hover:bg-white/10 transition-all duration-500 border-b-8 border-primary/20">
                 <div className="flex flex-col h-full">
                   <div className="relative h-72 overflow-hidden">
-                    {/* Replaced Image with Video */}
                     <video 
                       autoPlay 
                       muted 
@@ -122,11 +120,6 @@ export default function DestinationGuidesPage() {
                       <p className="text-sm text-white/60 font-medium leading-relaxed italic line-clamp-3">
                         {hotel.description}
                       </p>
-                      <div className="flex flex-wrap gap-2 pt-2">
-                         <Badge className="bg-white/5 text-[9px] font-bold uppercase border-none text-white/50 px-3 py-1">Group Booking</Badge>
-                         <Badge className="bg-white/5 text-[9px] font-bold uppercase border-none text-white/50 px-3 py-1">2N Heritage Stay</Badge>
-                         <Badge className="bg-white/5 text-[9px] font-bold uppercase border-none text-white/50 px-3 py-1">Best Rate</Badge>
-                      </div>
                     </div>
                     
                     <div className="pt-8 border-t border-white/10 flex items-center justify-between">

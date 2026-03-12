@@ -13,7 +13,6 @@ import {
   Globe,
   ShieldCheck,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useFirebase } from '@/firebase';
 import { useUserProfile } from '@/lib/firebase/use-user-profile';
@@ -22,19 +21,18 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { popularDestinations } from '../popularDestinations';
 import { Badge } from '@/components/ui/badge';
-import { use } from 'react';
+import Image from 'next/image';
+import images from '../lib/placeholder-images.json';
 
-export default function SearchPage({ searchParams }: { searchParams: Promise<any> }) {
-  use(searchParams);
-  
+export default function SearchPage() {
   const { user } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-resort-with-a-pool-and-palm-trees-4375-large.mp4' },
-    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-highway-traffic-in-the-city-at-night-42284-large.mp4' },
-    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-motorcyclist-on-the-road-during-sunset-31518-large.mp4' },
-    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', color: 'bg-orange-600', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4' },
+    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-resort-with-a-pool-and-palm-trees-4375-large.mp4' },
+    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-highway-traffic-in-the-city-at-night-42284-large.mp4' },
+    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-motorcyclist-on-the-road-during-sunset-31518-large.mp4' },
+    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4' },
   ];
 
   const deals = [
@@ -47,8 +45,6 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
       {/* Blue Header Section */}
       <section className="blue-header pt-12 pb-20 px-6 rounded-b-[4rem] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -mr-40 -mt-40 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-500/10 rounded-full -ml-20 -mb-20 blur-[60px] pointer-events-none" />
-        
         <header className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3">
              <div className="h-14 w-14 bg-white/20 backdrop-blur-xl rounded-[1.5rem] flex items-center justify-center border border-white/30 shadow-2xl group cursor-pointer hover:rotate-12 transition-transform">
@@ -76,7 +72,6 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
           </p>
         </div>
 
-        {/* Categories Grid - All Video Based Now */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 relative z-10">
           {categories.map((cat) => (
             <Link key={cat.name} href={cat.href}>
@@ -113,7 +108,6 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
             {deals.map((deal, i) => (
               <Card key={i} className={cn("min-w-[220px] border-none shadow-2xl text-white overflow-hidden rounded-[2.5rem] group cursor-pointer active:scale-95 transition-all border-b-8 border-black/20", deal.color)}>
                 <CardContent className="p-8 flex flex-col items-center text-center gap-4 relative">
-                   <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 blur-xl" />
                    <div className="bg-white/20 p-4 rounded-3xl backdrop-blur-md shadow-inner">
                     <deal.icon className="h-8 w-8 text-white" />
                    </div>
@@ -178,25 +172,15 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
       {/* Trust Banner */}
       <section className="px-6 mt-12 pb-12">
         <div className="bg-white p-10 rounded-[3rem] shadow-2xl border-2 border-dashed border-primary/20 flex flex-col md:flex-row items-center gap-8 text-center md:text-left relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
            <div className="bg-primary/10 p-6 rounded-[2rem] shadow-inner">
              <ShieldCheck className="h-16 w-16 text-primary" />
            </div>
            <div className="space-y-2">
              <h4 className="text-3xl font-black italic uppercase tracking-tighter text-slate-800 leading-none">Bharat Ka Sahi Safar</h4>
              <p className="text-muted-foreground text-sm font-medium italic">Verified Heritage Stays • Honest Per Person Rates • Pay After Safar Policy.</p>
-             <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
-                <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">No Hidden Charges</Badge>
-                <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">24/7 Captain Support</Badge>
-                <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">Verified Hotels</Badge>
-             </div>
            </div>
         </div>
       </section>
-
-      <div className="text-center pb-8 opacity-20 pointer-events-none">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em]">HALORA v1.0.0-PROD • SAHI SAFAR NETWORK</p>
-      </div>
     </div>
   );
 }
