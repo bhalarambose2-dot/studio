@@ -3,6 +3,11 @@
 
 Welcome to the official production-ready version of **HALORA**, India's premier heritage travel network.
 
+## 🔗 Live Link (Website URL)
+Aapki website ka link aapke browser ke address bar mein hai. Jab aap ise Firebase par deploy karenge, toh aapko ek permanent URL milega.
+- **Preview Link**: Wahi hai jo aap abhi dekh rahe hain.
+- **Production Link**: Firebase App Hosting tab mein "Deployment" ke baad dikhega.
+
 ## 🚀 Deployment & Play Store (Mobile App)
 
 This app is optimized for **Firebase Spark Tier (Free)**. It is built as a **Progressive Web App (PWA)**, meaning it works like a native mobile app.
@@ -25,6 +30,7 @@ To literally put it on the Play Store, you can use **Capacitor** or **TWA (Trust
 - **Sahi Safar Booking**: 2 Days / 2 Nights heritage packages at best per-person rates.
 - **Smart Wallet**: UPI-integrated wallet for "Pay After Safar" transactions.
 - **Role-based Access**: Dedicated dashboards for Travelers, Admin, and Captains (Staff).
+- **Share Feature**: Easily share the app link from the Menu.
 
 ## 🛠 Tech Stack
 - **Framework**: Next.js 15 (App Router)

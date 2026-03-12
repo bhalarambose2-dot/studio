@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet, History, Smartphone } from "lucide-react";
+import { ChevronRight, User, Briefcase, Gift, Users, Languages, Globe, LogOut, ShieldAlert, ClipboardList, Handshake, Bus, Wallet, History, Smartphone, Share2 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebase } from "@/firebase";
@@ -11,10 +11,12 @@ import { useUserProfile } from "@/lib/firebase/use-user-profile";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MenuPage() {
   const { auth, user, isUserLoading } = useFirebase();
   const { userProfile } = useUserProfile(user?.uid);
+  const { toast } = useToast();
   const router = useRouter();
 
   const displayName = userProfile?.fullName || user?.displayName || 'Traveler';
@@ -24,6 +26,26 @@ export default function MenuPage() {
     signOut(auth).then(() => {
       router.push('/');
     });
+  };
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined') {
+      const url = window.location.origin;
+      if (navigator.share) {
+        navigator.share({
+          title: 'HALORA - Sahi Safar',
+          text: 'Check out HALORA - India’s Premier Heritage Travel Network!',
+          url: url,
+        }).catch(() => {
+          // Fallback if share fails
+          navigator.clipboard.writeText(url);
+          toast({ title: "Link Copied! 🔗", description: "Aapka link clipboard mein save ho gaya hai." });
+        });
+      } else {
+        navigator.clipboard.writeText(url);
+        toast({ title: "Link Copied! 🔗", description: "Aapka link clipboard mein save ho gaya hai." });
+      }
+    }
   };
 
   if (isUserLoading) {
@@ -54,18 +76,20 @@ export default function MenuPage() {
         </CardHeader>
       </Card>
 
-      <Card className="bg-orange-500 text-white border-none shadow-md overflow-hidden">
-        <CardContent className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <Smartphone className="h-6 w-6" />
-                <div>
-                    <p className="text-xs font-black uppercase">Install HALORA App</p>
-                    <p className="text-[10px] opacity-80">Add to Home Screen for best experience</p>
-                </div>
-            </div>
-            <Badge className="bg-white text-orange-600 border-none text-[9px] font-black italic">PROD LIVE</Badge>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="bg-orange-500 text-white border-none shadow-md overflow-hidden cursor-pointer active:scale-95 transition-all" onClick={() => toast({ title: "PWA Active", description: "Browser menu se 'Add to Home Screen' karein." })}>
+          <CardContent className="p-4 flex flex-col items-center justify-center text-center gap-2">
+              <Smartphone className="h-6 w-6" />
+              <p className="text-[10px] font-black uppercase">Install App</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-primary text-white border-none shadow-md overflow-hidden cursor-pointer active:scale-95 transition-all" onClick={handleShare}>
+          <CardContent className="p-4 flex flex-col items-center justify-center text-center gap-2">
+              <Share2 className="h-6 w-6" />
+              <p className="text-[10px] font-black uppercase">Share Link</p>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="grid grid-cols-1 gap-4">
         {userProfile?.role === 'admin' && (
@@ -154,7 +178,7 @@ export default function MenuPage() {
             <div className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
               <div className="flex items-center gap-4">
                 <Wallet className="h-5 w-5 text-primary"/>
-                <p className="text-sm font-bold">पैसा और वॉलेट (Money & Wallet)</p>
+                <p className="text-sm font-bold">पैसा aur वॉलेट (Money & Wallet)</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
