@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MapPin, IndianRupee, Sparkles, Briefcase, Hotel as HotelIcon, Search, Star, Clock, ShieldCheck } from "lucide-react";
+import { MapPin, IndianRupee, Sparkles, Briefcase, Hotel as HotelIcon, Search, Star, Clock, ShieldCheck, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { popularDestinations } from '../popularDestinations';
 import { newSeasonDestinations } from '../newSeasonDestinations';
