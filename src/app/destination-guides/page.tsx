@@ -29,9 +29,17 @@ export default function DestinationGuidesPage() {
 
   return (
     <div className="min-h-screen bg-[#0d1b2a] text-white -mx-4 md:-mx-8 -mt-8 pb-32">
-      {/* Cinematic Header */}
+      {/* Cinematic Header with Video Background simulation */}
       <section className="relative h-[450px] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1080')] bg-cover bg-center opacity-30 grayscale" />
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
+        >
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1b2a]/80 to-[#0d1b2a]" />
         
         <div className="relative z-10 text-center space-y-4 max-w-4xl animate-in fade-in slide-in-from-top-4 duration-1000">
@@ -78,13 +86,17 @@ export default function DestinationGuidesPage() {
               <Card key={hotel.name} className="overflow-hidden border-none shadow-[0_0_50px_rgba(0,0,0,0.6)] bg-white/5 backdrop-blur-md rounded-[3rem] group hover:bg-white/10 transition-all duration-500 border-b-8 border-primary/20">
                 <div className="flex flex-col h-full">
                   <div className="relative h-72 overflow-hidden">
-                    <Image
-                      src={hotel.image}
-                      alt={hotel.name}
-                      data-ai-hint={hotel.hint}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
+                    {/* Replaced Image with Video */}
+                    <video 
+                      autoPlay 
+                      muted 
+                      loop 
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                    >
+                      <source src={hotel.videoUrl} type="video/mp4" />
+                    </video>
+                    
                     <div className="absolute top-6 left-6 bg-primary text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic tracking-widest shadow-xl">
                       {hotel.tag}
                     </div>
@@ -126,7 +138,7 @@ export default function DestinationGuidesPage() {
                         className="h-16 px-10 font-black italic uppercase rounded-2xl shadow-2xl shadow-primary/30 text-xl transition-all active:scale-95 group bg-primary hover:bg-primary/90" 
                         onClick={() => handleBookNow(hotel)}
                       >
-                        BOOK NOW <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                        BOOK SAFAR <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
                       </Button>
                     </div>
                   </CardContent>
