@@ -143,7 +143,7 @@ export default function AuthPage() {
     try {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otp);
-      alert("Your OTP is: " + otp);
+      // Simulated Email Dispatch
       if (values.emailOrPhone.includes('@')) {
         await sendOtpEmail({ email: values.emailOrPhone, otpCode: otp });
       }
