@@ -3,10 +3,9 @@
 
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, IndianRupee, Sparkles, Briefcase, Hotel as HotelIcon, Search, Star, Clock, ShieldCheck, ChevronRight, History } from "lucide-react";
+import { MapPin, Briefcase, Search, Star, Clock, ShieldCheck, ChevronRight, History } from "lucide-react";
 import Image from "next/image";
 import { popularDestinations } from '../popularDestinations';
-import { newSeasonDestinations } from '../newSeasonDestinations';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -71,7 +70,7 @@ export default function DestinationGuidesPage() {
               </h2>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Sahi Nivesh • Best Price Guaranteed • 2 Days 2 Nights</p>
             </div>
-            <Badge className="bg-primary/20 text-primary border-none text-[10px] font-black italic px-4">6 BEST TRIPS FOUND</Badge>
+            <Badge className="bg-primary/20 text-primary border-none text-[10px] font-black italic px-4">{filteredTrips.length} BEST TRIPS FOUND</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -144,22 +143,6 @@ export default function DestinationGuidesPage() {
             <p className="text-white/40 max-w-2xl mx-auto text-base font-medium italic px-6">
                 From the sand dunes of Jaisalmer to the lakes of Udaipur, HALORA brings you verified 2D/2N heritage packages at the most honest rates. No hidden charges, only local Sahi Rates for every group.
             </p>
-            <div className="flex justify-center gap-12 pt-8">
-                <div className="flex flex-col items-center">
-                    <span className="text-3xl font-black text-primary">24/7</span>
-                    <span className="text-[11px] font-bold uppercase text-white/30 tracking-widest">Support</span>
-                </div>
-                <div className="w-px h-14 bg-white/10" />
-                <div className="flex flex-col items-center">
-                    <span className="text-3xl font-black text-primary">100%</span>
-                    <span className="text-[11px] font-bold uppercase text-white/30 tracking-widest">Verified</span>
-                </div>
-                <div className="w-px h-14 bg-white/10" />
-                <div className="flex flex-col items-center">
-                    <span className="text-3xl font-black text-primary">₹0</span>
-                    <span className="text-[11px] font-bold uppercase text-white/30 tracking-widest">Fees</span>
-                </div>
-            </div>
         </section>
       </div>
 
