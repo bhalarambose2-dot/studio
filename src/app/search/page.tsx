@@ -29,10 +29,10 @@ export default function SearchPage() {
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-resort-with-a-pool-and-palm-trees-4375-large.mp4' },
-    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-highway-traffic-in-the-city-at-night-42284-large.mp4' },
-    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-motorcyclist-on-the-road-during-sunset-31518-large.mp4' },
-    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4' },
+    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', image: images.catHotel },
+    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', image: images.catBus },
+    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', image: images.catBike },
+    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', image: images.catTrip },
   ];
 
   const deals = [
@@ -78,15 +78,13 @@ export default function SearchPage() {
               <Card className="border-none shadow-2xl overflow-hidden bg-white/10 backdrop-blur-md group active:scale-95 transition-all border border-white/10 rounded-[2.5rem]">
                 <CardContent className="p-0">
                   <div className="relative h-32 w-full">
-                    <video 
-                      autoPlay 
-                      muted 
-                      loop 
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
-                    >
-                      <source src={cat.videoUrl} type="video/mp4" />
-                    </video>
+                    <Image 
+                      src={cat.image}
+                      alt={cat.name}
+                      data-ai-hint={cat.name}
+                      fill
+                      className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-5">
                       <div className="bg-white/20 backdrop-blur-md w-fit p-2 rounded-xl mb-2">
                         <cat.icon className="h-4 w-4 text-white" />
@@ -137,15 +135,13 @@ export default function SearchPage() {
             <Link key={i} href={`/search-page?tab=hotel&location=${dest.city}`}>
               <Card className="border-none shadow-xl overflow-hidden rounded-[2.5rem] bg-white hover:bg-slate-50 transition-all group flex items-center border-b-4 border-primary/10">
                 <div className="relative h-28 w-28 shrink-0 overflow-hidden">
-                  <video 
-                    autoPlay 
-                    muted 
-                    loop 
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                  >
-                    <source src={dest.videoUrl} type="video/mp4" />
-                  </video>
+                  <Image 
+                    src={dest.image}
+                    alt={dest.name}
+                    data-ai-hint={dest.hint}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                  />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                 </div>
                 <CardContent className="p-6 flex-grow flex flex-col justify-center">

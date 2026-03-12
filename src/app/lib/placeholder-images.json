@@ -12,5 +12,9 @@
   "hotelMunnar": "https://picsum.photos/seed/munnar/600/400",
   "hotelLadakh": "https://picsum.photos/seed/ladakh/600/400",
   "snowResort": "https://picsum.photos/seed/snow/600/400",
-  "haloraLogo": "https://picsum.photos/seed/halora-brand/400/400"
+  "haloraLogo": "https://picsum.photos/seed/halora-brand/400/400",
+  "catHotel": "https://picsum.photos/seed/cat-hotel/600/400",
+  "catBus": "https://picsum.photos/seed/cat-bus/600/400",
+  "catBike": "https://picsum.photos/seed/cat-bike/600/400",
+  "catTrip": "https://picsum.photos/seed/cat-trip/600/400"
 }

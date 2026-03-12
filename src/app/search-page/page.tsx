@@ -1,6 +1,8 @@
+
 'use client';
 import { useState, useMemo, use } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -33,7 +35,6 @@ import { newSeasonDestinations } from '../newSeasonDestinations';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 
-// Massive list of 100+ locations in Jaipur and Jodhpur
 const RAJASTHAN_LOCATIONS = [
   "Paota Circle, Jodhpur", "Ratanada, Jodhpur", "Shastri Nagar, Jodhpur", "Basni, Jodhpur", "Pal Road, Jodhpur",
   "Sardarpura, Jodhpur", "Railway Station, Jodhpur", "Airport Road, Jodhpur", "AIIMS, Jodhpur", "Mandore, Jodhpur",
@@ -57,7 +58,6 @@ const RAJASTHAN_LOCATIONS = [
 ];
 
 export default function SearchCardPage({ searchParams: searchParamsProp }: { searchParams: Promise<any> }) {
-  // Unwrap searchParams to satisfy Next.js 15 requirement
   const resolvedSearchParams = use(searchParamsProp);
   const initialTab = (resolvedSearchParams?.tab as string) || 'hotel';
   const router = useRouter();
@@ -73,7 +73,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
-  // Filter locations based on input
   const filteredPickup = useMemo(() => RAJASTHAN_LOCATIONS.filter(l => l.toLowerCase().includes(pickup.toLowerCase())), [pickup]);
   const filteredDrop = useMemo(() => RAJASTHAN_LOCATIONS.filter(l => l.toLowerCase().includes(drop.toLowerCase())), [drop]);
   const filteredHotelLocs = useMemo(() => RAJASTHAN_LOCATIONS.filter(l => l.toLowerCase().includes(locationQuery.toLowerCase())), [locationQuery]);
@@ -103,7 +102,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
       return;
     }
     const rate = type === 'bike' ? 15 : 60;
-    const distance = Math.floor(Math.random() * 15) + 5; // Simulated distance
+    const distance = Math.floor(Math.random() * 15) + 5;
     const amount = distance * rate;
 
     handleBookingStart(type, {
@@ -118,7 +117,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
 
   return (
     <div className="flex flex-col gap-6 pb-32">
-      {/* Blue Header */}
       <div className="blue-header -mx-4 -mt-8 p-6 pb-12 rounded-b-[3rem] flex items-center gap-4 shadow-xl">
         <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full" onClick={() => router.back()}>
           <ChevronLeft className="h-6 w-6" />
@@ -143,7 +141,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
               </TabsList>
             </ScrollArea>
 
-            {/* Hotel Search */}
             <TabsContent value="hotel" className="p-6 space-y-4">
               <div className="space-y-4">
                 <div className="relative group">
@@ -168,7 +165,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
               </div>
             </TabsContent>
 
-            {/* Ride Search (Bike & Taxi) */}
             {(activeTab === 'bike' || activeTab === 'taxi') && (
               <TabsContent value={activeTab} className="p-6 space-y-4">
                 <div className="space-y-4">
@@ -194,7 +190,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                     </div>
                   </div>
 
-                  {/* Suggestion Lists */}
                   {(pickup.length > 1 && !RAJASTHAN_LOCATIONS.includes(pickup)) && (
                     <ScrollArea className="h-32 border rounded-xl p-2 bg-slate-50">
                       {filteredPickup.map(l => (
@@ -230,7 +225,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
               </TabsContent>
             )}
 
-            {/* Bus Tab */}
             <TabsContent value="bus" className="p-6 space-y-4">
                <div className="space-y-4">
                   <div className="grid grid-cols-1 gap-4">
@@ -248,7 +242,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
         </Card>
       </div>
 
-      {/* Results Section (Standard Results) */}
       {searchResults.length > 0 && (
         <section className="px-4 space-y-4">
           <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2 px-2 text-slate-800">
@@ -259,15 +252,13 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
             {searchResults.map((hotel, i) => (
               <Card key={i} className="border-none shadow-xl overflow-hidden rounded-3xl bg-white flex group hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => handleBookingStart('hotel', hotel)}>
                  <div className="relative w-32 h-32 shrink-0 overflow-hidden">
-                    <video 
-                      autoPlay 
-                      muted 
-                      loop 
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
-                    >
-                      <source src={hotel.videoUrl} type="video/mp4" />
-                    </video>
+                    <Image 
+                      src={hotel.image}
+                      alt={hotel.name}
+                      data-ai-hint={hotel.hint}
+                      fill
+                      className="object-cover"
+                    />
                     <div className="absolute top-2 left-2 bg-primary text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase italic">Top Stay</div>
                  </div>
                  <CardContent className="p-4 flex-grow flex flex-col justify-between">
@@ -290,7 +281,6 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
         </section>
       )}
 
-      {/* Booking Dialog */}
       {isDialogOpen && selectedItem && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md rounded-[3rem] p-8 bg-white border-primary/20">

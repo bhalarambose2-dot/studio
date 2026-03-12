@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Briefcase, Search, Star, Clock, ShieldCheck, ChevronRight, History } from "lucide-react";
 import { popularDestinations } from '../popularDestinations';
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { BookingForm } from '@/components/booking-form';
 import { Input } from '@/components/ui/input';
+import images from '../lib/placeholder-images.json';
 
 export default function DestinationGuidesPage() {
   const [selectedDest, setSelectedDest] = useState<any>(null);
@@ -28,17 +30,16 @@ export default function DestinationGuidesPage() {
 
   return (
     <div className="min-h-screen bg-[#0d1b2a] text-white -mx-4 md:-mx-8 -mt-8 pb-32">
-      {/* Cinematic Header with Video Background simulation */}
+      {/* Cinematic Header with Optimized Image */}
       <section className="relative h-[450px] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
-        >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4" type="video/mp4" />
-        </video>
+        <Image 
+          src={images.citySkyline}
+          alt="Rajasthan Heritage"
+          data-ai-hint="rajasthan heritage"
+          fill
+          className="object-cover opacity-40 grayscale"
+          priority
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1b2a]/80 to-[#0d1b2a]" />
         
         <div className="relative z-10 text-center space-y-4 max-w-4xl animate-in fade-in slide-in-from-top-4 duration-1000">
@@ -85,15 +86,13 @@ export default function DestinationGuidesPage() {
               <Card key={hotel.name} className="overflow-hidden border-none shadow-[0_0_50px_rgba(0,0,0,0.6)] bg-white/5 backdrop-blur-md rounded-[3rem] group hover:bg-white/10 transition-all duration-500 border-b-8 border-primary/20">
                 <div className="flex flex-col h-full">
                   <div className="relative h-72 overflow-hidden">
-                    <video 
-                      autoPlay 
-                      muted 
-                      loop 
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    >
-                      <source src={hotel.videoUrl} type="video/mp4" />
-                    </video>
+                    <Image 
+                      src={hotel.image}
+                      alt={hotel.name}
+                      data-ai-hint={hotel.hint}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                    />
                     
                     <div className="absolute top-6 left-6 bg-primary text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic tracking-widest shadow-xl">
                       {hotel.tag}
