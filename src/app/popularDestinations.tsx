@@ -1,5 +1,3 @@
-
-'use client';
 import images from './lib/placeholder-images.json';
 
 export const popularDestinations = [
@@ -67,7 +65,7 @@ export const popularDestinations = [
     name: 'Bikaner Camel Kingdom', 
     city: 'Bikaner', 
     image: images.hotelJaipur, 
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-view-of-a-fort-in-india-40245-large.mp4',
+    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-view-of-a-fort-in-india-40246-large.mp4',
     hint: 'bikaner fort', 
     price: 6800,
     rating: 4.6,

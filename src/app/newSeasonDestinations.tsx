@@ -1,5 +1,3 @@
-
-'use client';
 import images from './lib/placeholder-images.json';
 
 export const newSeasonDestinations = [

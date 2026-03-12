@@ -1,7 +1,6 @@
-
 'use client';
 import { useState, useMemo, use } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -59,10 +58,8 @@ const RAJASTHAN_LOCATIONS = [
 
 export default function SearchCardPage({ searchParams: searchParamsProp }: { searchParams: Promise<any> }) {
   // Unwrap searchParams to satisfy Next.js 15 requirement
-  use(searchParamsProp);
-  
-  const searchParams = useSearchParams();
-  const initialTab = searchParams.get('tab') || 'hotel';
+  const resolvedSearchParams = use(searchParamsProp);
+  const initialTab = (resolvedSearchParams?.tab as string) || 'hotel';
   const router = useRouter();
   const { toast } = useToast();
   
@@ -70,7 +67,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  const [locationQuery, setLocationQuery] = useState('');
+  const [locationQuery, setLocationQuery] = useState((resolvedSearchParams?.location as string) || '');
   const [pickup, setPickup] = useState('');
   const [drop, setDrop] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -153,15 +150,15 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary group-focus-within:rotate-12 transition-transform" />
                   <Input 
                     placeholder="Search Location in Jaipur/Jodhpur..." 
-                    className="pl-12 h-14 bg-slate-50 border-none shadow-inner font-black italic rounded-2xl"
+                    className="pl-12 h-14 bg-slate-50 border-none shadow-inner font-black italic rounded-2xl text-black"
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
                   />
                 </div>
-                {locationQuery && (
+                {locationQuery && !RAJASTHAN_LOCATIONS.includes(locationQuery) && (
                   <ScrollArea className="h-40 border rounded-2xl p-2 bg-slate-50/50">
                     {filteredHotelLocs.map(l => (
-                      <button key={l} className="w-full text-left p-2 hover:bg-white rounded-xl text-xs font-bold transition-colors" onClick={() => setLocationQuery(l)}>{l}</button>
+                      <button key={l} className="w-full text-left p-2 hover:bg-white rounded-xl text-xs font-bold transition-colors text-black" onClick={() => setLocationQuery(l)}>{l}</button>
                     ))}
                   </ScrollArea>
                 )}
@@ -184,13 +181,13 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                     <div className="space-y-2 pl-10">
                       <Input 
                         placeholder="Pickup Point" 
-                        className="h-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl"
+                        className="h-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl text-black"
                         value={pickup}
                         onChange={(e) => setPickup(e.target.value)}
                       />
                       <Input 
                         placeholder="Drop Destination" 
-                        className="h-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl"
+                        className="h-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl text-black"
                         value={drop}
                         onChange={(e) => setDrop(e.target.value)}
                       />
@@ -198,17 +195,17 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                   </div>
 
                   {/* Suggestion Lists */}
-                  {(pickup.length > 1 && pickup !== RAJASTHAN_LOCATIONS.find(l => l === pickup)) && (
+                  {(pickup.length > 1 && !RAJASTHAN_LOCATIONS.includes(pickup)) && (
                     <ScrollArea className="h-32 border rounded-xl p-2 bg-slate-50">
                       {filteredPickup.map(l => (
-                        <button key={l} className="w-full text-left p-2 hover:bg-white rounded-lg text-[10px] font-bold" onClick={() => setPickup(l)}>{l}</button>
+                        <button key={l} className="w-full text-left p-2 hover:bg-white rounded-lg text-[10px] font-bold text-black" onClick={() => setPickup(l)}>{l}</button>
                       ))}
                     </ScrollArea>
                   )}
-                  {(drop.length > 1 && drop !== RAJASTHAN_LOCATIONS.find(l => l === drop)) && (
+                  {(drop.length > 1 && !RAJASTHAN_LOCATIONS.includes(drop)) && (
                     <ScrollArea className="h-32 border rounded-xl p-2 bg-slate-50">
                       {filteredDrop.map(l => (
-                        <button key={l} className="w-full text-left p-2 hover:bg-white rounded-lg text-[10px] font-bold" onClick={() => setDrop(l)}>{l}</button>
+                        <button key={l} className="w-full text-left p-2 hover:bg-white rounded-lg text-[10px] font-bold text-black" onClick={() => setDrop(l)}>{l}</button>
                       ))}
                     </ScrollArea>
                   )}
@@ -216,7 +213,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
                   <div className="bg-primary/5 p-4 rounded-2xl border border-dashed border-primary/20 flex items-center justify-between">
                     <div>
                       <p className="text-[10px] font-black uppercase text-primary">Sahi Indian Rate</p>
-                      <p className="text-xl font-black italic">₹{activeTab === 'bike' ? '15' : '60'}<span className="text-xs">/km</span></p>
+                      <p className="text-xl font-black italic text-black">₹{activeTab === 'bike' ? '15' : '60'}<span className="text-xs">/km</span></p>
                     </div>
                     <ArrowRightLeft className="h-5 w-5 text-primary opacity-30" />
                     <div className="text-right">
@@ -237,8 +234,8 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
             <TabsContent value="bus" className="p-6 space-y-4">
                <div className="space-y-4">
                   <div className="grid grid-cols-1 gap-4">
-                    <Input placeholder="Delhi / Jaipur" className="h-14 bg-slate-50 border-none shadow-inner font-bold rounded-2xl" />
-                    <Button variant="outline" className="h-14 rounded-2xl bg-slate-50 font-bold justify-between">
+                    <Input placeholder="Delhi / Jaipur" className="h-14 bg-slate-50 border-none shadow-inner font-bold rounded-2xl text-black" />
+                    <Button variant="outline" className="h-14 rounded-2xl bg-slate-50 font-bold justify-between text-black">
                       Select Travel Date <CalendarIcon className="h-5 w-5 text-primary" />
                     </Button>
                   </div>
@@ -254,7 +251,7 @@ export default function SearchCardPage({ searchParams: searchParamsProp }: { sea
       {/* Results Section (Standard Results) */}
       {searchResults.length > 0 && (
         <section className="px-4 space-y-4">
-          <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2 px-2">
+          <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2 px-2 text-slate-800">
             <Navigation className="h-5 w-5 text-primary" />
             Sahi Results For You
           </h2>
