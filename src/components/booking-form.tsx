@@ -214,7 +214,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
             <FormControl>
                 <div className="relative">
                     <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                    <Input {...field} placeholder="Jaise: Rajesh Kumar" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl" />
+                    <Input {...field} placeholder="Jaise: Rajesh Kumar" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl text-black" />
                 </div>
             </FormControl>
             <FormMessage />
@@ -228,7 +228,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               <FormControl>
                 <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                    <Input {...field} placeholder="Email" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl" />
+                    <Input {...field} placeholder="Email" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl text-black" />
                 </div>
               </FormControl>
               <FormMessage />
@@ -240,7 +240,7 @@ export function BookingForm({ tripName, bookingType = 'hotel', itemDetails, onSu
               <FormControl>
                 <div className="relative">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/40" />
-                    <Input {...field} placeholder="9876543210" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl" maxLength={10} />
+                    <Input {...field} placeholder="9876543210" className="h-12 pl-12 bg-slate-50 border-none shadow-inner font-bold rounded-xl text-black" maxLength={10} />
                 </div>
               </FormControl>
               <FormMessage />
