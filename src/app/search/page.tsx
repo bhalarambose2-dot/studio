@@ -31,10 +31,10 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600' },
-    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700' },
-    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900' },
-    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', color: 'bg-orange-600' },
+    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', color: 'bg-blue-600', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-resort-with-a-pool-and-palm-trees-4375-large.mp4' },
+    { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', color: 'bg-blue-700', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-highway-traffic-in-the-city-at-night-42284-large.mp4' },
+    { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', color: 'bg-blue-900', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-motorcyclist-on-the-road-during-sunset-31518-large.mp4' },
+    { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', color: 'bg-orange-600', videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-fort-in-india-40246-large.mp4' },
   ];
 
   const deals = [
@@ -76,20 +76,22 @@ export default function SearchPage({ searchParams }: { searchParams: Promise<any
           </p>
         </div>
 
-        {/* Categories Grid */}
+        {/* Categories Grid - All Video Based Now */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 relative z-10">
           {categories.map((cat) => (
             <Link key={cat.name} href={cat.href}>
               <Card className="border-none shadow-2xl overflow-hidden bg-white/10 backdrop-blur-md group active:scale-95 transition-all border border-white/10 rounded-[2.5rem]">
                 <CardContent className="p-0">
                   <div className="relative h-32 w-full">
-                    <Image 
-                      src={`https://picsum.photos/seed/${cat.name}/400/300`} 
-                      alt={cat.name} 
-                      fill 
-                      className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000" 
-                      data-ai-hint={cat.name.toLowerCase()} 
-                    />
+                    <video 
+                      autoPlay 
+                      muted 
+                      loop 
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000"
+                    >
+                      <source src={cat.videoUrl} type="video/mp4" />
+                    </video>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-5">
                       <div className="bg-white/20 backdrop-blur-md w-fit p-2 rounded-xl mb-2">
                         <cat.icon className="h-4 w-4 text-white" />
