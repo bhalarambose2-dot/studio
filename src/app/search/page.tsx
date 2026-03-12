@@ -1,4 +1,3 @@
-
 'use client';
 
 import { 
@@ -29,7 +28,7 @@ export default function SearchPage() {
   const { userProfile } = useUserProfile(user?.uid);
 
   const categories = [
-    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', image: images.catHotel },
+    { name: 'Hotel', icon: Hotel, href: '/search-page?tab=hotel', image: images.luxuryHotel },
     { name: 'Bus Tickets', icon: Bus, href: '/search-page?tab=bus', image: images.catBus },
     { name: 'Bike Ride', icon: Bike, href: '/search-page?tab=bike', image: images.catBike },
     { name: 'Book Trip', icon: Briefcase, href: '/destination-guides', image: images.catTrip },
