@@ -4,83 +4,69 @@ import images from './lib/placeholder-images.json';
 
 export const popularDestinations = [
   { 
-    name: 'Hotel Rajasthan Palace', 
+    name: 'Pink City Heritage Stay', 
     city: 'Jaipur', 
     image: images.hotelJaipur, 
     hint: 'jaipur palace', 
-    price: 12500,
+    price: 7500,
     rating: 4.9,
-    description: 'Experience royal heritage in the heart of the Pink City. Includes traditional Rajasthani dinner, puppet shows, and a guided tour of Amer Fort.',
-    tag: 'Royal Heritage'
+    duration: '2 Days / 2 Nights',
+    description: 'Experience the royal life of Jaipur. Includes Amber Fort tour, traditional Rajasthani dinner, and 2 nights stay in a boutique heritage hotel.',
+    tag: 'Rajasthan Special'
   },
   { 
-    name: 'Kedarnath Heritage Stay', 
-    city: 'Kedarnath', 
-    image: images.hotelKedarnath, 
-    hint: 'kedarnath temple', 
-    price: 14800,
+    name: 'Blue City Sun City Resort', 
+    city: 'Jodhpur', 
+    image: images.hotelJaipur, 
+    hint: 'jodhpur mehrangarh', 
+    price: 8200,
     rating: 4.8,
-    description: 'A spiritual retreat located near the ancient Kedarnath temple. Enjoy breathtaking Himalayan views and morning aarti experiences.',
-    tag: 'Spiritual'
+    duration: '2 Days / 2 Nights',
+    description: 'Explore the majestic Mehrangarh Fort and Umaid Bhawan. 2 nights stay with breakfast and a guided city walking tour included.',
+    tag: 'Rajasthan Special'
   },
   { 
-    name: 'Goa Beach Resort', 
-    city: 'Goa', 
-    image: images.hotelGoa, 
-    hint: 'goa beach', 
-    price: 14500,
-    rating: 4.7,
-    description: 'Luxury beachfront stay with private access to the sea. Perfect for water sports enthusiasts and sunset lovers.',
-    tag: 'Adventure'
-  },
-  { 
-    name: 'Varanasi Ghat View', 
-    city: 'Varanasi', 
-    image: images.hotelVaranasi, 
-    hint: 'varanasi ghats', 
-    price: 12900,
-    rating: 4.9,
-    description: 'Witness the eternal city from the banks of the Holy Ganga. Includes a morning boat ride and VIP entry for the Ganga Aarti.',
-    tag: 'Cultural'
-  },
-  { 
-    name: 'Udaipur Lake Palace', 
+    name: 'Lake City Romance Stay', 
     city: 'Udaipur', 
     image: images.hotelUdaipur, 
     hint: 'udaipur lake', 
-    price: 14200,
-    rating: 4.8,
-    description: 'The Venice of the East. Stay in a lakeside heritage property with private boat dining options.',
-    tag: 'Romantic'
-  },
-  { 
-    name: 'Manali Snow View', 
-    city: 'Manali', 
-    image: images.hotelManali, 
-    hint: 'manali mountains', 
-    price: 13800,
-    rating: 4.6,
-    description: 'Surrounded by pine forests and snow-capped peaks. Ideal for paragliding and river rafting packages.',
-    tag: 'Snow & Adventure'
-  },
-  { 
-    name: 'Munnar Tea Garden Inn', 
-    city: 'Munnar', 
-    image: images.hotelMunnar, 
-    hint: 'munnar tea garden', 
-    price: 15000,
-    rating: 4.7,
-    description: 'Wake up to the aroma of fresh tea leaves. Stay includes spice plantation tours and trekking to Anamudi Peak.',
-    tag: 'Nature'
-  },
-  { 
-    name: 'Ladakh High Range', 
-    city: 'Ladakh', 
-    image: images.hotelLadakh, 
-    hint: 'ladakh landscape', 
-    price: 14900,
+    price: 8900,
     rating: 4.9,
-    description: 'The Land of High Passes. Explore ancient monasteries, Pangong Lake, and the magnetic hill with professional guides.',
-    tag: 'Bucket List'
+    duration: '2 Days / 2 Nights',
+    description: 'The most romantic 2 nights in the Venice of the East. Includes boat ride on Lake Pichola and heritage room stay.',
+    tag: 'Rajasthan Special'
+  },
+  { 
+    name: 'Golden Sands Safari', 
+    city: 'Jaisalmer', 
+    image: images.hotelJaipur, 
+    hint: 'jaisalmer desert', 
+    price: 9500,
+    rating: 4.9,
+    duration: '2 Days / 2 Nights',
+    description: 'A magical 2 nights stay in luxury tents. Includes desert camel safari, folk dance performances, and traditional meals.',
+    tag: 'Rajasthan Special'
+  },
+  { 
+    name: 'Pushkar Sacred Stay', 
+    city: 'Pushkar', 
+    image: images.hotelJaipur, 
+    hint: 'pushkar lake', 
+    price: 5900,
+    rating: 4.7,
+    duration: '2 Days / 2 Nights',
+    description: 'Spiritual retreat for 2 nights. Explore the Brahma temple and sacred lake. Best budget package for groups.',
+    tag: 'Rajasthan Special'
+  },
+  { 
+    name: 'Bikaner Camel Kingdom', 
+    city: 'Bikaner', 
+    image: images.hotelJaipur, 
+    hint: 'bikaner fort', 
+    price: 6800,
+    rating: 4.6,
+    duration: '2 Days / 2 Nights',
+    description: 'Discover the heritage of Junagarh Fort. 2 nights stay with Bikaneri snacks and city tour included.',
+    tag: 'Rajasthan Special'
   },
 ];
