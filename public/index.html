@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>HALORA Login</title>
+  <title>HALORA Auth</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
   <style>
     body {
       margin: 0;
       font-family: Arial;
-      background: black;
+      background: linear-gradient(to bottom, #001f3f, #003366);
       color: white;
       display: flex;
       justify-content: center;
@@ -17,134 +21,105 @@
       height: 100vh;
     }
 
-    .box {
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
-      width: 300px;
+    .card {
+      background: #fff;
+      color: #000;
+      padding: 25px;
+      border-radius: 15px;
+      width: 320px;
+      text-align: center;
     }
 
     h2 {
-      text-align: center;
-      color: yellow;
+      color: #0052cc;
+      margin-bottom: 5px;
     }
 
     input {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border: none;
-      border-radius: 6px;
-      background: #222;
-      color: white;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     button {
       width: 100%;
-      padding: 10px;
-      margin-top: 8px;
+      padding: 12px;
+      background: #0052cc;
+      color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      margin-top: 10px;
       font-weight: bold;
-      cursor: pointer;
     }
 
-    .login { background: yellow; color: black; }
-    .signup { background: green; color: black; }
-    .otp { background: blue; color: white; }
-
+    .switch {
+      margin-top: 10px;
+      cursor: pointer;
+      color: blue;
+    }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>HALORA</h2>
+<div class="card">
+  <h2>HALORA ✨</h2>
+  <p>Sahi Safar • Sahi Nivesh</p>
 
-  <!-- LOGIN -->
-  <input id="loginEmail" placeholder="Email">
-  <input id="loginPass" type="password" placeholder="Password">
-  <button class="login" onclick="login()">Login</button>
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
-  <!-- SIGNUP -->
-  <input id="name" placeholder="Full Name">
-  <input id="email" placeholder="Email">
-  <input id="pass" type="password" placeholder="Password">
-  <button class="signup" onclick="signup()">Signup</button>
+  <button onclick="signup()">Create Account</button>
+  <button onclick="login()">Sign In</button>
 
-  <!-- OTP -->
-  <input id="phone" placeholder="Phone / Email">
-  <button class="otp" onclick="sendOTP()">Send OTP</button>
-  <input id="otpInput" placeholder="Enter OTP">
-  <button class="otp" onclick="verifyOTP()">Verify OTP</button>
+  <p class="switch" onclick="logout()">Logout</p>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-
 <script>
-  // 🔥 Firebase config (apna daalo)
+  // 🔥 Firebase Config (yahan apna config daalo)
   const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_DOMAIN",
-    projectId: "YOUR_ID",
-  };
+   apiKey: "AIzaSyC2MPagJSfgitEdpr_jKJ073MKLd7jjSNc",
+   authDomain: "br-trip.firebaseapp.com",
+   databaseURL: "https://br-trip-default-rtdb.firebaseio.com",
+   projectId: "br-trip",
+   storageBucket: "br-trip.firebasestorage.app",
+   messagingSenderId: "477570603875",
+   appId: "1:477570603875:web:f371ec9a017f97f696d156",
+   measurementId: "G-PJSNT1Q1LL" };
 
-  firebase.initializeApp(firebaseConfig);
-
+  const app = firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
-  const db = firebase.firestore();
 
-  // LOGIN
-  function login() {
-    const email = document.getElementById("loginEmail").value;
-    const pass = document.getElementById("loginPass").value;
-
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(() => {
-        alert("Login Success");
-        window.location = "home.html";
-      })
-      .catch(err => alert(err.message));
-  }
-
-  // SIGNUP
+  // Signup
   function signup() {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("pass").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-    auth.createUserWithEmailAndPassword(email, pass)
-      .then((user) => {
-        db.collection("users").doc(user.user.uid).set({
-          name: name,
-          email: email,
-          wallet: 0
-        });
-
-        alert("Signup Success");
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("Account Created ✅");
       })
       .catch(err => alert(err.message));
   }
 
-  // OTP DEMO
-  let generatedOTP = "";
+  // Login
+  function login() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-  function sendOTP() {
-    generatedOTP = Math.floor(100000 + Math.random() * 900000);
-    alert("OTP: " + generatedOTP); // demo only
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("Login Success 🚀");
+      })
+      .catch(err => alert(err.message));
   }
 
-  function verifyOTP() {
-    const input = document.getElementById("otpInput").value;
-
-    if (input == generatedOTP) {
-      alert("OTP Verified");
-      window.location = "home.html";
-    } else {
-      alert("Wrong OTP");
-    }
+  // Logout
+  function logout() {
+    auth.signOut();
+    alert("Logged Out");
   }
 </script>
 
