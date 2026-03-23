@@ -1,4 +1,4 @@
-# **App Name**: BR TRIP
+# **App Name**: HALORA 
 
 ## Core Features:
 
