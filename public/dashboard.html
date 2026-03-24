@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HALORA Dashboard</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #001f3f, #003366);
+  color: white;
+}
+
+/* Header */
+.header {
+  padding: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Card */
+.card {
+  margin: 15px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Wallet */
+.wallet {
+  font-size: 26px;
+  font-weight: bold;
+  color: #00ffcc;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #00c6ff;
+  color: white;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.box {
+  padding: 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">HALORA 🚀</div>
+
+<div class="card">
+  <p id="userEmail"></p>
+  <p>Welcome Back 😎</p>
+</div>
+
+<div class="card">
+  <p>Wallet Balance</p>
+  <div class="wallet">₹ 0</div>
+</div>
+
+<div class="card grid">
+  <div class="box">🎁 Free Trip</div>
+  <div class="box">👥 Referral</div>
+  <div class="box">📊 Earnings</div>
+  <div class="box">⚙ Settings</div>
+</div>
+
+<div class="card">
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+var firebaseConfig = {
+  etion
+App nickname
+HALORA
+App ID 
+1:477570603875:web:f371ec9a017f97f696d156
+Linked Firebase Hosting site
+br-trip
+
+SDK setup and configuration
+
+npm
+
+CDN
+
+Config
+If you're already using npm and a module bundler such as webpack or Rollup, you can run the following command to install the latest SDK (Learn more):
+
+npm install firebase
+Then, initialize Firebase and begin using the SDKs for the products you'd like to use.
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC2MPagJSfgitEdpr_jKJ073MKLd7jjSNc",
+  authDomain: "br-trip.firebaseapp.com",
+  databaseURL: "https://br-trip-default-rtdb.firebaseio.com",
+  projectId: "br-trip",
+  storageBucket: "br-trip.firebasestorage.app",
+  messagingSenderId: "477570603875",
+  appId: "1:477570603875:web:f371ec9a017f97f696d156"
+};
+
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+
+// User check
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    document.getElementById("userEmail").innerText = user.email;
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
+// Logout
+function logout() {
+  auth.signOut();
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
