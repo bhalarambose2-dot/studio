@@ -1,161 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HALORA Auth</title>
-
-<!-- Firebase OLD -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-<style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #001f3f, #003366);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-/* Glass Card */
-.card {
-  width: 340px;
-  padding: 25px;
-  border-radius: 20px;
-  backdrop-filter: blur(15px);
-  background: rgba(255,255,255,0.1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  color: white;
-  text-align: center;
-  animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
-.logo {
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.subtitle {
-  font-size: 12px;
-  margin-bottom: 20px;
-  opacity: 0.8;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  background: rgba(255,255,255,0.2);
-  color: white;
-}
-
-input::placeholder {
-  color: #ddd;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  margin-top: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-primary {
-  background: linear-gradient(45deg, #00c6ff, #0072ff);
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: scale(1.05);
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid #fff;
-  color: white;
-}
-
-.logout {
-  margin-top: 15px;
-  font-size: 14px;
-  cursor: pointer;
-  color: #ffcc00;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HALORA - Free Trip Platform</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<div class="card">
-  <div class="logo">HALORA ✨</div>
-  <div class="subtitle">Sahi Safar • Sahi Nivesh</div>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">HALORA</div>
+    <a href="#join" class="join-btn">Join Now</a>
+  </header>
 
-  <input type="text" placeholder="Full Name">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Travel More, Refer More, Win More ✈️</h1>
+      <p>Join HALORA and unlock exciting travel opportunities, rewards, and referral benefits.</p>
+      <a href="#join" class="main-btn">Get Started</a>
+    </div>
+  </section>
 
-  <button class="btn-primary" onclick="signup()">Create Account</button>
-  <button class="btn-secondary" onclick="login()">Sign In</button>
+  <!-- FREE TRIP SECTION -->
+  <section class="section">
+    <h2>🎁 Free Trip Offer</h2>
+    <div class="card">
+      <h3>How It Works</h3>
+      <ul>
+        <li>Register on HALORA</li>
+        <li>Invite your friends</li>
+        <li>Complete referral tasks</li>
+        <li>Unlock special travel rewards</li>
+      </ul>
+    </div>
+  </section>
 
-  <div class="logout" onclick="logout()">Logout</div>
-</div>
+  <!-- REFERRAL SECTION -->
+  <section class="section">
+    <h2>📢 Referral Program</h2>
+    <div class="card">
+      <h3>Earn With Sharing</h3>
+      <p>Share your referral link with friends and grow your rewards journey with HALORA.</p>
+      <button onclick="copyReferral()">Copy Referral Link</button>
+      <p id="copyText"></p>
+    </div>
+  </section>
 
-<script>
-var firebaseConfig = {
-   apiKey: "AIzaSyC2MPagJSfgitEdpr_jKJ073MKLd7jjSNc",
-   authDomain: "br-trip.firebaseapp.com",
-   databaseURL: "https://br-trip-default-rtdb.firebaseio.com",
-   projectId: "br-trip",
-   storageBucket: "br-trip.firebasestorage.app",
-   messagingSenderId: "477570603875",
-   appId: "1:477570603875:web:f371ec9a017f97f696d156",
-   measurementId: "G-PJSNT1Q1LL
-};
+  <!-- TERMS -->
+  <section class="section">
+    <h2>📜 Terms & Conditions</h2>
+    <div class="card">
+      <ol>
+        <li>User must complete registration.</li>
+        <li>Referral tasks must be completed genuinely.</li>
+        <li>Incomplete or fake referrals may be rejected.</li>
+        <li>Travel rewards are subject to campaign rules and availability.</li>
+        <li>HALORA reserves the right to update terms anytime.</li>
+      </ol>
+    </div>
+  </section>
 
-firebase.initializeApp(firebaseConfig);
-var auth = firebase.auth();
+  <!-- JOIN -->
+  <section class="join-section" id="join">
+    <h2>Ready to Join HALORA?</h2>
+    <p>Start your journey today and explore exclusive travel benefits.</p>
+    <button onclick="joinNow()">Join HALORA</button>
+  </section>
 
-// Signup
-function signup() {
-  var email = document.getElementById("email").value;
-  var password = document.getElementById("password").value;
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 HALORA. All rights reserved.</p>
+  </footer>
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(() => alert("Account Created 🚀"))
-    .catch(err => alert(err.message));
-}
-
-// Login
-function login() {
-  var email = document.getElementById("email").value;
-  var password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(() => alert("Welcome Back 😎"))
-    .catch(err => alert(err.message));
-}
-
-// Logout
-function logout() {
-  auth.signOut();
-  alert("Logged Out");
-}
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
