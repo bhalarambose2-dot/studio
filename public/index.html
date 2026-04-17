@@ -2,14 +2,17 @@
 <html>
 <head>
   <title>Jobs</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h2>🔥 Jobs</h2>
-<a href="post-job.html">➕ Post Job</a>
+<div class="header">💼 Halora Jobs</div>
 
-<div id="jobs"></div>
+<div class="container">
+  <a href="post-job.html">➕ Post Job</a>
+  <div id="jobs"></div>
+</div>
 
 <script src="firebase.js"></script>
 
@@ -22,42 +25,20 @@ async function loadJobs() {
     const j = doc.data();
 
     html += `
-      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <h3>${j.title}</h3>
-        <p>${j.company} | ${j.location}</p>
-        <p>₹${j.salary}</p>
+      <div class="job-card">
+        <div class="job-title">${j.title}</div>
+        <div class="company">${j.company} • ${j.location}</div>
+        <div class="salary">₹${j.salary}</div>
+
         <input type="file" id="file-${doc.id}">
-        <button onclick="apply('${doc.id}')">Apply</button>
+        <button class="apply-btn" onclick="apply('${doc.id}')">
+          Apply Now
+        </button>
       </div>
     `;
   });
 
   document.getElementById("jobs").innerHTML = html;
-}
-
-async function apply(jobId) {
-  const name = prompt("Name");
-  const phone = prompt("Phone");
-
-  const file = document.getElementById(`file-${jobId}`).files[0];
-
-  let url = "";
-
-  if (file) {
-    const ref = storage.ref("resumes/" + file.name);
-    await ref.put(file);
-    url = await ref.getDownloadURL();
-  }
-
-  await db.collection("applications").add({
-    jobId,
-    name,
-    phone,
-    resume: url,
-    createdAt: new Date()
-  });
-
-  alert("Applied ✅");
 }
 
 loadJobs();
