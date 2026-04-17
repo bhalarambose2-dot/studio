@@ -1,80 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HALORA - Free Trip Platform</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Halora Jobs</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <style>
+    body { font-family: Arial; background:#f5f5f5; }
+    .job {
+      background:#fff;
+      padding:15px;
+      margin:10px;
+      border-radius:10px;
+      box-shadow:0 0 5px rgba(0,0,0,0.1);
+    }
+    button {
+      background:green;
+      color:white;
+      border:none;
+      padding:8px 12px;
+      border-radius:5px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">HALORA</div>
-    <a href="signup.html" class="join-btn">Join Now</a>
-  </header>
+<h2>🔥 Latest Jobs</h2>
+<a href="post-job.html">➕ Post Job</a>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Travel More, Refer More, Win More ✈️</h1>
-      <p>Join HALORA and unlock exciting travel opportunities, rewards, and referral benefits.</p>
-      <a href="signup.html" class="main-btn">Get Started</a>
-    </div>
-  </section>
+<div id="jobs"></div>
 
-  <!-- FREE TRIP SECTION -->
-  <section class="section">
-    <h2>🎁 Free Trip Offer</h2>
-    <div class="card">
-      <h3>How It Works</h3>
-      <ul>
-        <li>Register on HALORA</li>
-        <li>Invite your friends</li>
-        <li>Complete referral tasks</li>
-        <li>Unlock special travel rewards</li>
-      </ul>
-    </div>
-  </section>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC2MPagJSfgitEdpr_jKJ073MKLd7jjSNc",
+  authDomain: "br-trip.firebaseapp.com",
+  projectId: "br-trip",
+  storageBucket: "br-trip.firebasestorage.app",
+  messagingSenderId: "477570603875",
+  appId: "1:477570603875:web:f371ec9a017f97f696d156"
+};
 
-  <!-- REFERRAL SECTION -->
-  <section class="section">
-    <h2>📢 Referral Program</h2>
-    <div class="card">
-      <h3>Earn With Sharing</h3>
-      <p>Share your referral link with friends and grow your rewards journey with HALORA.</p>
-      <button onclick="copyReferral()">Copy Referral Link</button>
-      <p id="copyText"></p>
-    </div>
-  </section>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  <!-- TERMS -->
-  <section class="section">
-    <h2>📜 Terms & Conditions</h2>
-    <div class="card">
-      <ol>
-        <li>User must complete registration.</li>
-        <li>Referral tasks must be completed genuinely.</li>
-        <li>Incomplete or fake referrals may be rejected.</li>
-        <li>Travel rewards are subject to campaign rules and availability.</li>
-        <li>HALORA reserves the right to update terms anytime.</li>
-      </ol>
-    </div>
-  </section>
+async function loadJobs() {
+  const snapshot = await db.collection("jobs").get();
+  let html = "";
 
-  <!-- JOIN -->
-  <section class="join-section" id="join">
-    <h2>Ready to Join HALORA?</h2>
-    <p>Start your journey today and explore exclusive travel benefits.</p>
-    <button onclick="window.location.href='signup.html'">Join HALORA</button>
-  </section>
+  snapshot.forEach(doc => {
+    const job = doc.data();
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 HALORA. All rights reserved.</p>
-  </footer>
+    html += `
+      <div class="job">
+        <h3>${job.title}</h3>
+        <p>${job.company} | ${job.location}</p>
+        <p>💰 Salary: ₹${job.salary}</p>
+        <button onclick="applyJob('${doc.id}')">Apply Now</button>
+      </div>
+    `;
+  });
 
-  <script src="script.js"></script>
+  document.getElementById("jobs").innerHTML = html;
+}
+
+async function applyJob(jobId) {
+  const name = prompt("Enter your name");
+  const phone = prompt("Enter your phone");
+
+  if(!name || !phone) return alert("Fill all details");
+
+  await db.collection("applications").add({
+    jobId,
+    name,
+    phone,
+    status: "pending",
+    createdAt: new Date()
+  });
+
+  alert("✅ Applied Successfully");
+}
+
+loadJobs();
+</script>
+
 </body>
 </html>
