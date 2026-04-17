@@ -1,34 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HALORA Admin</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Admin Panel</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
-  <header class="header">
-    <div class="logo">HALORA Admin</div>
-    <button class="btn" onclick="logout()">Logout</button>
-  </header>
 
-  <section class="dashboard-wrap">
-    <div class="card">
-      <h2>Admin Panel</h2>
-      <p>Only admin can access this page.</p>
-    </div>
+<h2>📊 Applications</h2>
+<div id="data"></div>
 
-    <div class="card">
-      <h3>Users</h3>
-      <div id="usersList">Loading users...</div>
-    </div>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC2MPagJSfgitEdpr_jKJ073MKLd7jjSNc",
+  authDomain: "br-trip.firebaseapp.com",
+  projectId: "br-trip",
+  storageBucket: "br-trip.firebasestorage.app",
+  messagingSenderId: "477570603875",
+  appId: "1:477570603875:web:f371ec9a017f97f696d156"
+};
 
-    <div class="card">
-      <h3>Proof Uploads</h3>
-      <div id="proofsList">Loading proofs...</div>
-    </div>
-  </section>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  <script type="module" src="admin.js"></script>
+async function loadData() {
+  const snap = await db.collection("applications").get();
+  let html = "";
+
+  snap.forEach(doc => {
+    const a = doc.data();
+
+    html += `
+      <div style="border:1px solid #000; padding:10px; margin:10px;">
+        <p>Name: ${a.name}</p>
+        <p>Phone: ${a.phone}</p>
+        <p>Status: ${a.status}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("data").innerHTML = html;
+}
+
+loadData();
+</script>
+
 </body>
 </html>
