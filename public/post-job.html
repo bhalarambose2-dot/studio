@@ -2,28 +2,29 @@
 <html>
 <head>
   <title>Post Job</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h2>Post Job</h2>
+<div class="header">📢 Post Job</div>
 
-<input id="title" placeholder="Title"><br><br>
-<input id="company" placeholder="Company"><br><br>
-<input id="location" placeholder="Location"><br><br>
-<input id="salary" placeholder="Salary"><br><br>
-<textarea id="desc"></textarea><br><br>
+<div class="container">
 
-<button onclick="postJob()">Post</button>
+<input id="title" placeholder="Job Title">
+<input id="company" placeholder="Company">
+<input id="location" placeholder="Location">
+<input id="salary" placeholder="Salary">
+<textarea id="desc" placeholder="Description"></textarea>
+
+<button class="post-btn" onclick="postJob()">Post Job</button>
+
+</div>
 
 <script src="firebase.js"></script>
 
 <script>
 async function postJob() {
-  const user = auth.currentUser;
-
-  if (!user) return alert("Login first");
-
   await db.collection("jobs").add({
     title: title.value,
     company: company.value,
@@ -33,7 +34,7 @@ async function postJob() {
     createdAt: new Date()
   });
 
-  alert("Job Posted ✅");
+  alert("✅ Job Posted");
 }
 </script>
 
