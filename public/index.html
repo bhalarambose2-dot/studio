@@ -1,47 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Jobs</title>
-  <link rel="stylesheet" href="style.css">
+<title>HALORA Login</title>
 </head>
-
 <body>
 
-<div class="header">💼 Halora Jobs</div>
+<h2>HALORA Login</h2>
 
-<div class="container">
-  <a href="post-job.html">➕ Post Job</a>
-  <div id="jobs"></div>
-</div>
+<input type="email" id="email" placeholder="Email"><br>
+<input type="password" id="password" placeholder="Password"><br>
 
+<button onclick="login()">Login</button>
+<button onclick="signup()">Signup</button>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="firebase.js"></script>
 
 <script>
-async function loadJobs() {
-  const snap = await db.collection("jobs").get();
-  let html = "";
-
-  snap.forEach(doc => {
-    const j = doc.data();
-
-    html += `
-      <div class="job-card">
-        <div class="job-title">${j.title}</div>
-        <div class="company">${j.company} • ${j.location}</div>
-        <div class="salary">₹${j.salary}</div>
-
-        <input type="file" id="file-${doc.id}">
-        <button class="apply-btn" onclick="apply('${doc.id}')">
-          Apply Now
-        </button>
-      </div>
-    `;
-  });
-
-  document.getElementById("jobs").innerHTML = html;
+function login(){
+  auth.signInWithEmailAndPassword(email.value,password.value)
+  .then(()=> window.location="index.html")
+  .catch(e=>alert(e.message));
 }
 
-loadJobs();
+function signup(){
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+  .then(()=> window.location="index.html")
+  .catch(e=>alert(e.message));
+}
 </script>
 
 </body>
