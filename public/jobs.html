@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HALORA Jobs</title>
+</head>
+<body>
+
+<h2>💼 HALORA Jobs</h2>
+
+<div id="jobs"></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="firebase.js"></script>
+
+<script>
+const jobsData = [
+{
+title: "Digital Marketing Manager",
+company: "HALORA",
+location: "Jaipur",
+salary: "20000-50000"
+},
+{
+title: "App / Web Developer",
+company: "HALORA Tech",
+location: "Work From Home",
+salary: "25000-60000"
+},
+{
+title: "UI/UX Designer",
+company: "HALORA Design",
+location: "Remote",
+salary: "20000-45000"
+},
+{
+title: "Customer Support Executive",
+company: "HALORA Support",
+location: "Jodhpur",
+salary: "10000-20000"
+}
+];
+
+let html = "";
+
+jobsData.forEach((j, i) => {
+  html += `
+    <div style="border:1px solid #ccc;padding:10px;margin:10px;">
+      <h3>${j.title}</h3>
+      <p>${j.company} • ${j.location}</p>
+      <p>₹${j.salary}</p>
+      <button onclick="apply(${i})">Apply</button>
+    </div>
+  `;
+});
+
+document.getElementById("jobs").innerHTML = html;
+
+function apply(id){
+  window.location.href = "apply.html?job=" + id;
+}
+</script>
+
+</body>
+</html>
