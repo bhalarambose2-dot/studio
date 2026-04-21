@@ -1,33 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>HALORA Login</title>
+<title>HALORA Jobs</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h2>HALORA Login</h2>
+<div class="header">💼 HALORA Jobs</div>
 
-<input type="email" id="email" placeholder="Email"><br>
-<input type="password" id="password" placeholder="Password"><br>
+<button onclick="logout()">Logout</button>
 
-<button onclick="login()">Login</button>
-<button onclick="signup()">Signup</button>
+<div class="container">
+  <a href="post-job.html">➕ Post Job</a>
+  <div id="jobs"></div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="firebase.js"></script>
 
 <script>
-function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .then(()=> window.location="index.html")
-  .catch(e=>alert(e.message));
+auth.onAuthStateChanged(user=>{
+  if(!user){
+    window.location="login.html";
+  } else {
+    loadJobs();
+  }
+});
+
+async function loadJobs(){
+  const snap = await db.collection("jobs").get();
+  let html = "";
+
+  snap.forEach(doc=>{
+    const j = doc.data();
+
+    html += `
+      <div class="job-card">
+        <h3>${j.title}</h3>
+        <p>${j.company} • ${j.location}</p>
+        <p>₹${j.salary}</p>
+        <button onclick="apply('${doc.id}')">Apply</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("jobs").innerHTML = html;
 }
 
-function signup(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=> window.location="index.html")
-  .catch(e=>alert(e.message));
+function apply(id){
+  window.location="apply.html?job="+id;
+}
+
+function logout(){
+  auth.signOut();
 }
 </script>
 
