@@ -4,59 +4,105 @@ body {
   background: #f1f5f9;
 }
 
-/* Header */
+/* 🔥 Header */
 .header {
-  background: #0f172a;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
   color: white;
-  padding: 15px;
+  padding: 18px;
   text-align: center;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
+  letter-spacing: 1px;
 }
 
-/* Container */
+/* 🚀 Top Banner */
+.banner {
+  background: #2563eb;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+}
+
+/* 📦 Container */
 .container {
   padding: 15px;
 }
 
-/* Job Card */
+/* 💼 Job Card */
 .job-card {
   background: white;
   border-radius: 15px;
   padding: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: 0.3s;
+  position: relative;
 }
 
 .job-card:hover {
   transform: translateY(-5px);
 }
 
-/* Title */
+/* ⭐ Featured Tag */
+.featured {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: gold;
+  color: black;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* 🏷 Title */
 .job-title {
   font-size: 18px;
   font-weight: bold;
   color: #0f172a;
 }
 
-/* Company */
+/* 🏢 Company */
 .company {
   color: #64748b;
   margin-top: 5px;
 }
 
-/* Salary */
+/* 💰 Salary */
 .salary {
   margin-top: 10px;
   font-weight: bold;
   color: #16a34a;
 }
 
-/* Button */
+/* ✅ Verified */
+.verified {
+  color: green;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* 🔘 Buttons */
 .apply-btn {
   margin-top: 10px;
-  background: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  font-weight: bold;
+}
+
+.apply-btn:hover {
+  background: #1e40af;
+}
+
+/* 📱 WhatsApp Button */
+.whatsapp-btn {
+  margin-top: 8px;
+  background: #25D366;
   color: white;
   border: none;
   padding: 10px;
@@ -64,13 +110,13 @@ body {
   width: 100%;
 }
 
-/* File input */
+/* 📎 File input */
 input[type="file"] {
   margin-top: 10px;
 }
 
-/* Input fields */
-input, textarea {
+/* ✏️ Input fields */
+input, textarea, select {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
@@ -78,7 +124,7 @@ input, textarea {
   border: 1px solid #ccc;
 }
 
-/* Post button */
+/* ➕ Post button */
 .post-btn {
   background: #16a34a;
   color: white;
@@ -87,4 +133,16 @@ input, textarea {
   border-radius: 8px;
   width: 100%;
   margin-top: 10px;
+  font-weight: bold;
+}
+
+/* 🔐 Login Box */
+.login-box {
+  max-width: 350px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  margin-top: 50px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
