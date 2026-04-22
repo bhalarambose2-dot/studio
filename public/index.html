@@ -1,63 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>HALORA Jobs</title>
-<link rel="stylesheet" href="style.css">
+  <title>BR Trip Jobs</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="header">💼 HALORA Jobs</div>
-
-<button onclick="logout()">Logout</button>
+<header>
+  <h1>BR Trip Careers</h1>
+</header>
 
 <div class="container">
-  <a href="jobs.html">➕ apply Job</a>
-  <div id="jobs"></div>
+  <h2>Join Our Team</h2>
+  <p>Apply for latest jobs in BR Trip</p>
+
+  <a href="apply.html" class="btn">Apply Now</a>
+  <a href="admin.html" class="btn admin">Admin Panel</a>
 </div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="firebase.js"></script>
-
-<script>
-auth.onAuthStateChanged(user=>{
-  if(!user){
-    window.location="login.html";
-  } else {
-    loadJobs();
-  }
-});
-
-async function loadJobs(){
-  const snap = await db.collection("jobs").get();
-  let html = "";
-
-  snap.forEach(doc=>{
-    const j = doc.data();
-
-    html += `
-      <div class="job-card">
-        <h3>${j.title}</h3>
-        <p>${j.company} • ${j.location}</p>
-        <p>₹${j.salary}</p>
-        <button onclick="apply('${doc.id}')">Apply</button>
-      </div>
-    `;
-  });
-
-  document.getElementById("jobs").innerHTML = html;
-}
-
-function apply(id){
-  window.location="apply.html?job="+id;
-}
-
-function logout(){
-  auth.signOut();
-}
-</script>
 
 </body>
 </html>
