@@ -1,91 +1,60 @@
-import { auth, db, bhalarambose2@gmail.com } from "./firebase-config.js";
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { db } from "./firebase-config.js";
+import { collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import {
-  collection, getDocs, doc, updateDoc, increment
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const container = document.getElementById("data");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user || user.email !== ADMIN_EMAIL) {
-    alert("Admin access only.");
-    window.location.href = "login.html";
-    return;
-  }
+// 🔐 Simple Password Protection
+const pass = prompt("Enter Admin Password");
+if (pass !== "1234") {
+  document.body.innerHTML = "<h2>Access Denied</h2>";
+}
 
-  loadUsers();
-  loadProofs();
-});
+// 📥 Load Applications
+async function loadData() {
+  const querySnapshot = await getDocs(collection(db, "applications"));
+  container.innerHTML = "";
 
-async function loadUsers() {
-  const usersList = document.getElementById("usersList");
-  usersList.innerHTML = "Loading...";
+  querySnapshot.forEach((docSnap) => {
+    const d = docSnap.data();
 
-  const querySnap = await getDocs(collection(db, "users"));
-  let html = "";
+    const card = document.createElement("div");
+    card.className = "card";
 
-  querySnap.forEach((docSnap) => {
-    const u = docSnap.data();
-    html += `
-      <div class="user-row">
-        <p><strong>${u.name || "No Name"}</strong> (${u.email || ""})</p>
-        <p>Referral: ${u.referralCode || ""}</p>
-        <p>Wallet: ${u.walletPoints || 0} points</p>
-        <p>Share: ${u.shareTask ? "Done" : "Pending"} | YouTube: ${u.youtubeTask ? "Done" : "Pending"} | Proof: ${u.proofUploaded ? "Uploaded" : "Pending"}</p>
-        <button class="small-btn" onclick="approveUser('${docSnap.id}')">Approve +50</button>
-        <button class="small-btn" onclick="rejectUser('${docSnap.id}')">Reject</button>
+    card.innerHTML = `
+      <h3>${d.name}</h3>
+      <p><b>Mobile:</b> ${d.mobile}</p>
+      <p><b>Email:</b> ${d.email}</p>
+      <p><b>Status:</b> ${d.status}</p>
+
+      <div class="actions">
+        <button onclick="approve('${docSnap.id}')">Approve</button>
+        <button onclick="deleteApp('${docSnap.id}')">Delete</button>
+        <button onclick="whatsapp('${d.mobile}','${d.name}')">WhatsApp</button>
       </div>
     `;
-  });
 
-  usersList.innerHTML = html || "No users found.";
+    container.appendChild(card);
+  });
 }
 
-async function loadProofs() {
-  const proofsList = document.getElementById("proofsList");
-  proofsList.innerHTML = "Loading...";
-
-  const querySnap = await getDocs(collection(db, "users"));
-  let html = "";
-
-  querySnap.forEach((docSnap) => {
-    const u = docSnap.data();
-    if (u.proofUploaded && u.proofUrl) {
-      html += `
-        <div class="proof-row">
-          <p><strong>${u.name || "No Name"}</strong> (${u.email || ""})</p>
-          <p><a href="${u.proofUrl}" target="_blank">View Screenshot</a></p>
-          <button class="small-btn" onclick="approveUser('${docSnap.id}')">Approve +50</button>
-        </div>
-      `;
-    }
-  });
-
-  proofsList.innerHTML = html || "No proofs uploaded yet.";
-}
-
-window.approveUser = async function (uid) {
-  await updateDoc(doc(db, "users", uid), {
-    walletPoints: increment(50),
-    isEligible: true
-  });
-  alert("Approved. +50 points added.");
-  loadUsers();
-  loadProofs();
+// ✅ Approve
+window.approve = async (id) => {
+  await updateDoc(doc(db, "applications", id), { status: "approved" });
+  alert("Approved");
+  loadData();
 };
 
-window.rejectUser = async function (uid) {
-  await updateDoc(doc(db, "users", uid), {
-    isEligible: false
-  });
-  alert("Marked as not eligible.");
-  loadUsers();
-  loadProofs();
+// ❌ Delete
+window.deleteApp = async (id) => {
+  await deleteDoc(doc(db, "applications", id));
+  alert("Deleted");
+  loadData();
 };
 
-window.logout = async function () {
-  await signOut(auth);
-  window.location.href = "login.html";
+// 📲 WhatsApp
+window.whatsapp = (mobile, name) => {
+  const msg = `Hello ${name}, your application is received - BR Trip`;
+  window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(msg)}`);
 };
+
+loadData();
