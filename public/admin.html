@@ -1,38 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin</title>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h2>Applications</h2>
-<div id="data"></div>
+<h2 class="center">Admin Dashboard</h2>
+<div id="data" class="grid"></div>
 
-<script src="firebase.js"></script>
-
-<script>
-async function load() {
-  const snap = await db.collection("applications").get();
-  let html = "";
-
-  snap.forEach(doc => {
-    const a = doc.data();
-
-    html += `
-      <div style="border:1px solid black; margin:10px; padding:10px;">
-        <p>${a.name}</p>
-        <p>${a.phone}</p>
-        <a href="${a.resume}" target="_blank">Resume</a>
-      </div>
-    `;
-  });
-
-  document.getElementById("data").innerHTML = html;
-}
-
-load();
-</script>
-
+<script type="module" src="admin.js"></script>
 </body>
 </html>
