@@ -8,38 +8,21 @@
 
 <h2>Apply Job</h2>
 
-<input id="name" placeholder="Name"><br>
-<input id="mobile" placeholder="Mobile"><br>
-<input id="email" placeholder="Email"><br>
-<input id="aadhar" placeholder="Aadhar"><br>
-<input id="pan" placeholder="PAN"><br>
+<form id="jobForm">
+  <input type="text" id="name" placeholder="Name" required>
+  <input type="text" id="mobile" placeholder="Mobile" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="text" id="aadhar" placeholder="Aadhar">
+  <input type="text" id="pan" placeholder="PAN">
 
-<select id="gender">
-<option>Male</option>
-<option>Female</option>
-</select><br>
+  <select id="gender">
+    <option>Male</option>
+    <option>Female</option>
+  </select>
 
-<button onclick="submit()">Submit</button>
+  <button type="submit">Submit</button>
+</form>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="firebase.js"></script>
-
-<script>
-function submit(){
-  db.collection("applications").add({
-    name:name.value,
-    mobile:mobile.value,
-    email:email.value,
-    aadhar:aadhar.value,
-    pan:pan.value,
-    gender:gender.value,
-    time:new Date()
-  });
-
-  alert("Applied Successfully");
-}
-</script>
-
+<script type="module" src="apply.js"></script>
 </body>
 </html>
