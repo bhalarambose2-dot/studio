@@ -6,22 +6,24 @@
 </head>
 <body>
 
-<h2>Apply Job</h2>
+<div class="form-box">
+  <h2>Job Application</h2>
 
-<form id="jobForm">
-  <input type="text" id="name" placeholder="Name" required>
-  <input type="text" id="mobile" placeholder="Mobile" required>
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="text" id="aadhar" placeholder="Aadhar">
-  <input type="text" id="pan" placeholder="PAN">
+  <form id="jobForm">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="mobile" placeholder="Mobile Number" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="aadhar" placeholder="Aadhar Number">
+    <input type="text" id="pan" placeholder="PAN Number">
 
-  <select id="gender">
-    <option>Male</option>
-    <option>Female</option>
-  </select>
+    <select id="gender">
+      <option>Male</option>
+      <option>Female</option>
+    </select>
 
-  <button type="submit">Submit</button>
-</form>
+    <button type="submit">Submit Application</button>
+  </form>
+</div>
 
 <script type="module" src="apply.js"></script>
 </body>
